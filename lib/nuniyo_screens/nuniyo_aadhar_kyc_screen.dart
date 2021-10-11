@@ -52,7 +52,7 @@ class _AadharKYCScreenState extends State<AadharKYCScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Aadhar KYC'),
-                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",style: GoogleFonts.openSans(
+                Text("DigiLocker is a digital locker facility provided by the Government of India under its Digital India initiative. It allows all Indian citizens to store and access scanned or digital formats of their documents. It is 100% safe and just another way of validating your details. Your documents issued in DigiLocker are secure and you need to validate them with your Aadhaar number and OTP. You can check if your mobile number is linked to your Aadhaar here. If your mobile number isn't linked, you will not be able to continue with the online process.",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),
                 SizedBox(height: 20,),
@@ -80,7 +80,11 @@ class _AadharKYCScreenState extends State<AadharKYCScreen> {
                   ),
                 ),
                 SizedBox(height: 20,),
-                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",style: GoogleFonts.openSans(
+                Text("By proceeding further, you hereby authorize Mangal Keshav Financial Services LLP to pull your documents from DigiLocker to be used for your account opening process. Further, you provide your consent to share your details with the Income Tax Department, Government of India, All States and State Departments in connection with opening your online account with us.",style: GoogleFonts.openSans(
+                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+                ),),
+                SizedBox(height: 20,),
+                Text("Mangal Keshav Financial Services LLP has become an approved partner of the Government of India for using its \"consent-based requester model\" services of DigiLocker. We use these services to obtain your proof of address (your account name would be taken as per the name registered on the Income Tax database / as per your PAN) if you are not already KRA verified, and digitally signing your application form with Aadhaar eSign using NSDL (licensed ASP). We do not collect or store your Aadhaar number and neither of these services reveal your Aadhaar number to us. If you do not wish to grant us access to retrieve your documents stored in DigiLocker, please use our offline forms by visiting any of our branches or Authorized Persons.",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),
               ],

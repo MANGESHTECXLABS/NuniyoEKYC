@@ -241,7 +241,6 @@ class LocalApiRepo {
     }
   }
 
-  Future<void> ConfirmIFSCDetailsLocal() async{}
 
 
   Future<Map<dynamic,dynamic>> GetPersonalDetails() async{
@@ -359,7 +358,6 @@ class LocalApiRepo {
   Future<void> InsertUpdateKYCRecordLocal() async{}
   Future<void> GenerateCodeChallengeLocal() async{}
   Future<void> VerifyDigiLockerAccountLocal() async{}
-  Future<void> GetAuthorizationCodeLocal() async{}
   Future<void> DocumentUploadLocal() async{}
 
   Future<bool> DocumentUploadPANLocal(var imageP) async{
@@ -541,11 +539,8 @@ class LocalApiRepo {
 
     if (response.statusCode == 200) {
       String result = await response.stream.bytesToString();
-      Map valueMap = jsonDecode(result);
-      print(valueMap);
       print(result);
-      String ipvotp = valueMap["res_Output"][0]["result_Description"];
-      return ipvotp;
+      return result;
     }
     else {
       print(response.reasonPhrase);
@@ -674,10 +669,6 @@ class LocalApiRepo {
       await SetJwtToken(jwt_token);
       String stage_id = valueMap["res_Output"][0]["stage_Id"];
       await SetStageId(stage_id);
-
-
-
-
       if(result_Id==1){
         return true;
       }
@@ -781,7 +772,7 @@ class LocalApiRepo {
   }
 
 
-  Future<bool> GetAuthorizationCode(String hmac,String code,String state) async{
+  Future<String> GetAuthorizationCode(String hmac,String code,String state) async{
     //String jwt_token= await GetCurrentJWTToken();
     //print("Calling NSDL EKYC PAN Using API"+jwt_token);
 
@@ -812,11 +803,128 @@ class LocalApiRepo {
       String result = await response.stream.bytesToString();
       Map valueMap = jsonDecode(result);
       print(valueMap);
-      return true;
+      String result_description = valueMap["res_Output"][0]["result_Description"];
+      return result_description;
     }
     else {
       print(response.reasonPhrase);
-      return false;
+      return "Error";
+    }
+  }
+
+  // RazorPayment Status New
+  Future<void> RazorPaymentStatus(String amountPayed,String merchantID ,String paymentID,String signature) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling RazorPaymentStatus  Using API KEY "+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("RazorPaymentStatus for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/razorpay/RazorPaymentStatus'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id",
+      "org_Id": globals.ORG_ID,
+      "amount": 200,
+      "currencyType": "INR",
+      "merchantTransactionId": "$merchantID",
+      "payment_Id": "$paymentID",
+      "signature": "$signature"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      //int result_Id = valueMap["res_Output"][0]["result_Id"];
+      //print(result_Id);
+      //String stage_id = valueMap["res_Output"][0]["stage_Id"];
+      //await SetStageId(stage_id);
+      //if(result_Id == 1){
+      //  return true;
+      //}
+      //return false;
+    }
+    else {
+      print(response.reasonPhrase);
+      //return false;
+    }
+
+  }
+
+
+  // DigiLocker
+  // Address on pop-up
+  // Dialog && Update Stage ID
+  // Politically Exposed Remove
+  // IPV OTP && RESULT ID
+
+  Future<void> ConfirmIFSCDetails(String result) async {
+
+    Map valueMap = jsonDecode(result);
+    String _ifscCodeR = valueMap["IFSC"];
+    String _bankNameR = valueMap["BANK"];
+    String district = valueMap["DISTRICT"];
+    String city = valueMap["CITY"];
+    String state = valueMap["STATE"];
+    String _branchNameR = valueMap["BRANCH"];
+    String _addressR = valueMap["ADDRESS"];
+
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling ConfirmIFSCDetails  Using API KEY "+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("ConfirmIFSCDetails for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/bank/ConfirmIfscDetails'));
+    request.body = json.encode({
+      "org_Id": globals.ORG_ID,
+      "lead_Id": "$lead_id",
+      "ifsC_Code": "$_ifscCodeR",
+      "method_Name": "",
+      "micr": "",
+      "address": "$_addressR",
+      "branch": "$_branchNameR",
+      "contact": "",
+      "phone": "",
+      "city": "$city",
+      "state": "$state",
+      "district": "$district",
+      "bank": "$_bankNameR"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      //int result_Id = valueMap["res_Output"][0]["result_Id"];
+      //print(result_Id);
+      //String stage_id = valueMap["res_Output"][0]["stage_Id"];
+      //await SetStageId(stage_id);
+      //if(result_Id == 1){
+        //return true;
+      //}
+      //return false;
+    }
+    else {
+      print(response.reasonPhrase);
+      //return false;
     }
   }
 
@@ -833,7 +941,7 @@ class LocalApiRepo {
       'Content-Type': 'application/json'
     };
     var request = http.Request('GET', Uri.parse('$BASE_API_LINK_URL/api/razorpay/RazorPayStatus'));
-    request.body = '''{\r\n  "inr": 0,\r\n  "currency": "string",\r\n  "mobile_No": "string",\r\n  "merchantTransactionId": "string"\r\n}''';
+    request.body = '''{\r\n  "inr": $amountPayed,\r\n  "currency": "$currency",\r\n  "mobile_No": "$mobileNumber",\r\n  "merchantTransactionId": "$merchantTransactionID"\r\n}''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();

@@ -363,8 +363,8 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                     ),
                     TextButton(child: Text("Terms & Conditions",textAlign:TextAlign.left,style: GoogleFonts.openSans(textStyle: TextStyle(decoration: TextDecoration.underline,fontSize: 12,fontWeight: FontWeight.bold,color:primaryColorOfApp, letterSpacing: .5),),),
                         onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => TermsAndConditions() ));
-                        }
+                            showAlertDialog(context);
+                          }
                     ),
                   ],
                 ),
@@ -490,6 +490,47 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
     phoneNo="+91"+phoneNo;
     final regExp = RegExp(r'(^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$)');
     return regExp.hasMatch(phoneNo);
+  }
+
+  showAlertDialog(BuildContext context) {
+    // Create button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Terms & Conditions",style: GoogleFonts.openSans(
+        textStyle: TextStyle(
+            color: Colors.black,
+            letterSpacing: .5,
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
+      )),
+      content: SingleChildScrollView(child:Text("Mangal Keshav Financial Services LLP has become an approved partner of the Government of India for using its \"consent-based requester model\" services of DigiLocker. We use these services to obtain your proof of address (your account name would be taken as per the name registered on the Income Tax database / as per your PAN) if you are not already KRA verified, and digitally signing your application form with Aadhaar eSign using NSDL (licensed ASP). We do not collect or store your Aadhaar number and neither of these services reveal your Aadhaar number to us. If you do not wish to grant us access to retrieve your documents stored in DigiLocker, please use our offline forms by visiting any of our branches or Authorized Persons.",style: GoogleFonts.openSans(
+        textStyle: TextStyle(
+            color: Colors.black,
+            letterSpacing: .5,
+            fontSize: 14,
+        ),
+      )),),
+      actions: [
+        okButton,
+      ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)))
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
 

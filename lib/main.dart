@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_bank_email_pan_validation_screen.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_esign_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_mobile_validation_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_options_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_personal_details_screen.dart';
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xff6A4EEE),
       ),
-      home: AadharKYCScreen(),
+      home: MobileValidationLoginScreen(),
       //initialRoute: '/',
       //onGenerateRoute: ScreenRouter.generateRoute,
     );

@@ -894,10 +894,4 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     }
   }
 
-  Future<void> manageSteps() async {
-    String currentRouteName = '/uploaddocumentscreen';
-    await StoreLocal().StoreRouteNameToLocalStorage(currentRouteName);
-    String routeName = await StoreLocal().getRouteNameFromLocalStorage();
-    print("YOU ARE ON THIS STEP : "+routeName);
-  }
 }

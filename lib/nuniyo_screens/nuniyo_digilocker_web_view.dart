@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/localapis.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +20,7 @@ class _BrowserViewXState extends State<BrowserViewX> {
   late WebViewXController webviewController;
   String webURL = "";
 
+  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   String hmac = "";
   String code = "";
@@ -38,6 +39,10 @@ class _BrowserViewXState extends State<BrowserViewX> {
     super.dispose();
   }
 
+  Future<bool> _onWillPop2() {
+    return Future.value(false);
+  }
+
   Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
@@ -46,15 +51,13 @@ class _BrowserViewXState extends State<BrowserViewX> {
         content: new Text('Do you want to exit DigiLocker'),
         actions: <Widget>[
           TextButton(
-            onPressed:(){Navigator.pushNamed(context, 'Personal');},
+            onPressed:(){Navigator.pushNamed(context, 'Digilocker');},
             //onPressed: () => Navigator.of(context).pop(false),
             child: new Text('No'),
           ),
           TextButton(
             onPressed:() {
-              Navigator.pushNamed(context, 'Personal');
-              //await LocalApiRepo().UpdateStage_Id();
-              //await ContinueToStep();
+              Navigator.pushNamed(context, 'Digilocker');
               },
             //onPressed: () => Navigator.of(context).pop(true),
             child: new Text('Yes'),
@@ -83,10 +86,12 @@ class _BrowserViewXState extends State<BrowserViewX> {
         if(src.contains("error")){
           Navigator.pop(context);
         }
+        if(src.contains("&hmac")){
+          getCodeStateHMAC(src);
+        }
         else{
           getCodeStateHMAC(src);
         }
-
         }
             ,
         jsContent: const {
@@ -117,7 +122,7 @@ class _BrowserViewXState extends State<BrowserViewX> {
           return NavigationDecision.navigate;
         },
       ),
-    ), onWillPop: _onWillPop);
+    ), onWillPop: _onWillPop2);
   }
 
   Future<void> initializeWebView() async {
@@ -138,6 +143,7 @@ class _BrowserViewXState extends State<BrowserViewX> {
 
   void getCodeStateHMAC(String string) {
     Future<void> main() async {
+      print("We got this as a url string"+string);
 
       if(string==""){
         string = 'http://localhost:3000/Redirect?code=a4cda096cd6cfe5a89307ca26d24f69c994828bf&state=T001211000081&hmac=ba2c9cddb8606e78f634f7da0b7e60ee1aa41d51392fa2acf83c42428c98264f';
@@ -174,12 +180,59 @@ class _BrowserViewXState extends State<BrowserViewX> {
       print("HMAC");
       print(hmac);
 
-      await LocalApiRepo().GetAuthorizationCode(hmac, code, state);
+      String address = await LocalApiRepo().GetAuthorizationCode(hmac, code, state);
+      await LocalApiRepo().UpdateStage_Id();
+      showAlertDialog(context,address);
+      await Future.delayed(const Duration(seconds: 10), (){});
+      Navigator.of(context).pop();
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String stage_id = prefs.getString(STAGE_KEY);
+      print("Let\'s go To");
+      print(stage_id);
+      Navigator.pushNamed(context, stage_id);
       //print(code);
       //print(hmac);
       //print(state);
     }
 
+  }
+
+  showAlertDialog(BuildContext context,String address) {
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+        title: Text("Please Wait",style: GoogleFonts.openSans(
+          textStyle: TextStyle(
+              color: Colors.black,
+              letterSpacing: .5,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
+        )),
+        content: SingleChildScrollView(
+          child:Column(
+            children: [
+              Text("$address",style: GoogleFonts.openSans(
+                textStyle: TextStyle(
+                  color: Colors.black,
+                  letterSpacing: .5,
+                  fontSize: 14,
+                ),
+              )),
+
+              CircularProgressIndicator(color: primaryColorOfApp,)
+            ],
+          ),
+          ),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)))
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

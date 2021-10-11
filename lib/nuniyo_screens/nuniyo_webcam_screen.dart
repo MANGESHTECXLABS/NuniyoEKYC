@@ -1,4 +1,5 @@
 ///Static Page
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -49,7 +50,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   bool showRecordingButton = false;
 
-  bool enableProceedBtn = false;
+  bool enableProceedBtnRecordingDone = false;
+  bool enableProceedBtnOTPMatched = false;
 
   bool enableRetryBtn = false;
 
@@ -58,6 +60,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   late FocusNode _IPVOTPTextFieldFocusNode;
 
   TextEditingController IPVOTPTextEditingController = new TextEditingController();
+
+  int recordForHowManySeconds = 5;
 
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
@@ -300,6 +304,16 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     child: Container(
                       height: 80,
                       child: TextField(
+                        onChanged: (value){
+                          if(value.length==6){
+                            if(value.toString() == ipvOtp){
+                              enableProceedBtnOTPMatched = true;
+                              setState(() {
+
+                              });
+                            }
+                          }
+                        },
                         //enabled: motherNameTextEditingController.text.isEmpty,
                         cursorColor: primaryColorOfApp,
                         style: GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black, letterSpacing: 0.5,fontSize: 14,fontWeight: FontWeight.bold)),
@@ -307,6 +321,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                         controller: IPVOTPTextEditingController,
                         onTap: _requestIPVOTPTextFieldFocusNode,
                         decoration: InputDecoration(
+                            enabled: showRecordingButton,
                             contentPadding: EdgeInsets.fromLTRB(25.0,40.0,0.0,40.0),
                             counter: Offstage(),
                             labelText: _IPVOTPTextFieldFocusNode.hasFocus ? 'Enter IPV OTP here' : 'Enter IPV OTP Here',
@@ -360,7 +375,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:enableProceedBtn?() {
+                    onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() {
                       Navigator.pushNamed(context, 'Document');}:null,
                     color: primaryColorOfApp,
                     child: Text(
@@ -377,7 +392,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     child: Text("Retry",style: GoogleFonts.openSans(textStyle: TextStyle(decoration: TextDecoration.underline,fontSize: 18,fontWeight: FontWeight.bold,color:enableRetryBtn?primaryColorOfApp:Colors.transparent, letterSpacing: .5),),),
                     onPressed: enableRetryBtn?(){
                       _onWillPop();
-                      enableProceedBtn = false;
+                      enableProceedBtnRecordingDone = false;
                       onVideoRecordButtonPressed();
                       _onWillPop();
                     }:null),
@@ -535,7 +550,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         setState(() {
 
         });
-        for(int i=12;i>=0;i--){
+        for(int i=recordForHowManySeconds;i>=0;i--){
           await Future.delayed(Duration(seconds: 1), () {
             RecordingStatus = "$i Seconds Remaining";
             setState(() {});
@@ -545,7 +560,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         print("DONE WAITING");
         showRecordingButton = false;
         RecordingStatus = "RECORDING COMPLETED";
-        enableProceedBtn = true;
+        enableProceedBtnRecordingDone = true;
         setState(() {});
       }
     });
@@ -669,7 +684,15 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   void fetchOTP() async {
     print("IPV OTP METHODS");
-    ipvOtp = await LocalApiRepo().IPVOTPLocal();
+
+    String result = await LocalApiRepo().IPVOTPLocal();
+    Map valueMap = jsonDecode(result);
+    print(valueMap);
+    ipvOtp = valueMap["res_Output"][0]["result_Description"];
+    recordForHowManySeconds = valueMap["res_Output"][0]["result_Id"];
+    setState(() {
+
+    });
   }
 
 }

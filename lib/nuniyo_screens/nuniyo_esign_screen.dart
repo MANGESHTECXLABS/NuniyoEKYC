@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
@@ -24,6 +25,22 @@ class _EsignScreenState extends State<EsignScreen> {
   String DOB = "";
   String EMAIL_ID = "";
 
+  ///
+  /*static const platform = const MethodChannel('samples.flutter.dev/battery');
+  String _batteryLevel = 'Battery Level';
+  Future<void> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final int result = await platform.invokeMethod('getBatteryLevel');
+      batteryLevel = 'Battery level at $result % .';
+    } on PlatformException catch (e) {
+      batteryLevel = "Failed to get battery level: '${e.message}'.";
+    }
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }*/
+  ///
 
   @override
   void initState() {
@@ -60,15 +77,11 @@ class _EsignScreenState extends State<EsignScreen> {
                 SizedBox(height: 20,),
                 Divider(thickness: 2.0,),
                 SizedBox(height: 20,),
-                Text("Equity",style: GoogleFonts.openSans(
+                Text("eSign",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 22,fontWeight: FontWeight.bold),
                 ),),
                 SizedBox(height: 20,),
-                Text("This will be your account to buy and sell shares , mutual funds and derivatives on NSE and BSE.",style: GoogleFonts.openSans(
-                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
-                ),),
-                SizedBox(height: 20,),
-                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry.",style: GoogleFonts.openSans(
+                Text("eSign is an online electronic signature service that can facilitate an Aadhaar holder to digitally sign a document after an OTP authentication thus requiring no paper based application form for account opening purposes. We provide the eSign service using NSDL e-Gov (licensed CA) and the authentication of the signer will be carried out by the e-KYC services of UIDAI and on successful authentication i.e., on receiving the consent from the signer, electronic signature on the account opening form will be ascribed by eSign services of NSDL e-Gov.",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),
                 SizedBox(height: 20,),
@@ -198,6 +211,7 @@ class _EsignScreenState extends State<EsignScreen> {
     EMAIL_ID =prefs.getString("EMAIL_ID");
     GENDER = prefs.getString("GENDER");
     PAN_NO = prefs.getString("PAN_NO");
+
     setState(() {
 
     });

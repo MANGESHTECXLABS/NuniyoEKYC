@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +31,6 @@ class _OptionsScreenState extends State<OptionsScreen> {
   @override
   void initState() {
     super.initState();
-    manageSteps();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -190,7 +188,7 @@ class _OptionsScreenState extends State<OptionsScreen> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
-    PostPayment(response.paymentId.toString());
+    PostPayment(response.paymentId.toString(),response.signature.toString(),response.orderId.toString());
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -202,23 +200,16 @@ class _OptionsScreenState extends State<OptionsScreen> {
     Fluttertoast.showToast(msg: "EXTERNAL_WALLET: " + response.walletName!, toastLength: Toast.LENGTH_SHORT);
   }
 
-  Future<void> PostPayment(String paymentID) async {
+  Future<void> PostPayment(String paymentID,String signature,String merchantID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
     ///ApiRepo().OnPaymentSuccessPostToDatabase(200, phoneNumber,paymentID);
     await LocalApiRepo().RazorPayStatusLocal(200, 'INR', phoneNumber, paymentID);
+    await LocalApiRepo().RazorPaymentStatus("200", merchantID, paymentID, signature);
     await LocalApiRepo().UpdateStage_Id();
     String ThisStepId = prefs.getString(STAGE_KEY);
     print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);
     Navigator.pushNamed(context,ThisStepId);
-  }
-
-  Future<void> manageSteps() async {
-    ///SET STEP ID HERE
-    String currentRouteName = 'Account';
-    await StoreLocal().StoreStageIdToLocalStorage(currentRouteName);
-    String routeName = await StoreLocal().getRouteNameFromLocalStorage();
-    print("YOU ARE ON THIS STEP : "+routeName);
   }
 
 

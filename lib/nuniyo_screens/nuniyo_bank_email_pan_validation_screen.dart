@@ -653,7 +653,7 @@ class _BankPanEmailValidationScreenState
     }
   }
 
-  void openIFSCConfirmDialogBox(String _ifscCodeR, String _bankNameR, String _addressR) {
+  void openIFSCConfirmDialogBox(String _ifscCodeR, String _bankNameR, String _addressR,String result) {
     String confirmBtnText = "Confirm";
     bool enableConfirmButton = true;
     showGeneralDialog(
@@ -789,6 +789,7 @@ class _BankPanEmailValidationScreenState
                                 setState((){});
                                 //Penny Drop Api Will Come here till then suppose it is valid
                                 isBankValidatedSuccessfully = await LocalApiRepo().verifyBankAccountLocal(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
+                                await LocalApiRepo().ConfirmIFSCDetails(result);
                                 if(!isBankValidatedSuccessfully){
                                   showBankAccountNumberErrorText = true;
                                   _ifscCodeTextEditingController.text="";
@@ -1285,7 +1286,7 @@ class _BankPanEmailValidationScreenState
           String _bankNameR = valueMap["BANK"];
           String _addressR = valueMap["ADDRESS"];
           openIFSCConfirmDialogBox(
-              _ifscCodeR, _bankNameR, _addressR);
+              _ifscCodeR, _bankNameR, _addressR,response);
         }
       },
       child: Padding(
@@ -1420,7 +1421,7 @@ class _BankPanEmailValidationScreenState
           String _ifscCodeR = valueMap["IFSC"];
           String _bankNameR = valueMap["BANK"];
           String _addressR = valueMap["ADDRESS"];
-          openIFSCConfirmDialogBox(_ifscCodeR, _bankNameR, _addressR);
+          openIFSCConfirmDialogBox(_ifscCodeR, _bankNameR, _addressR,response);
         }
       }
     }
