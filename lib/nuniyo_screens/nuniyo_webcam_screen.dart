@@ -1,10 +1,12 @@
 ///Static Page
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/localapis.dart';
 import 'package:nuniyoekyc/extra_demo_screens/FlutCam.dart';
@@ -13,6 +15,8 @@ import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
+
+import '../globals.dart';
 
 
 class WebCamScreen extends StatefulWidget {
@@ -62,6 +66,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   TextEditingController IPVOTPTextEditingController = new TextEditingController();
 
   int recordForHowManySeconds = 5;
+
+  bool showOTPError = false;
 
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
@@ -300,12 +306,17 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ],
                   ),
                 ),
+                //Center(child:Text("$ipvOtp",style: GoogleFonts.openSans(textStyle: TextStyle(color: primaryColorOfApp, letterSpacing: 0.5,fontSize: 40,fontWeight: FontWeight.bold)),)),
                 Flexible(
                     child: Container(
                       height: 80,
                       child: TextField(
-                        onChanged: (value){
+                        onChanged: (value) async {
                           if(value.length==6){
+                            if(value.toString()!=ipvOtp){
+                              showOTPError = true;
+                              return;
+                            }
                             if(value.toString() == ipvOtp){
                               enableProceedBtnOTPMatched = true;
                               setState(() {
@@ -314,16 +325,18 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                             }
                           }
                         },
-                        //enabled: motherNameTextEditingController.text.isEmpty,
+                        maxLength: 6,
                         cursorColor: primaryColorOfApp,
                         style: GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black, letterSpacing: 0.5,fontSize: 14,fontWeight: FontWeight.bold)),
                         focusNode: _IPVOTPTextFieldFocusNode,
+                        keyboardType: TextInputType.number,
                         controller: IPVOTPTextEditingController,
                         onTap: _requestIPVOTPTextFieldFocusNode,
                         decoration: InputDecoration(
                             enabled: showRecordingButton,
                             contentPadding: EdgeInsets.fromLTRB(25.0,40.0,0.0,40.0),
                             counter: Offstage(),
+                            errorText: showOTPError?"Enter a valid OTP":null,
                             labelText: _IPVOTPTextFieldFocusNode.hasFocus ? 'Enter IPV OTP here' : 'Enter IPV OTP Here',
                             labelStyle: GoogleFonts.openSans(textStyle:TextStyle(fontSize: 14,letterSpacing: 0.5,
                               color: _IPVOTPTextFieldFocusNode.hasFocus ?primaryColorOfApp : Colors.grey,
@@ -375,8 +388,14 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() {
-                      Navigator.pushNamed(context, 'Document');}:null,
+                    onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() async {
+                      await LocalApiRepo().UpdateStage_Id();
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      String stage_id = prefs.getString(STAGE_KEY);
+                      print("Let\'s go To");
+                      print(stage_id);
+                      Navigator.pushNamed(context, "Document");
+                    }:null,
                     color: primaryColorOfApp,
                     child: Text(
                         "Proceed",
@@ -390,10 +409,19 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   alignment: Alignment.center,
                   child: TextButton(
                     child: Text("Retry",style: GoogleFonts.openSans(textStyle: TextStyle(decoration: TextDecoration.underline,fontSize: 18,fontWeight: FontWeight.bold,color:enableRetryBtn?primaryColorOfApp:Colors.transparent, letterSpacing: .5),),),
-                    onPressed: enableRetryBtn?(){
-                      _onWillPop();
+                    onPressed: enableRetryBtn?() {
+                      enableRetryBtn = false;
+                      ipvOtp = "";
+                      fetchOTP();
                       enableProceedBtnRecordingDone = false;
-                      onVideoRecordButtonPressed();
+                      enableProceedBtnOTPMatched = false;
+                      IPVOTPTextEditingController.clear();
+                      setState(() {
+
+                      });
+                      RecordingStatus = "Start Recording";
+                      showRecordingButton = true;
+                      //onVideoRecordButtonPressed();
                       _onWillPop();
                     }:null),
                 ),
@@ -426,6 +454,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
+
     CameraController? cameraController = controller;
     if (cameraController == null || !cameraController.value.isInitialized) {
       return Container(
@@ -434,7 +463,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
           onPressed: (){
             initializeRecorder();
             showRecordingButton = true;
-            enableRetryBtn = true;
             setState(() {
 
             });
@@ -451,7 +479,10 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       return Listener(
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
-        child: CameraPreview(
+        child: Container(
+          //height: 400,
+          //width: MediaQuery.of(context).size.width,
+          child:CameraPreview(
           controller!,
           child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
@@ -462,7 +493,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   onTapDown: (details) => onViewFinderTap(details, constraints),
                 );
               }),
-        ),
+        ),),
       );
     }
   }
@@ -559,6 +590,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         onStopButtonPressed();
         print("DONE WAITING");
         showRecordingButton = false;
+        enableRetryBtn = true;
         RecordingStatus = "RECORDING COMPLETED";
         enableProceedBtnRecordingDone = true;
         setState(() {});
@@ -684,7 +716,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   void fetchOTP() async {
     print("IPV OTP METHODS");
-
     String result = await LocalApiRepo().IPVOTPLocal();
     Map valueMap = jsonDecode(result);
     print(valueMap);

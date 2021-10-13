@@ -1,5 +1,7 @@
 ///Static Page
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../globals.dart';
 
 
 class EsignScreen extends StatefulWidget {
@@ -26,20 +30,16 @@ class _EsignScreenState extends State<EsignScreen> {
   String EMAIL_ID = "";
 
   ///
-  /*static const platform = const MethodChannel('samples.flutter.dev/battery');
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
   String _batteryLevel = 'Battery Level';
-  Future<void> _getBatteryLevel() async {
-    String batteryLevel;
-    try {
-      final int result = await platform.invokeMethod('getBatteryLevel');
-      batteryLevel = 'Battery level at $result % .';
-    } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
-    }
-    setState(() {
-      _batteryLevel = batteryLevel;
-    });
-  }*/
+
+  String cityname = "Mumbai";
+  String panOwnerName = "";
+
+  String username="";
+
+  String docID = "DID2110111731000178XNKQMDIEKANUN";
+
   ///
 
   @override
@@ -93,7 +93,15 @@ class _EsignScreenState extends State<EsignScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed: () {Navigator.pushNamed(context, 'UCC');},
+                    onPressed: () async {
+                      if (Platform. isAndroid) {
+                        bool es = await startEsigning(docID);
+                        print("Esign :KAAAA"+es.toString());
+                      } else if (Platform. isIOS) {
+
+                      }
+                      //Navigator.pushNamed(context, 'UCC');
+                      },
                     color: primaryColorOfApp,
                     child: Text(
                         "eSign",
@@ -128,7 +136,7 @@ class _EsignScreenState extends State<EsignScreen> {
                           ListTile(
                             minLeadingWidth: 0.0,
                             leading: Icon(Icons.person_outline_outlined),
-                            title: Text("Lorem Ipsum",style: GoogleFonts.openSans(
+                            title: Text("$username",style: GoogleFonts.openSans(
                               textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 14),
                             ),),
                           ),
@@ -158,7 +166,7 @@ class _EsignScreenState extends State<EsignScreen> {
                           ListTile(
                             minLeadingWidth: 0.0,
                             leading: Icon(Icons.location_on),
-                            title: Text("Lorem Ipsum",style: GoogleFonts.openSans(
+                            title: Text("$cityname",style: GoogleFonts.openSans(
                               textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 14),
                             ),),
                           ),
@@ -207,14 +215,30 @@ class _EsignScreenState extends State<EsignScreen> {
 
   Future<void> fetchDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    DOB = prefs.getString("DOB");
-    EMAIL_ID =prefs.getString("EMAIL_ID");
+    DOB = prefs.getString(DATE_OF_BIRTH_KEY);
+    EMAIL_ID =prefs.getString(EMAIL_ID_KEY);
     GENDER = prefs.getString("GENDER");
-    PAN_NO = prefs.getString("PAN_NO");
+    PAN_NO = prefs.getString(PAN_NO_KEY);
+    cityname = prefs.getString("CITY");
+    username = prefs.getString(MOBILE_NUMBER_KEY);
+    panOwnerName = prefs.getString("PAN_OWNER_NAME");
 
     setState(() {
 
     });
   }
+
+  Future<bool> startEsigning(String docID) async {
+    bool result = false;
+    try {
+      result= await platform.invokeMethod('esignThisDocument',{"docID":docID});
+      print("We got this result from Android"+result.toString());
+      return result;
+    } on PlatformException catch (e) {
+      return false;
+    }
+  }
+
+
 
 }

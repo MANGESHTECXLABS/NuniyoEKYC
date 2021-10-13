@@ -37,14 +37,12 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
   bool _value = false;
 
-  bool nationality = false;
+  bool nationality = true;
 
   bool showNationalityError = false;
 
   bool declaration = false;
-  bool showDeclarationError = false;
-
-
+  bool showDeclarationError = true;
 
 
   @override
@@ -225,7 +223,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                           });
                         },
                         onTap: _requestMaritialStatusDropDownFocusNode,
-                        items: <String>['Single','Married','Unmarried','Divorced']
+                        items: <String>['Single','Married','Divorced']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,

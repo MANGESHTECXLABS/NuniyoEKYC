@@ -18,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../globals.dart';
+
 class UploadDocumentScreen extends StatefulWidget {
   const UploadDocumentScreen({Key? key}) : super(key: key);
 
@@ -65,14 +67,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       result = await FilePicker.platform.pickFiles(type: FileType.custom,
         allowedExtensions: ['pdf','png','jpg','jpeg'],);
       if(result != null) {
-        pdfPanImagefile = result!.files.first;
-        print(pdfPanImagefile.name);
-        print(pdfPanImagefile.bytes);
-        print(pdfPanImagefile.size);
-        print(pdfPanImagefile.extension);
-        print(pdfPanImagefile.path);
         ///FILE SIZE
-        File theNewPickedFile = File(pdfPanImagefile.path.toString());
+        File theNewPickedFile = File(result!.files.first.path.toString());
         int sizeInBytes = theNewPickedFile.lengthSync();
         double sizeInMb = sizeInBytes / (1024 * 1024);
         print("Your File Size is : "+sizeInMb.toString());
@@ -93,6 +89,14 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           )..show(context);
           return;
         }
+
+        pdfPanImagefile = result!.files.first;
+        print(pdfPanImagefile.name);
+        print(pdfPanImagefile.bytes);
+        print(pdfPanImagefile.size);
+        print(pdfPanImagefile.extension);
+        print(pdfPanImagefile.path);
+
         if(pdfPanImagefile.extension != 'pdf'){
           imageFilePan = File(pdfPanImagefile.path.toString());
           if (imageFilePan != null) {
@@ -137,14 +141,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       result = await FilePicker.platform.pickFiles(type: FileType.custom,
         allowedExtensions: ['pdf','png','jpg','jpeg'],);
       if(result != null) {
-        pdfPanDigitalSignaturefile = result!.files.first;
-        print(pdfPanDigitalSignaturefile.name);
-        print(pdfPanDigitalSignaturefile.bytes);
-        print(pdfPanDigitalSignaturefile.size);
-        print(pdfPanDigitalSignaturefile.extension);
-        print(pdfPanDigitalSignaturefile.path);
         ///FILE SIZE
-        File theNewPickedFile = File(pdfPanDigitalSignaturefile.path.toString());
+        File theNewPickedFile = File(result!.files.first.path.toString());
         int sizeInBytes = theNewPickedFile.lengthSync();
         double sizeInMb = sizeInBytes / (1024 * 1024);
         print("Your File Size is : "+sizeInMb.toString());
@@ -164,6 +162,13 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           )..show(context);
           return;
         }
+        pdfPanDigitalSignaturefile = result!.files.first;
+        print(pdfPanDigitalSignaturefile.name);
+        print(pdfPanDigitalSignaturefile.bytes);
+        print(pdfPanDigitalSignaturefile.size);
+        print(pdfPanDigitalSignaturefile.extension);
+        print(pdfPanDigitalSignaturefile.path);
+
         if(pdfPanDigitalSignaturefile.extension != 'pdf'){
           imageFileDigitalSignature = File(pdfPanDigitalSignaturefile.path.toString());
           if (imageFileDigitalSignature != null) {
@@ -398,11 +403,21 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:(tempPanUploaded&&tempDigitalPadUploaded)?() {
+                    onPressed:(tempPanUploaded&&tempDigitalPadUploaded)?() async {
                         if(imageFilePan!=null){
                           //CALL APIS TO UPLOAD
                           print("Calling Upload Image API");
-                          LocalApiRepo().DocumentUploadPANLocal(imageFilePan);
+                          ///Upload APi
+                          await LocalApiRepo().DocumentUploadPAN(imageFilePan);
+                          await LocalApiRepo().DocumentUploadDigitalSignature(imageFileDigitalSignature);
+
+                          ///Update Stage ID Here
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          await LocalApiRepo().UpdateStage_Id();
+                          String ThisStepId = prefs.getString(STAGE_KEY);
+                          print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);
+                          Navigator.pushNamed(context,ThisStepId);
+                          ///Upload APi
                         }
                         else if(imageFileDigitalSignature!=null){
 
@@ -422,7 +437,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                             ),
                           ));
                         }
-                        Navigator.pushNamed(context, 'Esign');
                     }:null,
                     color: primaryColorOfApp,
                     child: Text(
@@ -830,7 +844,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       if(sizeInMb > 2){
         // This file is Longer the
         print("Your file is greater than 2MB");
-        Navigator.pop(context);
+        //ISSUE : - That's why removed Navigator.pop(context);
         Flushbar(
           flushbarPosition: FlushbarPosition.BOTTOM,
           icon: Icon(Icons.error,color: Colors.red,),
@@ -872,7 +886,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       if(sizeInMb > 2){
         // This file is Longer the
         print("Your file is greater than 2MB");
-        Navigator.pop(context);
+        //Navigator.pop(context);
         Flushbar(
           flushbarPosition: FlushbarPosition.BOTTOM,
           icon: Icon(Icons.error,color: Colors.red,),

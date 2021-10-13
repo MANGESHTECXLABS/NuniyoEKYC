@@ -39,6 +39,13 @@
             </intent-filter>
         </activity>
        <activity
+           android:name=".DigioActivity"
+           android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+           android:screenOrientation="portrait">
+       </activity>
+       <activity android:name="com.digio.in.esign2sdk.DigioEsignActivity"
+           android:configChanges="keyboard|keyboardHidden|orientation|screenSize"></activity>
+       <activity
            android:name="com.yalantis.ucrop.UCropActivity"
            android:screenOrientation="portrait"
            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

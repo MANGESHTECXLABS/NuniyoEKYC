@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webviewx/webviewx.dart';
@@ -78,22 +79,26 @@ class _BrowserViewXState extends State<BrowserViewX> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         onWebViewCreated: (controller) {webviewController = controller;initializeWebView();},
-        onPageStarted: (src) =>
-            debugPrint('A new page has started loading: $src\n'),
+        onPageStarted: (src) {
+          debugPrint('A new page has started loading: $src\n');
+        },
         onPageFinished: (src) {
         debugPrint('The page has finished loading: $src\n');
         print("GLJDJL:SNDLND"+src);
         if(src.contains("error")){
-          Navigator.pop(context);
+          print("Error Aaya hai! SRC mien");
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AadharKYCScreen()));
+          //Navigator.pushReplacementNamed(context,'Digilocker');
         }
         if(src.contains("&hmac")){
+          print("Contains HMAC");
           getCodeStateHMAC(src);
         }
         else{
+          print("Don't know if contains HMAC");
           getCodeStateHMAC(src);
         }
-        }
-            ,
+        },
         jsContent: const {
           EmbeddedJsContent(
             js: "function testPlatformIndependentMethod() { console.log('Hi from JS') }",
@@ -119,6 +124,8 @@ class _BrowserViewXState extends State<BrowserViewX> {
         ),
         navigationDelegate: (navigation) {
           debugPrint(navigation.content.sourceType.toString());
+          print("Navigation ka dekho "+navigation.content.source.toString());
+          print("Navigation ka Dubug ka bachan :"+navigation.content.sourceType.toString());
           return NavigationDecision.navigate;
         },
       ),
@@ -141,61 +148,59 @@ class _BrowserViewXState extends State<BrowserViewX> {
     Navigator.pushNamed(context,ThisStepId);
   }
 
-  void getCodeStateHMAC(String string) {
-    Future<void> main() async {
-      print("We got this as a url string"+string);
 
-      if(string==""){
-        string = 'http://localhost:3000/Redirect?code=a4cda096cd6cfe5a89307ca26d24f69c994828bf&state=T001211000081&hmac=ba2c9cddb8606e78f634f7da0b7e60ee1aa41d51392fa2acf83c42428c98264f';
-      }
+  Future<void> getCodeStateHMAC(String string) async {
+    print("We got this as a url string"+string);
 
-      print(string.indexOf('code='));
-      print(string.indexOf('state='));
-      print(string.indexOf('hmac='));
-
-      String start = 'code=';
-      String end = '&state';
-
-      int startIndex = string.indexOf(start);
-      int endIndex = string.indexOf(end);
-      String code = string.substring(startIndex + start.length, endIndex).trim();
-      print("CODE");
-      print(code);
-
-      start = "state=";
-      end = "&hmac";
-
-      startIndex = string.indexOf(start);
-      endIndex = string.indexOf(end);
-      String state = string.substring(startIndex + start.length, endIndex).trim();
-      print("STATE");
-      print(state);
-
-      start = "hmac=";
-
-
-      startIndex = string.indexOf(start);
-      endIndex = string.length;
-      String hmac = string.substring(startIndex + start.length, endIndex).trim();
-      print("HMAC");
-      print(hmac);
-
-      String address = await LocalApiRepo().GetAuthorizationCode(hmac, code, state);
-      await LocalApiRepo().UpdateStage_Id();
-      showAlertDialog(context,address);
-      await Future.delayed(const Duration(seconds: 10), (){});
-      Navigator.of(context).pop();
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String stage_id = prefs.getString(STAGE_KEY);
-      print("Let\'s go To");
-      print(stage_id);
-      Navigator.pushNamed(context, stage_id);
-      //print(code);
-      //print(hmac);
-      //print(state);
+    if(string==""){
+      string = 'http://localhost:3000/Redirect?code=a4cda096cd6cfe5a89307ca26d24f69c994828bf&state=T001211000081&hmac=ba2c9cddb8606e78f634f7da0b7e60ee1aa41d51392fa2acf83c42428c98264f';
     }
 
+    print(string.indexOf('code='));
+    print(string.indexOf('state='));
+    print(string.indexOf('hmac='));
+
+    String start = 'code=';
+    String end = '&state';
+
+    int startIndex = string.indexOf(start);
+    int endIndex = string.indexOf(end);
+    String code = string.substring(startIndex + start.length, endIndex).trim();
+    print("CODE");
+    print(code);
+
+    start = "state=";
+    end = "&hmac";
+
+    startIndex = string.indexOf(start);
+    endIndex = string.indexOf(end);
+    String state = string.substring(startIndex + start.length, endIndex).trim();
+    print("STATE");
+    print(state);
+
+    start = "hmac=";
+
+
+    startIndex = string.indexOf(start);
+    endIndex = string.length;
+    String hmac = string.substring(startIndex + start.length, endIndex).trim();
+    print("HMAC");
+    print(hmac);
+
+    String address = await LocalApiRepo().GetAuthorizationCode(hmac, code, state);
+    await LocalApiRepo().UpdateStage_Id();
+    showAlertDialog(context,address);
+    await Future.delayed(const Duration(seconds: 10), (){});
+    Navigator.of(context).pop();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String stage_id = prefs.getString(STAGE_KEY);
+    print("Let\'s go To");
+    print(stage_id);
+    Navigator.pushNamed(context, stage_id);
+    //print(code);
+    //print(hmac);
+    //print(state);
   }
 
   showAlertDialog(BuildContext context,String address) {

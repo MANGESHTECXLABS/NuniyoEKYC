@@ -66,7 +66,7 @@ class LocalApiRepo {
 
 
   //////////LOCAL BACKEND APIS TO BIND
-  Future<bool> PostPersonalDetailsLOCAL(String phoneNumber , String fatherName, String motherName , String income,String gender,String maritial_Status,
+  Future<bool> PostPersonalDetails(String phoneNumber , String fatherName, String motherName , String income,String gender,String maritial_Status,
       String politicalExposed , String occupation , String tradingExperience , String education) async{
 
     var headers = {
@@ -241,8 +241,6 @@ class LocalApiRepo {
     }
   }
 
-
-
   Future<Map<dynamic,dynamic>> GetPersonalDetails() async{
     Map valueMap = Map();
     String jwt_token= await GetCurrentJWTToken();
@@ -360,8 +358,18 @@ class LocalApiRepo {
   Future<void> VerifyDigiLockerAccountLocal() async{}
   Future<void> DocumentUploadLocal() async{}
 
-  Future<bool> DocumentUploadPANLocal(var imageP) async{
+  Future<bool> DocumentUploadPAN(var imageP) async{
 
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling DocumentUploadPANLocal Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("DocumentUploadPANLocal for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
 
 
     List<int> _selectedFile = await imageP.readAsBytes();
@@ -371,6 +379,51 @@ class LocalApiRepo {
       request.files.add(await http.MultipartFile.fromBytes('front_part', _selectedFile,
           contentType: new MediaType('application', 'octet-stream'),
           filename: "file_up"));
+      request.body = json.encode({
+        "Lead_Id": "$lead_id",
+      });
+      request.headers.addAll(headers);
+    }
+    else{
+      request = http.MultipartRequest('POST', Uri.parse('http://localhost:44300/api/user/login/OCR'));
+      request.headers.addAll(headers);
+    }
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+  Future<bool> DocumentUploadDigitalSignature(var imageP) async{
+
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling DocumentUploadDigitalSignature Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("DocumentUploadDigitalSignature for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+
+    List<int> _selectedFile = await imageP.readAsBytes();
+    var request;
+    if(kIsWeb){
+      request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_Signature'));
+      request.files.add(await http.MultipartFile.fromBytes('front_part', _selectedFile,
+          contentType: new MediaType('application', 'octet-stream'),
+          filename: "file_up"));
+      request.body = json.encode({
+        "Lead_Id": "$lead_id",
+      });
       request.headers.addAll(headers);
     }
     else{
@@ -390,7 +443,6 @@ class LocalApiRepo {
     }
   }
 
-  Future<void> DocumentUploadSignatureLocal() async{}
 
   Future<bool>Email_Status(String emailID) async{
 
@@ -516,6 +568,7 @@ class LocalApiRepo {
     }
 
   }
+
   Future<String> IPVOTPLocal() async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling IPVOTP LOCAL Using API"+jwt_token);
@@ -771,7 +824,6 @@ class LocalApiRepo {
 
   }
 
-
   Future<String> GetAuthorizationCode(String hmac,String code,String state) async{
     //String jwt_token= await GetCurrentJWTToken();
     //print("Calling NSDL EKYC PAN Using API"+jwt_token);
@@ -802,8 +854,10 @@ class LocalApiRepo {
     if (response.statusCode == 200) {
       String result = await response.stream.bytesToString();
       Map valueMap = jsonDecode(result);
+      print("DEKH CHOTE YEH VALUE HAI");
       print(valueMap);
-      String result_description = valueMap["res_Output"][0]["result_Description"];
+      String result_description = valueMap["res_Output"];
+      print("Aur tera Address hai :- "+result_description);
       return result_description;
     }
     else {
@@ -859,15 +913,7 @@ class LocalApiRepo {
 
   }
 
-
-  // DigiLocker
-  // Address on pop-up
-  // Dialog && Update Stage ID
-  // Politically Exposed Remove
-  // IPV OTP && RESULT ID
-
   Future<void> ConfirmIFSCDetails(String result) async {
-
     Map valueMap = jsonDecode(result);
     String _ifscCodeR = valueMap["IFSC"];
     String _bankNameR = valueMap["BANK"];
@@ -928,7 +974,6 @@ class LocalApiRepo {
     }
   }
 
-
   Future<void> RazorPayStatusLocal(int amountPayed,String currency , String mobileNumber, String merchantTransactionID) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling RAZOR PAY STATUS Using API"+jwt_token);
@@ -953,4 +998,5 @@ class LocalApiRepo {
       print(response.reasonPhrase);
     }
   }
+
 }

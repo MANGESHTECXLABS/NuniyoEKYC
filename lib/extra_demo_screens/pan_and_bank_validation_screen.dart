@@ -361,6 +361,7 @@ class PanAndBankValidationState extends State<PanAndBankValidation> {
                   child: RaisedButton(
                     onPressed: () async {
                       isBankValidatedSuccessfully = await ApiRepo().fetchIsBankValid(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
+
                       if(isBankValidatedSuccessfully){
                         _bankExpandableController.expanded=false;
                         isBankValidatedSuccessfully = true;

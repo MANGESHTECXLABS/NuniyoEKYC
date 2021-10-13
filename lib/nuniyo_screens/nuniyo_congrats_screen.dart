@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nuniyoekyc/ApiRepository/localapis.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,7 @@ class _CongratsScreenState extends State<CongratsScreen> {
   void initState() {
     super.initState();
     //manageSteps();
+    firstThingsFirst();
     fetchInitialData();
   }
 
@@ -304,5 +306,10 @@ class _CongratsScreenState extends State<CongratsScreen> {
 
   Future<bool> _onWillPop() {
     return Future.value(false);
+  }
+
+  Future<void> firstThingsFirst() async {
+    //Updating Stage ID Now because we don't got time on Android Native to update it
+    await LocalApiRepo().UpdateStage_Id();
   }
 }

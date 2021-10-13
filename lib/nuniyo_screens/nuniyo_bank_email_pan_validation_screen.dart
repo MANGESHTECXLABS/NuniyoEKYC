@@ -98,8 +98,6 @@ class _BankPanEmailValidationScreenState
 
   String emailString = "";
 
-
-
   void _requestBankNameTextFieldFocusNode() {
     setState(() {
       FocusScope.of(context).requestFocus(_branchNameTextFieldFocusNode);
@@ -613,8 +611,8 @@ class _BankPanEmailValidationScreenState
                                 print(isValidInputForPan);
                                 ////////////////////////////FOR DEMO////////////////////
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                                prefs.setString("DOB", _dateController.text);
-                                prefs.setString("BANK_AC_NO", _bankTextEditingController.text);
+                                prefs.setString(DATE_OF_BIRTH_KEY, _dateController.text);
+                                prefs.setString(BANK_ACC_KEY, _bankTextEditingController.text);
                                 await LocalApiRepo().UpdateStage_Id();
                                 String stage_id = prefs.getString(STAGE_KEY);
                                 print("On Proceed Let's go to :"+stage_id);
@@ -788,8 +786,10 @@ class _BankPanEmailValidationScreenState
                                 confirmBtnText = "Please Wait ";
                                 setState((){});
                                 //Penny Drop Api Will Come here till then suppose it is valid
-                                isBankValidatedSuccessfully = await LocalApiRepo().verifyBankAccountLocal(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
                                 await LocalApiRepo().ConfirmIFSCDetails(result);
+                                isBankValidatedSuccessfully = await LocalApiRepo().verifyBankAccountLocal(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
+
+
                                 if(!isBankValidatedSuccessfully){
                                   showBankAccountNumberErrorText = true;
                                   _ifscCodeTextEditingController.text="";

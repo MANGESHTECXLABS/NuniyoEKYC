@@ -235,6 +235,10 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                           //isValidOTP = await ApiRepo().VerifyOTP(phoneNumberString, value);
                           isValidOTP = await LocalApiRepo().VerifyOTP(phoneNumberString, value);
                           showOTPErrorText= !isValidOTP;
+                          if(isValidOTP){
+                            enableOTPTextField = false;
+                            enablePhoneNumberTextField = false;
+                          }
                           setState(() {});
                           // if(value==OTPFromApi){
                           //   print("Correct OTP");

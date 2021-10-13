@@ -164,14 +164,16 @@ class _OptionsScreenState extends State<OptionsScreen> {
   void openCheckout() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String phoneNumber= prefs.getString('PhoneNumber');
+    String phoneNumber= prefs.getString(MOBILE_NUMBER_KEY);
     String emailID = prefs.getString('EMAIL_ID');
 
 
+
     var options = {
-      'key': 'rzp_test_dojmbldJSpz91g',
-      'amount': 20000,
-      'name': 'TechXLabs.',
+      'key': 'rzp_live_q8gUCOxfHIbCkb',
+      //'key': 'rzp_test_dojmbldJSpz91g',
+      'amount': 100,
+      'name': 'TecXLabs',
       'description': 'Stock Trading',
       'prefill': {'contact': '$phoneNumber', 'email': '$emailID'},
       'external': {
@@ -204,7 +206,7 @@ class _OptionsScreenState extends State<OptionsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
     ///ApiRepo().OnPaymentSuccessPostToDatabase(200, phoneNumber,paymentID);
-    await LocalApiRepo().RazorPayStatusLocal(200, 'INR', phoneNumber, paymentID);
+    //await LocalApiRepo().RazorPayStatusLocal(200, 'INR', phoneNumber, paymentID);
     await LocalApiRepo().RazorPaymentStatus("200", merchantID, paymentID, signature);
     await LocalApiRepo().UpdateStage_Id();
     String ThisStepId = prefs.getString(STAGE_KEY);
