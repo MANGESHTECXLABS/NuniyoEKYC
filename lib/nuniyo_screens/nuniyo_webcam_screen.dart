@@ -313,16 +313,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       child: TextField(
                         onChanged: (value) async {
                           if(value.length==6){
-                            if(value.toString()!=ipvOtp){
-                              showOTPError = true;
-                              return;
-                            }
-                            if(value.toString() == ipvOtp){
-                              enableProceedBtnOTPMatched = true;
-                              setState(() {
-
-                              });
-                            }
+                            enableProceedBtnOTPMatched = await LocalApiRepo().VerifyIPVOTP(value);
+                            showOTPError = !enableProceedBtnOTPMatched;
                           }
                         },
                         maxLength: 6,
@@ -716,7 +708,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   void fetchOTP() async {
     print("IPV OTP METHODS");
-    String result = await LocalApiRepo().IPVOTPLocal();
+    String result = await LocalApiRepo().IPVOTP();
     Map valueMap = jsonDecode(result);
     print(valueMap);
     ipvOtp = valueMap["res_Output"][0]["result_Description"];

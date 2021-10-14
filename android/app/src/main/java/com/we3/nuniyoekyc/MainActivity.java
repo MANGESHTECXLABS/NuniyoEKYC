@@ -26,12 +26,14 @@ public class MainActivity extends FlutterActivity{
                             if (call.method.equals("esignThisDocument")) {
                                 ///Getting the Doc Id From Flutter
                                 String docID = call.argument("docID");
+                                String phoneNumber = call.argument("phoneNumber");
                                 Intent intent = new Intent(this, DigioActivity.class);
                                 intent.putExtra("docID",docID);
+                                intent.putExtra("phoneNumber",phoneNumber);
                                 Log.d(TAG, "Started Digio Activity to get Result");
                                 ///Request code is to IDentity what Results we want from another activity if the
                                 //Activity gives back multiple results.
-                                startActivityForResult(intent,1);
+                                startActivity(intent);
                                 ///Maybe have to implement Something Here!
                                 Log.d(TAG, "Don know if we waited!");
                                 result.success(esignSuccessfull);
@@ -44,19 +46,4 @@ public class MainActivity extends FlutterActivity{
                         }
                 );
     }
-
-    @Override
-    public void onActivityResult(int requestCode,int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            ///Set the Value
-            esignSuccessfull = true;
-            Log.d(TAG, "Esign Successful");
-        }
-        else if(resultCode == Activity.RESULT_CANCELED){
-            esignSuccessfull = false;
-            Log.d(TAG, "Esign Failed");
-        }
-    }
-
 }

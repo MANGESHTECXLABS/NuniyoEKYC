@@ -9,10 +9,11 @@ import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
 import 'package:nuniyoekyc/ApiRepository/localapis.dart';
 import 'package:nuniyoekyc/nuniyo_custom_icons.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
+import 'package:otp_autofill/otp_autofill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../globals.dart';
-import 'nuniyo_terms_and_conditions_webview.dart';
+import 'nuniyo_main_application_webview.dart';
 
 class MobileValidationLoginScreen extends StatefulWidget {
   const MobileValidationLoginScreen({Key? key}) : super(key: key);
@@ -50,7 +51,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
 
   bool showTNCError = false;
 
-  TextEditingController _otpTextEditingController = TextEditingController();
+  late OTPTextEditController _otpTextEditingController;
   TextEditingController _phoneNumberTextEditingController = TextEditingController();
 
   bool enableOTPTextField = true;
@@ -71,8 +72,6 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
   late FocusNode _phoneNumberFocusNode,_otpFocusNode,_referralCodeNode;
 
 
-
-
   @override
   void initState() {
     super.initState();
@@ -82,6 +81,21 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
     _phoneNumberFocusNode = FocusNode();
     _otpFocusNode = FocusNode();
     _referralCodeNode = FocusNode();
+    _otpTextEditingController = OTPTextEditController(
+      codeLength: 6,
+      //ignore: avoid_print
+      onCodeReceive: (code) {print('Your Application receive code - $code');
+        VerifyOTP(code);
+      },
+    )..startListenUserConsent(
+          (code) {
+        final exp = RegExp(r'(\d{6})');
+        return exp.stringMatch(code ?? '') ?? '';
+      },
+      strategies: [
+        //SampleStrategy(),
+      ],
+    );
   }
 
   void _requestPhoneFocus(){
@@ -103,7 +117,8 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
+    await _otpTextEditingController.stopListen();
     _phoneNumberFocusNode.dispose();
     _otpFocusNode.dispose();
     _referralCodeNode.dispose();
@@ -132,7 +147,10 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                     ),),
                     TextButton(
                       onPressed: (){
-                        Navigator.pushNamed(context, 'Personal');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainApplication_WebView()),
+                        );
                       },
                       child:Text("Log In",style: GoogleFonts.openSans(
                         textStyle: TextStyle(decoration: TextDecoration.underline,fontSize: 16,fontWeight: FontWeight.bold,color: primaryColorOfApp, letterSpacing: .5),
@@ -226,20 +244,12 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                       onChanged: (value) async {
                         if(phoneNumberString.length<10 || !isvalidphone(phoneNumberString)){
                           showPhoneNumberError = true;
-                          setState(() {
-
-                          });
+                          setState(() {});
                           return;
                         }
                         if(value.length==6){
                           //isValidOTP = await ApiRepo().VerifyOTP(phoneNumberString, value);
-                          isValidOTP = await LocalApiRepo().VerifyOTP(phoneNumberString, value);
-                          showOTPErrorText= !isValidOTP;
-                          if(isValidOTP){
-                            enableOTPTextField = false;
-                            enablePhoneNumberTextField = false;
-                          }
-                          setState(() {});
+                          VerifyOTP(value);
                           // if(value==OTPFromApi){
                           //   print("Correct OTP");
                           //   isValidOTP = true;
@@ -408,7 +418,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                         print(state);
                         print(latitude);
                         print(latitude);
-                        await ApiRepo().leadLocation(phoneNumberString, ip_address, city, country, state, latitude, longitude);
+                        await LocalApiRepo().LeadLocation(phoneNumberString, ip_address, city, country, state, latitude, longitude);
                       }
                       _phoneNumberTextEditingController.clear();
                       _otpTextEditingController.clear();
@@ -535,6 +545,17 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
         return alert;
       },
     );
+  }
+
+  Future<void> VerifyOTP(String otp) async {
+    //isValidOTP = await ApiRepo().VerifyOTP(phoneNumberString, value);
+    isValidOTP = await LocalApiRepo().VerifyOTP(phoneNumberString, otp);
+    showOTPErrorText= !isValidOTP;
+    if(isValidOTP){
+      enableOTPTextField = false;
+      enablePhoneNumberTextField = false;
+    }
+    setState(() {});
   }
 }
 

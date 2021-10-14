@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../globals.dart';
 import '../nuniyo_custom_icons.dart';
+import 'nuniyo_main_application_webview.dart';
 
 class CongratsScreen extends StatefulWidget {
   const CongratsScreen({Key? key}) : super(key: key);
@@ -156,7 +157,12 @@ class _CongratsScreenState extends State<CongratsScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => MainApplication_WebView()),
+                                  );
+                                },
                                 color: primaryColorOfApp,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

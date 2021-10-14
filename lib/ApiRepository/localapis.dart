@@ -64,52 +64,6 @@ class LocalApiRepo {
     return lead_id;
   }
 
-
-  //////////LOCAL BACKEND APIS TO BIND
-  Future<bool> PostPersonalDetails(String phoneNumber , String fatherName, String motherName , String income,String gender,String maritial_Status,
-      String politicalExposed , String occupation , String tradingExperience , String education) async{
-
-    var headers = {
-      'Content-Type': 'application/json',
-    };
-
-    var request = http.Request('POST', Uri.parse('http://localhost:44330/v1/api/personal/Personal_Details'));
-    request.body = json.encode({
-      "mobile_No": phoneNumber,
-      "father_Name": fatherName,
-      "mother_Name": motherName,
-      "income": income,
-      "gender": gender,
-      "marital_Status": maritial_Status,
-      "politically_Exposed": politicalExposed,
-      "occupation": occupation,
-      "trading_Experience": tradingExperience,
-      "education": education
-    });
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      String result = await response.stream.bytesToString();
-      Map valueMap = jsonDecode(result);
-      print(valueMap);
-      int result_Id = valueMap["res_Output"]["result_Id"];
-      print(result_Id);
-      print(valueMap["res_Output"][0]["lead_Id"]);
-      await StoreLocal().StoreLeadIdToLocalStorage(valueMap["res_Output"][0]["lead_Id"]);
-      print("LEAD ID SAVED LOCALLY IS :"+await StoreLocal().getLeadIdFromLocalStorage().toString());
-      if(result_Id == 1){
-        return true;
-      }
-      return false;
-    }
-    else {
-      print(response.reasonPhrase);
-      return false;
-    }
-  }
-
   Future<void> UpdateStage_Id() async{
 
     String jwt_token= await GetCurrentJWTToken();
@@ -147,7 +101,6 @@ class LocalApiRepo {
     else {
       print(response.reasonPhrase);
     }
-
   }
 
   ///Verify Bank Details
@@ -199,7 +152,6 @@ class LocalApiRepo {
       print(response.reasonPhrase);
       return false;
     }
-
   }
 
   Future<String> getIFSCDetails(String ifscCode) async{
@@ -218,6 +170,7 @@ class LocalApiRepo {
     request.body = json.encode({
       "ifsc": "$ifscCode"
     });
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -400,6 +353,7 @@ class LocalApiRepo {
       return false;
     }
   }
+
   Future<bool> DocumentUploadDigitalSignature(var imageP) async{
 
     String jwt_token= await GetCurrentJWTToken();
@@ -442,7 +396,6 @@ class LocalApiRepo {
       return false;
     }
   }
-
 
   Future<bool>Email_Status(String emailID) async{
 
@@ -569,7 +522,7 @@ class LocalApiRepo {
 
   }
 
-  Future<String> IPVOTPLocal() async{
+  Future<String> IPVOTP() async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling IPVOTP LOCAL Using API"+jwt_token);
 
@@ -583,9 +536,10 @@ class LocalApiRepo {
     var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/IPV_OTP'));
     request.body = json.encode({
       "lead_Id": "$lead_id",
-      "method_Name": "IPV_OTP",
-      "org_Id": ORG_ID
+      "method_Name": "Generate_OTP",
+      "org_Id": ORG_ID,
     });
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -601,7 +555,47 @@ class LocalApiRepo {
     }
   }
 
-  Future<void> VerifyIPVOTPLocal() async{}
+  Future<bool> VerifyIPVOTP(String otp) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Verify IPV OTP LOCAL Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Verify IPV OTP LOCAL for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Verify_IPV_OTP'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id",
+      "otp": "$otp",
+      "org_Id": "$ORG_ID",
+      "method_Name": "Verify_IPV_OTP"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      print(result);
+      Map valueMap = jsonDecode(result);
+      int result_Id = valueMap["res_Output"][0]["result_Id"];
+
+      if(result_Id == 1){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
   Future<void> SaveIPVVideoLocal() async{}
 
   Future<bool> Digio_PanAuthentication(String panNumber,String dob) async{
@@ -615,7 +609,7 @@ class LocalApiRepo {
       'Authorization': 'Bearer $jwt_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/PanAuthenticationController/Digio_PanAuthentication'));
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/PanAuthentication/Digio_PanAuthentication'));
     request.body = json.encode({
       "lead_Id": "$lead_id",
       "id_no": "$panNumber",
@@ -735,7 +729,38 @@ class LocalApiRepo {
     }
   }
 
-  Future<void> LeadLocationLocal() async{}
+  Future<void> LeadLocation(String phoneNumber,String ipAddress,String city,String country,String state,String latitude,String longitude) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling LeadLocation  Using API KEY "+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("LeadLocation for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/lead/Lead_Location'));
+    request.body = json.encode({
+      "mobile_No": phoneNumber,
+      "ip": ipAddress,
+      "city": city,
+      "country": country,
+      "state": state,
+      "latitude": latitude,
+      "longitude": longitude,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
 
   Future<bool> NSDLeKYCPanAuthenticationLocal(String panCardNumber) async{
     String jwt_token= await GetCurrentJWTToken();
@@ -998,5 +1023,4 @@ class LocalApiRepo {
       print(response.reasonPhrase);
     }
   }
-
 }

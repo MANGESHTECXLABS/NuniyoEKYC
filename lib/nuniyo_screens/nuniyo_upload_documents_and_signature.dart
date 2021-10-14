@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../ApiRepository/localapis.dart';
 import '../globals.dart';
 
 class UploadDocumentScreen extends StatefulWidget {
@@ -304,9 +305,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       IconButton(onPressed:(){
                         imageFilePan = null;
                         tempPanUploaded = false;
-                        setState(() {
-
-                        });
+                        setState(() {});
                         showPanCardImageBox = false;
                       }, icon: Icon(Icons.delete,size: 36.0,color: Colors.red,)),
                     ],
@@ -408,8 +407,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           //CALL APIS TO UPLOAD
                           print("Calling Upload Image API");
                           ///Upload APi
-                          await LocalApiRepo().DocumentUploadPAN(imageFilePan);
-                          await LocalApiRepo().DocumentUploadDigitalSignature(imageFileDigitalSignature);
+                          //await LocalApiRepo().DocumentUploadPAN(imageFilePan);
+                          //await LocalApiRepo().DocumentUploadDigitalSignature(imageFileDigitalSignature);
 
                           ///Update Stage ID Here
                           SharedPreferences prefs = await SharedPreferences.getInstance();

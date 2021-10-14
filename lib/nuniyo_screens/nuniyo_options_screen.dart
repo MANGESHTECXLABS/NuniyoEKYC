@@ -190,11 +190,16 @@ class _OptionsScreenState extends State<OptionsScreen> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
+    print("Razor Payment Success SIGNATURE"+response.signature.toString());
+    print("Razor Payment Success ORDER ID"+response.signature.toString());
     PostPayment(response.paymentId.toString(),response.signature.toString(),response.orderId.toString());
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(msg: "ERROR: " + response.code.toString() + " - " + response.message!, toastLength: Toast.LENGTH_SHORT);
+    print("SHjahskasoas");
+    print(response.code.toString());
+    print(response.message.toString());
     Navigator.pushNamed(context, 'Account');
   }
 

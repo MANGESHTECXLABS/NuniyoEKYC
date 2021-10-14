@@ -230,8 +230,12 @@ class _EsignScreenState extends State<EsignScreen> {
 
   Future<bool> startEsigning(String docID) async {
     bool result = false;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
+
     try {
-      result= await platform.invokeMethod('esignThisDocument',{"docID":docID});
+      result= await platform.invokeMethod('esignThisDocument',{"docID":docID,"phoneNumber":phoneNumber});
       print("We got this result from Android"+result.toString());
       return result;
     } on PlatformException catch (e) {

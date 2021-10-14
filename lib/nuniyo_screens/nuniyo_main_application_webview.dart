@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:webviewx/webviewx.dart';
 
-class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({Key? key}) : super(key: key);
+class MainApplication_WebView extends StatefulWidget {
+  const MainApplication_WebView({Key? key}) : super(key: key);
 
   @override
-  _TermsAndConditionsState createState() => _TermsAndConditionsState();
+  _MainApplication_WebViewState createState() => _MainApplication_WebViewState();
 
 }
 
-class _TermsAndConditionsState extends State<TermsAndConditions> {
+class _MainApplication_WebViewState extends State<MainApplication_WebView> {
 
   late WebViewXController webviewController;
-  String webURL = "";
+  String webURL = "https://webdev.tecxlabs.com/";
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
   Future<void> initializeWebView() async {
     await webviewController.loadContent(
-      'https://en-gb.facebook.com/policies_center/',
+      '$webURL',
       SourceType.url,
     );
   }

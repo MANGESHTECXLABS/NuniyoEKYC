@@ -26,6 +26,7 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
     Digio digio = new Digio();
     DigioConfig digioConfig = new DigioConfig();
     String documentId = "";
+    String phoneNumber = "";
 
 
     @Override
@@ -37,8 +38,8 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             documentId = getIntent().getStringExtra("docID");
+            phoneNumber = getIntent().getStringExtra("phoneNumber");
         }
-
         InvokeDigioEsign();
     }
 
@@ -57,7 +58,7 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
 
         try {
             Log.d(TAG, "Started Esigning");
-            digio.esign(documentId, "8779559898",this);// this refers DigioResponseListener
+            digio.esign(documentId, phoneNumber,this);// this refers DigioResponseListener
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,9 +69,6 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
     public void onSigningSuccess(String documentId, String message){
         Toast.makeText(this, documentId+" signed successfully", Toast.LENGTH_SHORT).show();
         Log.d(TAG, documentId+"Signed Successfully");
-        Intent resultIntent = new Intent();
-        setResult(Activity.RESULT_OK, resultIntent);
-
         Log.d(TAG, "Started UCC As we have successfully signed in");
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_RUN);
@@ -80,24 +78,15 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
         //Activity gives back multiple results.
         startActivity(intent);
         //finish();
-
-
-        //finish();
     }
 
     public void onSigningFailure(String documentId, int code, String response){
         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
         Log.d(TAG, documentId+" Signing Failed");
         Log.d(TAG, response);
-
-        Log.d(TAG, "Started Digio Activity to get Result");
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_RUN);
         intent.putExtra("route", "Esign");
-
-
-        ///Request code is to IDentity what Results we want from another activity if the
-        //Activity gives back multiple results.
         startActivity(intent);
         //finish();
     }
