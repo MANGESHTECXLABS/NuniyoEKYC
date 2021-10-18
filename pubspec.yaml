@@ -70,6 +70,7 @@ dependencies:
   flutter_svg: ^0.22.0
   otp_autofill: ^1.1.0
   flutter_icons: ^1.1.0
+  video_compress: ^3.1.0
 
 
 

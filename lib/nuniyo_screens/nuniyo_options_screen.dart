@@ -167,8 +167,6 @@ class _OptionsScreenState extends State<OptionsScreen> {
     String phoneNumber= prefs.getString(MOBILE_NUMBER_KEY);
     String emailID = prefs.getString('EMAIL_ID');
 
-
-
     var options = {
       'key': 'rzp_live_q8gUCOxfHIbCkb',
       //'key': 'rzp_test_dojmbldJSpz91g',
@@ -223,4 +221,5 @@ class _OptionsScreenState extends State<OptionsScreen> {
   Future<bool> _onWillPop() {
     return Future.value(false);
   }
+
 }

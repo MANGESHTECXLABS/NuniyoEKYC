@@ -1,12 +1,14 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../globals.dart';
 
 class OptionsScreenTwo extends StatefulWidget {
   const OptionsScreenTwo({Key? key}) : super(key: key);
@@ -33,7 +35,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
   @override
   void initState() {
     super.initState();
-    manageSteps();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -44,9 +45,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
   void dispose() {
     super.dispose();
     _razorpay.clear();
-  }
-  Future<bool> _onWillPop() {
-    return Future.value(false);
   }
 
   @override
@@ -356,17 +354,22 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
   }
 
   void openCheckout() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String phoneNumber = await prefs.getString('PhoneNumber');
-    String emailAddress = await prefs.getString('EMAIL_ID');
+    String phoneNumber= prefs.getString(MOBILE_NUMBER_KEY);
+    String emailID = prefs.getString('EMAIL_ID');
+
+    String amount = total;
+
     var options = {
-      'key': 'rzp_test_dojmbldJSpz91g',
-      'amount': 20000,
-      'name': 'Nuniyo.',
+      'key': 'rzp_live_q8gUCOxfHIbCkb',
+      //'key': 'rzp_test_dojmbldJSpz91g',
+      'amount': amount,
+      'name': 'TecXLabs',
       'description': 'Stock Trading',
-      'prefill': {'contact': phoneNumber, 'email': emailAddress},
+      'prefill': {'contact': '$phoneNumber', 'email': '$emailID'},
       'external': {
-        'wallets': ['paytm']
+        'wallets': ['paytm','phonepe','freecharge','airtelmoney','payzapp','mobikwik','olamoney','phonepeswitch','olamoney'],
       }
     };
 
@@ -379,29 +382,38 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
-    PostPayment(response.paymentId.toString());
+    print("Razor Payment Success SIGNATURE"+response.signature.toString());
+    print("Razor Payment Success ORDER ID"+response.signature.toString());
+    PostPayment(response.paymentId.toString(),response.signature.toString(),response.orderId.toString());
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(msg: "ERROR: " + response.code.toString() + " - " + response.message!, toastLength: Toast.LENGTH_SHORT);
+    print("SHjahskasoas");
+    print(response.code.toString());
+    print(response.message.toString());
+    Navigator.pushNamed(context, 'Account');
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(msg: "EXTERNAL_WALLET: " + response.walletName!, toastLength: Toast.LENGTH_SHORT);
   }
 
-  Future<void> PostPayment(String paymentID) async {
+  Future<void> PostPayment(String paymentID,String signature,String merchantID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String phoneNumber = await prefs.getString('PhoneNumber');
+    String phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
+    ///ApiRepo().OnPaymentSuccessPostToDatabase(200, phoneNumber,paymentID);
+    //await LocalApiRepo().RazorPayStatusLocal(200, 'INR', phoneNumber, paymentID);
+    await ApiRepository().RazorPaymentStatus(total.toString(), merchantID, paymentID, signature);
+    await ApiRepository().UpdateStage_Id();
+    String ThisStepId = prefs.getString(STAGE_KEY);
+    print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);
+    Navigator.pushNamed(context,ThisStepId);
   }
 
-  Future<void> manageSteps() async {
-    ///SET STEP ID HERE
-    String ThisStepId = '/optionsscreen2';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('STEP_ID',ThisStepId);
 
-    String StepId = prefs.getString('STEP_ID');
-    print("You are on STEP  :"+StepId);
+  Future<bool> _onWillPop() {
+    return Future.value(false);
   }
+
 }

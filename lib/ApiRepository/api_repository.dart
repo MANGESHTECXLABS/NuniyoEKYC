@@ -56,6 +56,45 @@ class ApiRepository {
     return jwt_token;
   }
 
+
+  Future<bool> IPV_Video_Upload(List<int> byteFormatOfFile) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling IPV_Video_Upload Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("IPV_Video_Upload for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request;
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      print("IPV VIDEO UPLOADED SUCCESSFULLY");
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      print("IPV VIDEO NOT UPLOADED");
+      return false;
+    }
+  }
+
+
+
   Future<String> GetLeadId() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String lead_id= prefs.getString(LEAD_ID_KEY);

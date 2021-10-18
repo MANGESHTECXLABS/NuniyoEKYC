@@ -74,9 +74,6 @@ class StoreLocal{
   }
 
 
-
-
-
   ///MOTHER NAME
   Future<void> StoreMotherNameToLocalStorage(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -88,8 +85,6 @@ class StoreLocal{
     String value = prefs.getString(motherNameKey);
     return value;
   }
-
-
 
 
   ///ROUTE NAME
@@ -104,7 +99,6 @@ class StoreLocal{
     return value;
   }
 
-
   Future<void> StoreStageIdToLocalStorage(String stageId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(stageKey,stageId);
@@ -115,5 +109,4 @@ class StoreLocal{
     String phoneNumber = prefs.getString(stageKey);
     return phoneNumber;
   }
-
 }

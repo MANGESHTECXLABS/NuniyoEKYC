@@ -15,6 +15,7 @@ import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
 
 import '../globals.dart';
@@ -240,7 +241,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                                               textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
                                             ),),))),),
                                         Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
-
                                       ],
                                     )
                                   ],
@@ -408,10 +408,32 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ),
                     onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() async {
                       print("Uploading Video");
-                      List<int> byteFormatOfFile = await videoFile!.readAsBytes();
+                      //List<int> byteFormatOfVideoFile = await videoFile!.readAsBytes();
+                      final file = File(videoFile!.path);
+                      print("Aapka File :"+videoFile!.path);
+                      int sizeInBytes = file.lengthSync();
+                      double sizeInMb = sizeInBytes / (1024 * 1024);
+                      print("AAPKA FILE SIZE HAI :"+sizeInMb.toString());
 
-                      await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                      final thumbnailFile = await VideoCompress.getFileThumbnail(
+                          videoFile!.path,
+                          quality: 50, // default(100)
+                          position: -1 // default(-1)
+                      );
+
+                      int sizeInBytes2 = thumbnailFile.lengthSync();
+                      double sizeInMb2 = sizeInBytes / (1024 * 1024);
+                      print("AAPKA FILE SIZE HAI :"+sizeInMb2.toString());
+
+
+                      List<int> byteFormatOfVideoFile = await thumbnailFile.readAsBytes();
+                      await ApiRepository().IPV_Video_Upload(byteFormatOfVideoFile);
+                      //await ApiRepository().UpdateStage_Id();
+
+                      List<int> byteFormatOfImageFile = await imageFile!.readAsBytes();
+                      await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfImageFile);
                       await ApiRepository().UpdateStage_Id();
+
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       String stage_id = prefs.getString(STAGE_KEY);
                       print("Let\'s go To");
