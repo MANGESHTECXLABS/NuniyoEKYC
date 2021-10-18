@@ -4,11 +4,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/extra_demo_screens/FlutCam.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
@@ -27,8 +28,6 @@ class WebCamScreen extends StatefulWidget {
 }
 
 class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver, TickerProviderStateMixin {
-
-
 
   ///Camera
   CameraController? controller;
@@ -146,6 +145,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     SizedBox(height: 20.0,),
                   ],
                 ),
+                Container(
+                  child: imageFile==null?null:Image.file(File(imageFile!.path)),
+                ),
                 TextButton(child: Text("Steps to do IPV:",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),onPressed: (){makeStepsVisible = !makeStepsVisible;setState(() {
@@ -165,7 +167,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     decoration: new BoxDecoration(
                       boxShadow: [ //background color of box
                         BoxShadow(
-                          color: Colors.black12,
+                          color: Colors.white,
                           blurRadius: 5.0, // soften the shadow
                           spreadRadius: 2.0, //extend the shadow
                         )
@@ -173,7 +175,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ),
                     child: Container(
                       height: 80,
-                      color: Colors.black26,
+                      color: Colors.black12,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Center(
@@ -201,11 +203,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(child:Container(
-                                color: Colors.black26,
+                                //color: Colors.black12,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Icon(Icons.wb_sunny_outlined,size: 54,),
+                                    Image(image: AssetImage('assets/images/bright-lightbulb.png')),
                                     SizedBox(height: 10,),
                                     Stack(
                                       children: [
@@ -213,10 +215,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                                             width: MediaQuery.of(context).size.width,
                                             height: 50,
                                             child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("Bright Light",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 10),
                                             ),),))),),
                                         Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(Icons.check_circle,color: Colors.green,),),)
-
                                       ],
                                     )
                                   ],
@@ -224,11 +225,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               )),
                               SizedBox(width: 10,),
                               Expanded(child:Container(
-                                color: Colors.black26,
+                                //color: Colors.black12,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Icon(CupertinoIcons.eyeglasses ,size: 54,),
+                                    Image(image: AssetImage('assets/images/reading-eyeglasses.png')),
                                     SizedBox(height: 10,),
                                     Stack(
                                       children: [
@@ -236,7 +237,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                                             width: MediaQuery.of(context).size.width,
                                             height: 50,
                                             child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Glasses",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
                                             ),),))),),
                                         Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
 
@@ -247,11 +248,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               )),
                               SizedBox(width: 10,),
                               Expanded(child:Container(
-                                color: Colors.black26,
+                                //color: Colors.black12,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Icon(CupertinoIcons.capsule,size: 54,),
+                                    Image(image: AssetImage('assets/images/hat.png')),
                                     SizedBox(height: 10,),
                                     Stack(
                                       children: [
@@ -259,7 +260,30 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                                             width: MediaQuery.of(context).size.width,
                                             height: 50,
                                             child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Hat",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
+                                            ),),))),),
+                                        Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
+
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )),
+                              SizedBox(width: 10,),
+                              Expanded(child:Container(
+                                //color: Colors.black12,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Image(image: AssetImage('assets/images/face-mask.png')),
+                                    SizedBox(height: 10,),
+                                    Stack(
+                                      children: [
+                                        Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 50,
+                                            child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Mask",textAlign: TextAlign.center,style: GoogleFonts.openSans(
+                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
                                             ),),))),),
                                         Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
 
@@ -302,7 +326,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      _thumbnailWidget(),
+                      //_thumbnailWidget(),
                     ],
                   ),
                 ),
@@ -313,7 +337,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       child: TextField(
                         onChanged: (value) async {
                           if(value.length==6){
-                            enableProceedBtnOTPMatched = await LocalApiRepo().VerifyIPVOTP(value);
+                            enableProceedBtnOTPMatched = await ApiRepository().VerifyIPVOTP(value);
                             showOTPError = !enableProceedBtnOTPMatched;
                           }
                         },
@@ -366,7 +390,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      _thumbnailWidget(),
+                      //
+                      // _thumbnailWidget(),
+
                     ],
                   ),
                 ),
@@ -381,7 +407,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() async {
-                      await LocalApiRepo().UpdateStage_Id();
+                      print("Uploading Video");
+                      List<int> byteFormatOfFile = await videoFile!.readAsBytes();
+
+                      await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                      await ApiRepository().UpdateStage_Id();
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       String stage_id = prefs.getString(STAGE_KEY);
                       print("Let\'s go To");
@@ -446,7 +476,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
-
     CameraController? cameraController = controller;
     if (cameraController == null || !cameraController.value.isInitialized) {
       return Container(
@@ -524,7 +553,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   /// Display the thumbnail of the captured image or video.
   Widget _thumbnailWidget() {
     final VideoPlayerController? localVideoController = videoController;
-
     return Expanded(
       child: Align(
         alignment: Alignment.centerRight,
@@ -594,9 +622,20 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     stopVideoRecording().then((file) {
       if (mounted) setState(() {});
       if (file != null) {
+        print('Video recorded to ${file.path}');
         showInSnackBar('Video recorded to ${file.path}');
         videoFile = file;
         //_startVideoPlayer();
+      }
+    });
+    takePicture().then((XFile? file) {
+      if (mounted) {
+        setState(() {
+          imageFile = file;
+          videoController?.dispose();
+          videoController = null;
+        });
+        if (file != null) showInSnackBar('Picture saved to ${file.path}');
       }
     });
   }
@@ -651,7 +690,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   Future<XFile?> stopVideoRecording() async {
     final CameraController? cameraController = controller;
-
     if (cameraController == null || !cameraController.value.isRecordingVideo) {
       return null;
     }
@@ -708,14 +746,33 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   void fetchOTP() async {
     print("IPV OTP METHODS");
-    String result = await LocalApiRepo().IPVOTP();
+    String result = await ApiRepository().IPVOTP();
     Map valueMap = jsonDecode(result);
     print(valueMap);
     ipvOtp = valueMap["res_Output"][0]["result_Description"];
     recordForHowManySeconds = valueMap["res_Output"][0]["result_Id"];
-    setState(() {
+    setState(() {});
+  }
 
-    });
+  Future<XFile?> takePicture() async {
+    final CameraController? cameraController = controller;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      showInSnackBar('Error: select a camera first.');
+      return null;
+    }
+
+    if (cameraController.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+
+    try {
+      XFile file = await cameraController.takePicture();
+      return file;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
   }
 
 }

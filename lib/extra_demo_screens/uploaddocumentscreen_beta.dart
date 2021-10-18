@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -237,7 +236,7 @@ class _UploadDemoState extends State<UploadDemo> {
                       IconButton(onPressed:() async {
                         if (imageFilePan != null) {
                           //Uploading File to Database
-                          isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
+                          //isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
                         }
                       }, icon: Icon(Icons.check_circle,size: 36.0,color: Colors.green,)),
                       SizedBox(width: 30,),

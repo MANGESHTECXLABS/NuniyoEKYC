@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -447,8 +447,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     onPressed: (declaration&&nationality)?() async {
-                      await LocalApiRepo().PersonalDetailsLocal(fatherNameTextEditingController.text.trim(),motherNameTextEditingController.text.trim(),annualIncome,gender,maritialStatus,politicallyExposed,occupation,tradingExperience);
-                      await LocalApiRepo().UpdateStage_Id();
+                      await ApiRepository().PersonalDetailsLocal(fatherNameTextEditingController.text.trim(),motherNameTextEditingController.text.trim(),annualIncome,gender,maritialStatus,politicallyExposed,occupation,tradingExperience);
+                      await ApiRepository().UpdateStage_Id();
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setString("GENDER",gender);
                       String stage_id = prefs.getString(STAGE_KEY);
@@ -483,7 +483,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
   }
 
   Future<void> prefillTexts() async {
-    Map valueMap = await LocalApiRepo().GetPersonalDetails();
+    Map valueMap = await ApiRepository().GetPersonalDetails();
     if(valueMap.isNotEmpty){
       String father_Name = valueMap["res_Output"][0]["father_Name"];
       String mother_Name = valueMap["res_Output"][0]["mother_Name"];

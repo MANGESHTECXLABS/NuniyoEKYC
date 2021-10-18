@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -187,8 +187,8 @@ class _BrowserViewXState extends State<BrowserViewX> {
     print("HMAC");
     print(hmac);
 
-    String address = await LocalApiRepo().GetAuthorizationCode(hmac, code, state);
-    await LocalApiRepo().UpdateStage_Id();
+    String address = await ApiRepository().GetAuthorizationCode(hmac, code, state);
+    await ApiRepository().UpdateStage_Id();
     showAlertDialog(context,address);
     await Future.delayed(const Duration(seconds: 10), (){});
     Navigator.of(context).pop();

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -394,7 +393,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
   Future<void> PostPayment(String paymentID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String phoneNumber = await prefs.getString('PhoneNumber');
-    ApiRepo().OnPaymentSuccessPostToDatabase(200, phoneNumber,paymentID);
   }
 
   Future<void> manageSteps() async {

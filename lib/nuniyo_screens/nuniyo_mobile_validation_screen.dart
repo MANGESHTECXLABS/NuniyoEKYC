@@ -5,8 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/nuniyo_custom_icons.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:otp_autofill/otp_autofill.dart';
@@ -62,7 +61,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
 
   bool showPhoneNumberError = false;
 
-  String phoneNumberError = "Please Enter a Valid Phone Number";
+  String phoneNumberError = "Please Enter a Valid Mobile Number";
 
   String get resendOTPButtonText =>
       'Wait for :${((_resendOTPIntervalTime - currentSeconds) ~/ 60).toString().padLeft(2, '0')}: ${((_resendOTPIntervalTime - currentSeconds) % 60).toString().padLeft(2, '0')}';
@@ -201,7 +200,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                         print(this.preferences?.getString(MOBILE_NUMBER_KEY));
                         //isPhoneNumberValid = await ApiRepo().SendMobileNumber(_phoneNumber);
                         if(howManyTimesResendOTPPressed<=0){
-                          isPhoneNumberValid = await LocalApiRepo().ReadLead(_phoneNumber);
+                          isPhoneNumberValid = await ApiRepository().ReadLead(_phoneNumber);
                           howManyTimesResendOTPPressed ++;
                         }
 
@@ -209,21 +208,6 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         String otp= prefs.getString("MOBILE_OTP");
                         print("OTP INSIDE SHARED PREFERENCES :" + otp);
-
-                        //Prefill OTP Feature
-
-                        //_otpTextEditingController.text = otp;
-                        //isValidOTP = await LocalApiRepo().VerifyOTP(phoneNumberString, _otpTextEditingController.text);
-                        //showOTPErrorText= !isValidOTP;
-                        //if(isValidOTP){
-                          //enableResendOTPButtonm = false;
-                          //enableOTPTextField = false;
-                          //enablePhoneNumberTextField= false;
-
-
-                        //}
-                        //setState(() {});
-                        ///
 
                         setState((){});
                       }
@@ -292,7 +276,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                             howManyTimesResendOTPPressed ++;
                             setState((){});
                             startTimer();
-                            await LocalApiRepo().ReadLead(phoneNumberString);
+                            await ApiRepository().ReadLead(phoneNumberString);
                           }
                         }:null),
                   ),
@@ -418,7 +402,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                         print(state);
                         print(latitude);
                         print(latitude);
-                        await LocalApiRepo().LeadLocation(phoneNumberString, ip_address, city, country, state, latitude, longitude);
+                        await ApiRepository().LeadLocation(phoneNumberString, ip_address, city, country, state, latitude, longitude);
                       }
                       _phoneNumberTextEditingController.clear();
                       _otpTextEditingController.clear();
@@ -549,7 +533,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
 
   Future<void> VerifyOTP(String otp) async {
     //isValidOTP = await ApiRepo().VerifyOTP(phoneNumberString, value);
-    isValidOTP = await LocalApiRepo().VerifyOTP(phoneNumberString, otp);
+    isValidOTP = await ApiRepository().VerifyOTP(phoneNumberString, otp);
     showOTPErrorText= !isValidOTP;
     if(isValidOTP){
       enableOTPTextField = false;

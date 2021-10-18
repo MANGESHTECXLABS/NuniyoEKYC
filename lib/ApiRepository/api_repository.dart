@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../globals.dart';
 
-class LocalApiRepo {
+class ApiRepository {
 
   var headers = {
     'Content-Type': 'application/json'
@@ -30,7 +30,6 @@ class LocalApiRepo {
   final String BASE_ANDROID_EMULATOR_URL = "https://10.0.2.2:44330";
 
   SharedPreferences? preferences;
-
 
   Future<void> SetMobileOTP(String otp) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -194,6 +193,21 @@ class LocalApiRepo {
     }
   }
 
+  Future<String> isValidIFSC(String ifscCode) async{
+    var request = http.Request('GET', Uri.parse('https://ifsc.razorpay.com/$ifscCode'));
+    //var request = http.Request('GET', Uri.parse('https://ifsc.razorpay.com/BARB0DBGHTW'));
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      return result;
+    }
+    else {
+      print(response.reasonPhrase);
+      return "Not Found";
+    }
+  }
+
   Future<Map<dynamic,dynamic>> GetPersonalDetails() async{
     Map valueMap = Map();
     String jwt_token= await GetCurrentJWTToken();
@@ -307,11 +321,14 @@ class LocalApiRepo {
   }
 
   Future<void> InsertUpdateKYCRecordLocal() async{}
+
   Future<void> GenerateCodeChallengeLocal() async{}
+
   Future<void> VerifyDigiLockerAccountLocal() async{}
+
   Future<void> DocumentUploadLocal() async{}
 
-  Future<bool> DocumentUploadPAN(var imageP) async{
+  Future<bool> DocumentUploadPAN(List<int> byteFormatOfFile) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadPANLocal Using API"+jwt_token);
@@ -324,23 +341,15 @@ class LocalApiRepo {
       'Content-Type': 'application/json'
     };
 
-
-    List<int> _selectedFile = await imageP.readAsBytes();
     var request;
-    if(kIsWeb){
-      request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_PAN'));
-      request.files.add(await http.MultipartFile.fromBytes('front_part', _selectedFile,
-          contentType: new MediaType('application', 'octet-stream'),
-          filename: "file_up"));
-      request.body = json.encode({
-        "Lead_Id": "$lead_id",
-      });
-      request.headers.addAll(headers);
-    }
-    else{
-      request = http.MultipartRequest('POST', Uri.parse('http://localhost:44300/api/user/login/OCR'));
-      request.headers.addAll(headers);
-    }
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_PAN'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
@@ -354,7 +363,7 @@ class LocalApiRepo {
     }
   }
 
-  Future<bool> DocumentUploadDigitalSignature(var imageP) async{
+  Future<bool> DocumentUploadDigitalSignature(List<int> byteFormatOfFile) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadDigitalSignature Using API"+jwt_token);
@@ -367,24 +376,15 @@ class LocalApiRepo {
       'Content-Type': 'application/json'
     };
 
-
-    List<int> _selectedFile = await imageP.readAsBytes();
     var request;
-    if(kIsWeb){
-      request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_Signature'));
-      request.files.add(await http.MultipartFile.fromBytes('front_part', _selectedFile,
-          contentType: new MediaType('application', 'octet-stream'),
-          filename: "file_up"));
-      request.body = json.encode({
-        "Lead_Id": "$lead_id",
-      });
-      request.headers.addAll(headers);
-    }
-    else{
-      request = http.MultipartRequest('POST', Uri.parse('http://localhost:44300/api/user/login/OCR'));
-      request.headers.addAll(headers);
-    }
-
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_Signature'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
@@ -596,7 +596,37 @@ class LocalApiRepo {
     }
   }
 
-  Future<void> SaveIPVVideoLocal() async{}
+  Future<void> SaveIPVVideo(List<int> byteFormatOfFile) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling SaveIPVVideo Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("SaveIPVVideo for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request;
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/SaveIpvVideo'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
 
   Future<bool> Digio_PanAuthentication(String panNumber,String dob) async{
     String jwt_token= await GetCurrentJWTToken();
@@ -1023,4 +1053,5 @@ class LocalApiRepo {
       print(response.reasonPhrase);
     }
   }
+
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 
 
@@ -256,7 +255,7 @@ class PanAndBankValidationState extends State<PanAndBankValidation> {
             onChanged: (panNumber) async {
               if(panNumber.length==10 && _fullNameTextEditingController.text!="" && _dateController.text!=""){
                 print("Full Name :"+_fullNameTextEditingController.text+"Date Time :"+_dateController.text+"Pan Number :"+_panNumberTextEditingController.text);
-                isPanValidatedSuccessfully = await ApiRepo().fetchIsPanValid(_fullNameTextEditingController.text,_dateController.text,_panNumberTextEditingController.text);
+                //isPanValidatedSuccessfully = await ApiRepo().fetchIsPanValid(_fullNameTextEditingController.text,_dateController.text,_panNumberTextEditingController.text);
                 if(isPanValidatedSuccessfully){
                   _panExpandableController.expanded=false;
                   panFormDescriptionText = "PAN Verified Successfully!";
@@ -360,7 +359,7 @@ class PanAndBankValidationState extends State<PanAndBankValidation> {
                 child: Container(
                   child: RaisedButton(
                     onPressed: () async {
-                      isBankValidatedSuccessfully = await ApiRepo().fetchIsBankValid(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
+                      //isBankValidatedSuccessfully = await ApiRepo().fetchIsBankValid(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
 
                       if(isBankValidatedSuccessfully){
                         _bankExpandableController.expanded=false;

@@ -10,8 +10,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/encode_decode.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
@@ -326,7 +325,7 @@ class _BankPanEmailValidationScreenState
                           //isValidInputForEmail = await ApiRepo().VerifyEmail(prefs.getString('PhoneNumber'), _emailID);
                           //Send Email ID to APi
                           //enableEmailIDTextField = false;
-                          isEmailValidatedSuccessfully = await LocalApiRepo().Email_Status(_emailID);
+                          isEmailValidatedSuccessfully = await ApiRepository().Email_Status(_emailID);
                           emailString = _emailID;
                           showEmailErrorText = !isEmailValidatedSuccessfully;
                           setState(() {
@@ -336,7 +335,7 @@ class _BankPanEmailValidationScreenState
                             //enableEmailIDTextField = true;
                           }
                           if(isEmailValidatedSuccessfully){
-                            await LocalApiRepo().UpdateEmail(_emailID);
+                            await ApiRepository().UpdateEmail(_emailID);
                             _emailID = emailString;
                           }
                           if (isEmailValidatedSuccessfully) {
@@ -352,8 +351,11 @@ class _BankPanEmailValidationScreenState
                     ),
                     Flexible(
                         child: TextField(
+
                         textCapitalization: TextCapitalization.characters,
-                        inputFormatters: [UpperCaseTextFormatter(),],
+                        inputFormatters:<TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp("[0-9A-Z]")),
+                        ],
                         maxLength: 10,
                         onChanged: (_panNumber) async {
                         if (_panNumber.length >= 10) {
@@ -364,7 +366,7 @@ class _BankPanEmailValidationScreenState
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           //isValidInputForPan = await ApiRepo().VerifyPAN(phoneNumber, _panNumber);
                           //isPanValidatedSuccessfully = await LocalApiRepo().NSDLeKYCPanAuthenticationLocal(_panNumber);
-                          isPanValidatedSuccessfully = await LocalApiRepo().GetPanStatusLocal(_panNumber);
+                          isPanValidatedSuccessfully = await ApiRepository().GetPanStatusLocal(_panNumber);
 
                           if (isPanValidatedSuccessfully) {
                             //Hide KeyBoard Here
@@ -613,7 +615,7 @@ class _BankPanEmailValidationScreenState
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                 prefs.setString(DATE_OF_BIRTH_KEY, _dateController.text);
                                 prefs.setString(BANK_ACC_KEY, _bankTextEditingController.text);
-                                await LocalApiRepo().UpdateStage_Id();
+                                await ApiRepository().UpdateStage_Id();
                                 String stage_id = prefs.getString(STAGE_KEY);
                                 print("On Proceed Let's go to :"+stage_id);
                                 Navigator.pushNamed(context, stage_id);
@@ -786,8 +788,8 @@ class _BankPanEmailValidationScreenState
                                 confirmBtnText = "Please Wait ";
                                 setState((){});
                                 //Penny Drop Api Will Come here till then suppose it is valid
-                                await LocalApiRepo().ConfirmIFSCDetails(result);
-                                isBankValidatedSuccessfully = await LocalApiRepo().verifyBankAccountLocal(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
+                                await ApiRepository().ConfirmIFSCDetails(result);
+                                isBankValidatedSuccessfully = await ApiRepository().verifyBankAccountLocal(_bankTextEditingController.text.trim(), _ifscCodeTextEditingController.text.trim());
 
 
                                 if(!isBankValidatedSuccessfully){
@@ -1092,7 +1094,7 @@ class _BankPanEmailValidationScreenState
                               showBranchNameErrorText = false;
                               showBranchLocationErrorText = false;
                               //IFSCMapList = await ApiRepo().searchIFSCCodes(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
-                              IFSCMapList = await LocalApiRepo().IFSCMasterSearchLocal(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
+                              IFSCMapList = await ApiRepository().IFSCMasterSearchLocal(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
                               if (IFSCMapList["res_Output"].length > 0) {
                                 showIFSCSearchResults = true;
                                 headerTitle = "Tap On Your IFSC Code";
@@ -1270,7 +1272,7 @@ class _BankPanEmailValidationScreenState
       onTap: () async {
         Navigator.pop(context);
         _ifscCodeTextEditingController.text = IfscCode;
-        String response = await ApiRepo().isValidIFSC(IfscCode);
+        String response = await ApiRepository().isValidIFSC(IfscCode);
         if (response == "Not Found") {
           print("IFSC CODE WRONG");
           showIFSCErrorText = true;
@@ -1375,10 +1377,10 @@ class _BankPanEmailValidationScreenState
       ///If only 18
       //enableDatePicker = false;
       enableBankAccountTextField = true;
-      await LocalApiRepo().Digio_PanAuthentication(_panTextEditingController.text, _dateController.text);
+      await ApiRepository().Digio_PanAuthentication(_panTextEditingController.text, _dateController.text);
       String panOwnerName = prefs.getString("PAN_OWNER_NAME");
       Fluttertoast.showToast(msg: "PAN OWNER NAME :"+panOwnerName, toastLength: Toast.LENGTH_SHORT);
-      await LocalApiRepo().SolicitPANDetailsFetchALLKRALocal(_panTextEditingController.text, _dateController.text);
+      await ApiRepository().SolicitPANDetailsFetchALLKRALocal(_panTextEditingController.text, _dateController.text);
       enableDatePicker = false;
       enableBankAccountTextField = true;
       setState(() {
@@ -1404,7 +1406,7 @@ class _BankPanEmailValidationScreenState
         isValidInputForIFSC = true;
         setState(() {});
         //String response = await ApiRepo().isValidIFSC(value);
-        String response = await LocalApiRepo().getIFSCDetails(value);
+        String response = await ApiRepository().getIFSCDetails(value);
         if (response == "Not Found") {
           print("IFSC CODE WRONG");
           showIFSCErrorText = true;

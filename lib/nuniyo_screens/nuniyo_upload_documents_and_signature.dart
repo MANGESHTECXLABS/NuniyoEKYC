@@ -1,5 +1,6 @@
 ///Upload Document Screen
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
@@ -10,15 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nuniyoekyc/ApiRepository/apirepository.dart';
-import 'package:nuniyoekyc/ApiRepository/localapis.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
-import '../ApiRepository/localapis.dart';
+import '../ApiRepository/api_repository.dart';
 import '../globals.dart';
 
 class UploadDocumentScreen extends StatefulWidget {
@@ -51,7 +51,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   File? imageFileDigitalSignature = new File("/assets/images/congratulations.png");
 
   FilePickerResult? result;
-
   PlatformFile pdfPanImagefile = PlatformFile(name: "/assets/images/congratulations.png", size: 20);
   PlatformFile pdfPanDigitalSignaturefile = PlatformFile(name: "/assets/images/congratulations.png", size: 20);
 
@@ -294,7 +293,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       IconButton(onPressed:() async {
                         if (imageFilePan != null) {
                           //Uploading File to Database
-                          isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
+                          //isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
                         }
                       }, icon: Icon(Icons.check_circle,size: 36.0,color: Colors.green,)),
                       SizedBox(width: 30,),
@@ -403,29 +402,41 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     onPressed:(tempPanUploaded&&tempDigitalPadUploaded)?() async {
-                        if(imageFilePan!=null){
+                        if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null){
                           //CALL APIS TO UPLOAD
-                          print("Calling Upload Image API");
+                          print("Uploading Image Format of Pan to API");
                           ///Upload APi
-                          //await LocalApiRepo().DocumentUploadPAN(imageFilePan);
-                          //await LocalApiRepo().DocumentUploadDigitalSignature(imageFileDigitalSignature);
-
-                          ///Update Stage ID Here
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          await LocalApiRepo().UpdateStage_Id();
-                          String ThisStepId = prefs.getString(STAGE_KEY);
-                          print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);
-                          Navigator.pushNamed(context,ThisStepId);
+                          List<int> byteFormatOfFile = await imageFilePan!.readAsBytes();
+                          await ApiRepository().DocumentUploadPAN(byteFormatOfFile);
                           ///Upload APi
                         }
-                        else if(imageFileDigitalSignature!=null){
+                        if(imageFileDigitalSignature.toString()!='File: \'/assets/images/congratulations.png\'' && imageFileDigitalSignature!=null){
+                          print("Uploading Image Format of Digital Signature");
+                          List<int> byteFormatOfFile = await imageFileDigitalSignature!.readAsBytes();
+                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                        }
+                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"){
+                          print("Uploading PDF Format of PAN IMAGE FILE");
+                          Uint8List? byteList = pdfPanImagefile.bytes;
+                          if(byteList!=null){
+                            List<int> byteFormatOfFile = byteList;
+                            await ApiRepository().DocumentUploadPAN(byteFormatOfFile);
+                          }
+                          //List<int>? byteFormatOfFile =await pdfPanImagefile.bytes!.toList(growable: true);
 
                         }
-                        else if(pdfPanImagefile!=null){
+                        if(pdfPanDigitalSignaturefile.name!="/assets/images/congratulations.png"){
+                          print("Uploading PDF Format of Digital Signature");
 
+                          Uint8List? byteList = pdfPanDigitalSignaturefile.bytes;
+                          if(byteList!=null){
+                            List<int> byteFormatOfFile = byteList;
+                            await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                          }
                         }
-                        else if(pdfPanDigitalSignaturefile!=null){
-
+                        if(drawnDigitalSignatureImage!=null){
+                          print("Uploading Drawn Digital Signature");
+                          await ApiRepository().DocumentUploadDigitalSignature(drawnDigitalSignatureImage);
                         }
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -435,7 +446,14 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                               style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
                             ),
                           ));
+                          return;
                         }
+                        ///Update Stage ID Here
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        await ApiRepository().UpdateStage_Id();
+                        String ThisStepId = prefs.getString(STAGE_KEY);
+                        print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);
+                        Navigator.pushNamed(context,ThisStepId);
                     }:null,
                     color: primaryColorOfApp,
                     child: Text(
