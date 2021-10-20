@@ -70,9 +70,9 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xff6A4EEE),
       ),
-      home: PersonalDetailsScreen(),
-      //initialRoute: '/',
-      //onGenerateRoute: ScreenRouter.generateRoute,
+      //home: PersonalDetailsScreen(),
+      initialRoute: '/',
+      onGenerateRoute: ScreenRouter.generateRoute,
     );
   }
 }
