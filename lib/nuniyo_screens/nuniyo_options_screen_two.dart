@@ -70,7 +70,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                         SizedBox(width: 10.0,),
                         Text("Select Brokerage Plan",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                         //Text(" ₹ $total",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
-
                       ],
                     ),
                    Padding(
@@ -85,8 +84,9 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                     SizedBox(height: 20.0,),
                   ],
                 ),
+                SizedBox(height: 24.0,),
                 Container(
-                  height: 200,
+                  height: _groupValue=="platinum"?200:100,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: primaryColorOfApp,
@@ -102,7 +102,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                             Expanded(
                               flex:1,
                               child: Radio(
-                              value: "platinium",
+                              value: "platinum",
                               groupValue: _groupValue,
                               onChanged: (String? value) {
                                 setState(() {
@@ -122,43 +122,43 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                             Text("1250₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("1) Deliveries/Debit transaction", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("11₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("2) Charges for Pledge creation/closure/invocation and Re-Pledge(per ISIN)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("25₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("3) Margin Pledge Creation , Closure , Invocation (per ISIN per instance)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("12₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                            ],
-                          )
-                        ),
+                        Visibility(child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("1) Deliveries/Debit transaction", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("11₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  ],
+                                ),
+                                SizedBox(height: 5,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(child:Text("2) Charges for Pledge creation/closure/invocation and Re-Pledge(per ISIN)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
+                                    Text("25₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  ],
+                                ),
+                                SizedBox(height: 5,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(child:Text("3) Margin Pledge Creation , Closure , Invocation (per ISIN per instance)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
+                                    Text("12₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  ],
+                                ),
+                              ],
+                            )
+                        ),visible: _groupValue=="platinum",)
                       ],
                     ),
                   ),
                 ),
                 SizedBox(height: 24.0,),
                 Container(
-                  height: 200,
+                  height: _groupValue=="gold"?200:100,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: primaryColorOfApp,
@@ -194,7 +194,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                             Text("550₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
-                        Padding(
+                        Visibility(visible: _groupValue=="gold",child: Padding(
                           padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
                           child: Column(
                             children: [
@@ -223,14 +223,14 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                               ),
                             ],
                           ),
-                        ),
+                        )),
                       ],
                     ),
                   ),
                 ),
                 SizedBox(height: 24.0,),
                 Container(
-                  height: 200,
+                  height: _groupValue=="silver"?200:100,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: primaryColorOfApp,
@@ -266,7 +266,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                             Text("300₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
-                        Padding(
+                        Visibility(visible: _groupValue=="silver",child: Padding(
                           padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
                           child: Column(
                             children: [
@@ -295,7 +295,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                               ),
                             ],
                           ),
-                        ),
+                        ),)
                       ],
                     ),
                   ),
@@ -326,12 +326,14 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                   width: MediaQuery.of(context).size.width,
                   height: 75,
                   child: FlatButton(
+                    disabledTextColor: Colors.blue,
+                    disabledColor: Color(0xffD2D0E1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed: () {
+                    onPressed: _groupValue==null?null:() {
                       openCheckout();
-                      Navigator.pushNamed(context, 'Digilocker');
+                      //Navigator.pushNamed(context, 'Digilocker');
                     },
                     color: primaryColorOfApp,
                     child: Text(
@@ -359,7 +361,8 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
     String phoneNumber= prefs.getString(MOBILE_NUMBER_KEY);
     String emailID = prefs.getString('EMAIL_ID');
 
-    String amount = total;
+    //String amount = (int.parse(total)*100).toString();
+    String amount = "100";
 
     var options = {
       'key': 'rzp_live_q8gUCOxfHIbCkb',
@@ -389,7 +392,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(msg: "ERROR: " + response.code.toString() + " - " + response.message!, toastLength: Toast.LENGTH_SHORT);
-    print("SHjahskasoas");
+    print("Payment Error");
     print(response.code.toString());
     print(response.message.toString());
     Navigator.pushNamed(context, 'Account');
@@ -404,7 +407,19 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
     String phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
     ///ApiRepo().OnPaymentSuccessPostToDatabase(200, phoneNumber,paymentID);
     //await LocalApiRepo().RazorPayStatusLocal(200, 'INR', phoneNumber, paymentID);
-    await ApiRepository().RazorPaymentStatus(total.toString(), merchantID, paymentID, signature);
+    String depositoryCharge = "0";
+    if(_groupValue=="platinum"){
+      depositoryCharge = "1";
+    }
+    else if(_groupValue=="gold"){
+      depositoryCharge = "2";
+    }
+    else if(_groupValue=="silver"){
+      depositoryCharge = "3";
+    }
+    //In Place of Signature I'm Sending Payment Plan Id
+    //await ApiRepository().RazorPaymentStatus("200", merchantID, paymentID, signature);
+    await ApiRepository().RazorPaymentStatus("200", merchantID, paymentID, depositoryCharge);
     await ApiRepository().UpdateStage_Id();
     String ThisStepId = prefs.getString(STAGE_KEY);
     print("YOU LEFT ON THIS PAGE LAST TIME"+ThisStepId);

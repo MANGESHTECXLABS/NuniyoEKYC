@@ -102,6 +102,13 @@ class ApiRepository {
     return lead_id;
   }
 
+  Future<String> GetMobileNumber() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String mobile_no= prefs.getString(MOBILE_NUMBER_KEY);
+    print("LEAD ID STORED INSIDE SHARED PREFERENCES :" + mobile_no);
+    return mobile_no;
+  }
+
   Future<void> UpdateStage_Id() async{
 
     String jwt_token= await GetCurrentJWTToken();
@@ -359,6 +366,102 @@ class ApiRepository {
     }
   }
 
+  Future<void> Generate_Lead_Pdf() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Generate_Lead_Pdf Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Generate_Lead_Pdf for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/generatepdf/Generate_Lead_Pdf'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<String> Digio_eSign_Document_Upload() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Digio_eSign_Document_Upload Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Digio_eSign_Document_Upload for Lead ID : "+lead_id);
+
+    String mobile_no = await GetMobileNumber();
+    print("Digio_eSign_Document_Upload for Mobile Number : "+mobile_no);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Digio_eSign_Document_Upload'));
+    request.body = json.encode({
+      "mobile_No": "$mobile_no",
+      "lead_Id": "$lead_id"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return "docID";
+    }
+    else {
+      print(response.reasonPhrase);
+      return "";
+    }
+  }
+
+
+  Future<void> Digio_eSign_Document_Download() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Digio_eSign_Document_Upload Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Digio_eSign_Document_Download for Lead ID : "+lead_id);
+
+    String mobile_no = await GetMobileNumber();
+    print("Digio_eSign_Document_Download for Mobile Number : "+mobile_no);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Digio_eSign_Document_Download'));
+    request.body = json.encode({
+      "mobile_No": "$mobile_no",
+      "lead_Id": "$lead_id"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+
   Future<void> InsertUpdateKYCRecordLocal() async{}
 
   Future<void> GenerateCodeChallengeLocal() async{}
@@ -435,6 +538,7 @@ class ApiRepository {
       return false;
     }
   }
+
 
   Future<bool>Email_Status(String emailID) async{
 
@@ -635,7 +739,7 @@ class ApiRepository {
     }
   }
 
-  Future<void> SaveIPVVideo(List<int> byteFormatOfFile) async{
+  Future<void> Video_Upload(List<int> byteFormatOfFile) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling SaveIPVVideo Using API"+jwt_token);
 
@@ -648,7 +752,7 @@ class ApiRepository {
     };
 
     var request;
-    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/SaveIpvVideo'));
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
         filename: "file_up"));

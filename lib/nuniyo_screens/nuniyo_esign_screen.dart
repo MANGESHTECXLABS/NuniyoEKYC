@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,8 @@ class _EsignScreenState extends State<EsignScreen> {
   void initState() {
     super.initState();
     //manageSteps();
+    GeneratePDF();
+    GetDocumentIDForEsign();
     fetchDetails();
   }
 
@@ -213,6 +216,17 @@ class _EsignScreenState extends State<EsignScreen> {
     print("YOU ARE ON THIS STEP : "+routeName);
   }
 
+  Future<void> GetDocumentIDForEsign() async{
+    docID = await ApiRepository().Digio_eSign_Document_Upload();
+    if(docID==""){
+      ///Do Something here to handle Error
+    }
+  }
+
+  Future<void> GeneratePDF() async{
+    await ApiRepository().Generate_Lead_Pdf();
+  }
+
   Future<void> fetchDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     DOB = prefs.getString(DATE_OF_BIRTH_KEY);
@@ -242,7 +256,4 @@ class _EsignScreenState extends State<EsignScreen> {
       return false;
     }
   }
-
-
-
 }

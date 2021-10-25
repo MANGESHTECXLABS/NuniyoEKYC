@@ -1,4 +1,5 @@
-///Static Page
+///Web cam screen - IPV Screen
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -47,6 +48,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   /// Camera
 
   Color primaryColorOfApp = Color(0xff6A4EEE);
+
+  bool viewOTPContainer = false;
 
   bool makeStepsVisible = false;
 
@@ -149,160 +152,45 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                 Container(
                   child: imageFile==null?null:Image.file(File(imageFile!.path)),
                 ),
-                TextButton(child: Text("Steps to do IPV:",style: GoogleFonts.openSans(
-                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
-                ),),onPressed: (){makeStepsVisible = !makeStepsVisible;setState(() {
-
-                });},),
-                SizedBox(height: 20,),
                 Visibility(visible:makeStepsVisible,child: Text("1.Click on Capture button to get the OTP on screen.\n\n2.Once you see the OTP the recording will start.\n\n3.Enter the OTP in the textbox below capture button.\n\n4.Once you enter the OTP recording will stop and it will get verified.\n",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),),
                 SizedBox(height: 20,),
                 ///Card Box
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: 100.0,
-                    width: MediaQuery.of(context).size.width/2,
-                    decoration: new BoxDecoration(
-                      boxShadow: [ //background color of box
-                        BoxShadow(
-                          color: Colors.white,
-                          blurRadius: 5.0, // soften the shadow
-                          spreadRadius: 2.0, //extend the shadow
-                        )
-                      ],
-                    ),
+                Visibility(visible: viewOTPContainer,
+                  child:Align(
+                    alignment: Alignment.center,
                     child: Container(
-                      height: 80,
-                      color: Colors.black12,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Center(
-                          child: Text("$ipvOtp",style: GoogleFonts.openSans(
-                            textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, letterSpacing: .5,fontSize: 24),
-                          ),),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20,),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: 150.0,
-                    width: MediaQuery.of(context).size.width/1.1,
-                    child: Container(
-                      height: 80,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(child:Container(
-                                //color: Colors.black12,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Image(image: AssetImage('assets/images/bright-lightbulb.png')),
-                                    SizedBox(height: 10,),
-                                    Stack(
-                                      children: [
-                                        Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 50,
-                                            child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("Bright Light",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 10),
-                                            ),),))),),
-                                        Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(Icons.check_circle,color: Colors.green,),),)
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                              SizedBox(width: 10,),
-                              Expanded(child:Container(
-                                //color: Colors.black12,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Image(image: AssetImage('assets/images/reading-eyeglasses.png')),
-                                    SizedBox(height: 10,),
-                                    Stack(
-                                      children: [
-                                        Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 50,
-                                            child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Glasses",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
-                                            ),),))),),
-                                        Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                              SizedBox(width: 10,),
-                              Expanded(child:Container(
-                                //color: Colors.black12,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Image(image: AssetImage('assets/images/hat.png')),
-                                    SizedBox(height: 10,),
-                                    Stack(
-                                      children: [
-                                        Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 50,
-                                            child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Hat",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
-                                            ),),))),),
-                                        Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
-
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                              SizedBox(width: 10,),
-                              Expanded(child:Container(
-                                //color: Colors.black12,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Image(image: AssetImage('assets/images/face-mask.png')),
-                                    SizedBox(height: 10,),
-                                    Stack(
-                                      children: [
-                                        Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 50,
-                                            child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Mask",textAlign: TextAlign.center,style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
-                                            ),),))),),
-                                        Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
-
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                            ],
+                      height: 60.0,
+                      width: MediaQuery.of(context).size.width/2,
+                      decoration: new BoxDecoration(
+                        boxShadow: [ //background color of box
+                          BoxShadow(
+                            color: Colors.white,
+                            blurRadius: 5.0, // soften the shadow
+                            spreadRadius: 2.0, //extend the shadow
                           )
+                        ],
+                      ),
+                      child: Container(
+                        height: 80,
+                        color: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Center(
+                            child: Text("$ipvOtp",style: GoogleFonts.openSans(
+                              textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, letterSpacing: .5,fontSize: 24),
+                            ),),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  ),),
                 SizedBox(height: 20,),
                 ///Video Camera
                 Expanded(
-                  child: Container(
+                  child: Center(child:Container(
+                    width: MediaQuery.of(context).size.width,
                     child: Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: Center(
@@ -314,13 +202,13 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       border: Border.all(
                         color:
                         controller != null && controller!.value.isRecordingVideo
-                            ? Colors.redAccent
+                            ? Colors.green
                             : Colors.grey,
                         width: 3.0,
                       ),
                     ),
                   ),
-                ),
+                )),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(
@@ -431,7 +319,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       //await ApiRepository().UpdateStage_Id();
 
                       List<int> byteFormatOfImageFile = await imageFile!.readAsBytes();
-                      await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfImageFile);
+                      await ApiRepository().Video_Upload(byteFormatOfImageFile);
+                      //await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfImageFile);
                       await ApiRepository().UpdateStage_Id();
 
                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -500,43 +389,181 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   Widget _cameraPreviewWidget() {
     CameraController? cameraController = controller;
     if (cameraController == null || !cameraController.value.isInitialized) {
-      return Container(
-              height: 200,
-              child:TextButton(
-          onPressed: (){
-            initializeRecorder();
-            showRecordingButton = true;
-            setState(() {
+      return //Icon Information
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 780.0,
+            padding: EdgeInsets.all(10),
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            child: Container(
+              height: 80,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Recording Instructions",style: GoogleFonts.openSans(fontSize: 20,
+                          textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.bold ,letterSpacing: .5,fontSize: 16),
+                        ),),
+                        SizedBox(height: 30,),
+                        Row(
+                          children: [
+                            Expanded(child:Container(
+                              //color: Colors.black12,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Image(image: AssetImage('assets/images/bright-lightbulb.png')),
+                                  SizedBox(height: 10,),
+                                  Stack(
+                                    children: [
+                                      Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("Bright Light",textAlign: TextAlign.center,style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 10),
+                                          ),),))),),
+                                      Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(Icons.check_circle,color: Colors.green,),),)
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                            SizedBox(width: 10,),
+                            Expanded(child:Container(
+                              //color: Colors.black12,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Image(image: AssetImage('assets/images/reading-eyeglasses.png')),
+                                  SizedBox(height: 10,),
+                                  Stack(
+                                    children: [
+                                      Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Glasses",textAlign: TextAlign.center,style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
+                                          ),),))),),
+                                      Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                            SizedBox(width: 10,),
+                          ],
+                        ),
+                        SizedBox(height: 20,),
+                        Row(
+                          children: [
+                            Expanded(child:Container(
+                              //color: Colors.black12,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Image(image: AssetImage('assets/images/hat.png')),
+                                  SizedBox(height: 10,),
+                                  Stack(
+                                    children: [
+                                      Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Hat",textAlign: TextAlign.center,style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
+                                          ),),))),),
+                                      Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
 
-            });
-          },
-          child:Text(
-        'Tap to Start camera',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24.0,
-          fontWeight: FontWeight.w900,
-        ),
-      )));
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                            SizedBox(width: 10,),
+                            Expanded(child:Container(
+                              //color: Colors.black12,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Image(image: AssetImage('assets/images/face-mask.png')),
+                                  SizedBox(height: 10,),
+                                  Stack(
+                                    children: [
+                                      Align(alignment:Alignment.bottomCenter,child:Container(color: Colors.white,
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          child: Center(child:Padding(padding: EdgeInsets.only(top: 20),child:Text("No Mask",textAlign: TextAlign.center,style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
+                                          ),),))),),
+                                      Align(alignment:Alignment.topCenter,child:Padding(padding: EdgeInsets.only(bottom: 0),child:Icon(CupertinoIcons.clear_circled_solid,color: Colors.red,),),)
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                          ],
+                        ),
+                        SizedBox(height: 30,),
+                        Text("1.Click on Capture button to get the OTP on screen.\n\n2.Once you see the OTP the recording will start.\n\n3.Enter the OTP in the textbox below capture button.\n\n4.Once you enter the OTP recording will stop and it will get verified.\n",style: GoogleFonts.openSans(
+                          textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+                        ),),
+                        Container(
+                          color: Colors.transparent,
+                          width: MediaQuery.of(context).size.width,
+                          height: 60,
+                          child: FlatButton(
+                            disabledTextColor: Colors.blue,
+                            disabledColor: Color(0xffD2D0E1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            onPressed: (){
+                              initializeRecorder();
+                              showRecordingButton = true;
+                              viewOTPContainer = true;
+                              setState(() {
+
+                              });
+                            },
+                            color: primaryColorOfApp,
+                            child: Text(
+                                "Capture",
+                                style: GoogleFonts.openSans(
+                                  textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                ),
+              ),
+            ),
+          ),
+        );
     } else {
       return Listener(
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
+        child: RotatedBox(
+            quarterTurns: 1,
         child: Container(
-          //height: 400,
-          //width: MediaQuery.of(context).size.width,
+          height: 200,
+          width: MediaQuery.of(context).size.width,
           child:CameraPreview(
-          controller!,
-          child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onScaleStart: _handleScaleStart,
-                  onScaleUpdate: _handleScaleUpdate,
-                  onTapDown: (details) => onViewFinderTap(details, constraints),
-                );
-              }),
-        ),),
+            controller!,
+            child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onScaleStart: _handleScaleStart,
+                    onScaleUpdate: _handleScaleUpdate,
+                    onTapDown: (details) => onViewFinderTap(details, constraints),
+                  );
+                }),
+          ),),),
       );
     }
   }
@@ -761,6 +788,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         return;
       }
       else{
+        controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
         _onWillPop();
       }
     });

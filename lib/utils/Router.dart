@@ -39,7 +39,7 @@ class ScreenRouter {
         return MaterialPageRoute(builder: (_) => BankPanEmailValidationScreen());
       //2
       case 'Account':
-        return MaterialPageRoute(builder: (_) => OptionsScreen());
+        return MaterialPageRoute(builder: (_) => OptionsScreenTwo());
       case '/optionsscreen2':
         return MaterialPageRoute(builder: (_) => OptionsScreenTwo());
       //3

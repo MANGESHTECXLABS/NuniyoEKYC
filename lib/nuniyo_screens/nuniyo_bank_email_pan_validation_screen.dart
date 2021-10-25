@@ -594,43 +594,6 @@ class _BankPanEmailValidationScreenState
                       ),
                     )),
                     SizedBox(height: 30,),
-                    //Demo Button
-                    Container(
-                      color: Colors.transparent,
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      child: FlatButton(
-                        disabledColor: Color(0xffD2D0E1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        onPressed: !(isIFSCValidatedSuccessfully && isEmailValidatedSuccessfully && isPanValidatedSuccessfully)
-                            ? null
-                            : () async {
-                                print(isValidIFSCCode);
-                                print(isBankValidatedSuccessfully);
-                                print(isValidInputForEmail);
-                                print(isValidInputForPan);
-                                ////////////////////////////FOR DEMO////////////////////
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
-                                prefs.setString(DATE_OF_BIRTH_KEY, _dateController.text);
-                                prefs.setString(BANK_ACC_KEY, _bankTextEditingController.text);
-                                await ApiRepository().UpdateStage_Id();
-                                String stage_id = prefs.getString(STAGE_KEY);
-                                print("On Proceed Let's go to :"+stage_id);
-                                Navigator.pushNamed(context, stage_id);
-                              },
-                        color: primaryColorOfApp,
-                        child: Text("Proceed",
-                            style: GoogleFonts.openSans(
-                              textStyle: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: .5,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -810,10 +773,16 @@ class _BankPanEmailValidationScreenState
                                   enableBankAccountTextField = false;
                                 }
                                 //validateIFSC(_ifscCodeTextEditingController.text);
-                                Navigator.pop(context);
-                                setState(() {
 
-                                });
+                                ////////////////////////////Proceed Event////////////////////
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setString(DATE_OF_BIRTH_KEY, _dateController.text);
+                                prefs.setString(BANK_ACC_KEY, _bankTextEditingController.text);
+                                await ApiRepository().UpdateStage_Id();
+                                String stage_id = prefs.getString(STAGE_KEY);
+                                print("On Proceed Let's go to :"+stage_id);
+                                Navigator.pushNamed(context, stage_id);
+
                                 //validateIFSC(_ifscCodeTextEditingController.text);
                               }:null,
                               disabledColor: Colors.black12,
@@ -955,8 +924,14 @@ class _BankPanEmailValidationScreenState
                             child: Container(
                               height: 80,
                               child: TextField(
-                                textCapitalization: TextCapitalization.characters,
                                 inputFormatters: [UpperCaseTextFormatter(),],
+                                  //onChanged: (value) {
+                                    //if(!isIFSCValidatedSuccessfully){
+                                      //validateIFSC(value);
+                                    //}
+                                  //},
+                                maxLength: 11,
+                                textCapitalization: TextCapitalization.characters,
                                 cursorColor: primaryColorOfApp,
                                 style: GoogleFonts.openSans(
                                     textStyle: TextStyle(
@@ -967,6 +942,13 @@ class _BankPanEmailValidationScreenState
                                 focusNode: _IFSCCode2TextFieldFocusNode,
                                 onTap: _requestIFSCCode2TextFieldFocusNode,
                                 decoration: InputDecoration(
+                                    errorText: showIFSCErrorText ? "Enter a valid IFSC" : null,
+                                    suffixIcon: !showIFSCErrorText
+                                        ? Icon(Icons.check_circle,
+                                        color: isIFSCValidatedSuccessfully
+                                            ? Colors.green
+                                            : Colors.transparent)
+                                        : Icon(Icons.error, color: Colors.red),
                                     contentPadding: EdgeInsets.fromLTRB(
                                         25.0, 40.0, 0.0, 40.0),
                                     counter: Offstage(),

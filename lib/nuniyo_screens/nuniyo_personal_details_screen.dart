@@ -34,14 +34,21 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
   TextEditingController motherNameTextEditingController = TextEditingController();
 
 
+  bool showFatherNameErrorText = false;
+  bool showMotherNameErrorText = false;
+
+
+  bool enableFatherNameTextField = true;
+  bool enableMotherNameTextField = true;
+
   bool _value = false;
 
   bool nationality = true;
 
   bool showNationalityError = false;
 
-  bool declaration = false;
-  bool showDeclarationError = true;
+  bool declaration = true;
+  bool showDeclarationError = false;
 
 
   @override
@@ -157,13 +164,23 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       height: 80,
                       child: TextField(
                         //enabled:false,
-                        //enabled: fatherNameTextEditingController.text.isEmpty,
+                        onChanged: (_value){
+                          if(_value.isNotEmpty){
+                            showFatherNameErrorText = false;
+                            print(_value);
+                            setState(() {
+
+                            });
+                          }
+                        },
+                        enabled: enableFatherNameTextField,
                         cursorColor: primaryColorOfApp,
                         style: GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 14,fontWeight: FontWeight.bold)),
                         focusNode: _fatherNameTextFieldFocusNode,
                         onTap: _requestFatherNameTextFieldFocusNode,
                         controller: fatherNameTextEditingController,
                         decoration: InputDecoration(
+                          errorText: showFatherNameErrorText?"Father Name Cannot be Blank":null,
                             contentPadding: EdgeInsets.fromLTRB(25.0,40.0,0.0,40.0),
                             counter: Offstage(),
                             labelText: _fatherNameTextFieldFocusNode.hasFocus ? 'Father\'s Full Name' : 'Father\'s Full Name',
@@ -179,13 +196,23 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                     child: Container(
                       height: 80,
                       child: TextField(
-                        //enabled: motherNameTextEditingController.text.isEmpty,
+                        enabled: enableMotherNameTextField,
+                        onChanged: (_value){
+                          if(_value.isNotEmpty){
+                            showMotherNameErrorText = false;
+                            print(_value);
+                            setState(() {
+
+                            });
+                          }
+                        },
                         cursorColor: primaryColorOfApp,
                         style: GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black, letterSpacing: 0.5,fontSize: 14,fontWeight: FontWeight.bold)),
                         focusNode: _motherNameTextFieldFocusNode,
                         controller: motherNameTextEditingController,
                         onTap: _requestMotherNameTextFieldFocusNode,
                         decoration: InputDecoration(
+                            errorText: showMotherNameErrorText?"Mother Name Cannot Be Blank":null,
                             contentPadding: EdgeInsets.fromLTRB(25.0,40.0,0.0,40.0),
                             counter: Offstage(),
                             labelText: _motherNameTextFieldFocusNode.hasFocus ? 'Mother\'s Full Name' : 'Mother\'s Full Name',
@@ -445,7 +472,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed: (declaration&&nationality)?() async {
+                    onPressed: (declaration&&nationality)&&(motherNameTextEditingController.text!=""&&fatherNameTextEditingController.text!="")?() async {
                       await ApiRepository().PersonalDetailsLocal(fatherNameTextEditingController.text.trim(),motherNameTextEditingController.text.trim(),annualIncome,gender,maritialStatus,politicallyExposed,occupation,tradingExperience);
                       await ApiRepository().UpdateStage_Id();
                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -505,6 +532,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       }
 
 
+
       //this.gender = gender;
       //this.occupation = occupation;
       //this.tradingExperience = trading_Experience;
@@ -513,6 +541,25 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
       setState(() {});
     }
-  }
+    if(fatherNameTextEditingController.text.isEmpty || fatherNameTextEditingController.text ==""){
+      showFatherNameErrorText  = true;
+      print("Some Erorr");
+      print(showFatherNameErrorText);
+      enableFatherNameTextField = true;
+    }
+    else if(fatherNameTextEditingController.text.isNotEmpty){
+      showFatherNameErrorText  = false;
+      enableFatherNameTextField = false;
+    }
 
+    if(motherNameTextEditingController.text=="" || motherNameTextEditingController.text.isEmpty){
+      showMotherNameErrorText  = true;
+      enableMotherNameTextField = true;
+    }
+    else if(motherNameTextEditingController.text.isNotEmpty){
+      showMotherNameErrorText  = true;
+      enableMotherNameTextField = true;
+    }
+    setState(() {});
+  }
 }
