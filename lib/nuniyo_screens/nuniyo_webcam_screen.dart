@@ -77,6 +77,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   Image? faceMaskImage;
   Image? hatImage;
 
+
+  ScrollController _scrollController = ScrollController();
+
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
       FocusScope.of(context).requestFocus(_IPVOTPTextFieldFocusNode);
@@ -137,12 +140,18 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     return Future.value(false);
   }
 
+  // This function is triggered when the user presses the back-to-top button
+  void _scrollToTop() {
+    _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.linear);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(child: Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: WidgetHelper().NuniyoAppBar(),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: IntrinsicHeight(
           child: Padding(
             padding: const EdgeInsets.all(30.0),
@@ -172,9 +181,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     SizedBox(height: 20.0,),
                   ],
                 ),
-                Container(
-                  child: imageFile==null?null:Image.file(File(imageFile!.path)),
-                ),
+                //Container(
+                //  child: imageFile==null?null:Image.file(File(imageFile!.path)),
+                //),
                 Visibility(visible:makeStepsVisible,child: Text("1.Click on Capture button to get the OTP on screen.\n\n2.Once you see the OTP the recording will start.\n\n3.Enter the OTP in the textbox below capture button.\n\n4.Once you enter the OTP recording will stop and it will get verified.\n",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
                 ),),),
@@ -342,7 +351,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       await ApiRepository().Video_Upload(byteFormatOfVideoFile);
                       await ApiRepository().VIPV_Selfie_Upload(byteFormatOfImageFile);
                       await ApiRepository().UpdateStage_Id();
-
+                      //Once Tap Disable this button.
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       String stage_id = prefs.getString(STAGE_KEY);
                       print("Let\'s go To");
@@ -544,9 +553,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               initializeRecorder();
                               showRecordingButton = true;
                               viewOTPContainer = true;
-                              setState(() {
-
-                              });
+                              _scrollToTop();
+                              setState(() {});
                             },
                             color: primaryColorOfApp,
                             child: Text(
@@ -808,6 +816,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         return;
       }
       else{
+        //If you want to change the orientation of webcam
         controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
         _onWillPop();
       }

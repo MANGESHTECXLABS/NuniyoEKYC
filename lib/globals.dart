@@ -17,3 +17,4 @@ final String MOTHER_NAME_KEY  = "MOTHER_NAME";
 final String LEAD_ID_KEY = "LEAD_ID";
 final String STAGE_KEY = "STAGE_ID";
 final String JWT_TOKEN_KEY = "JWT_TOKEN";
+final String DOC_ID_ESIGN_KEY = "DOC_ID";

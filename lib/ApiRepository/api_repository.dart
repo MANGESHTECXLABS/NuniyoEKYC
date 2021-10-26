@@ -31,6 +31,8 @@ class ApiRepository {
 
   final String BASE_ANDROID_EMULATOR_URL = "https://10.0.2.2:44330";
 
+  //Shared Preference Methods
+
   SharedPreferences? preferences;
 
   Future<void> SetMobileOTP(String otp) async{
@@ -58,44 +60,18 @@ class ApiRepository {
     return jwt_token;
   }
 
-
-  Future<bool> IPV_Video_Upload(List<int> byteFormatOfFile) async{
-    String jwt_token= await GetCurrentJWTToken();
-    print("Calling IPV_Video_Upload Using API"+jwt_token);
-
-    String lead_id = await GetLeadId();
-    print("IPV_Video_Upload for Lead ID : "+lead_id);
-
-    var headers = {
-      'Authorization': 'Bearer $jwt_token',
-      'Content-Type': 'application/json'
-    };
-
-    var request;
-    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
-    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
-        contentType: new MediaType('application', 'octet-stream'),
-        filename: "file_up"));
-    request.fields.addAll({
-      'Lead_Id': '$lead_id'
-    });
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      print("IPV VIDEO UPLOADED SUCCESSFULLY");
-      return true;
-    }
-    else {
-      print(response.reasonPhrase);
-      print("IPV VIDEO NOT UPLOADED");
-      return false;
-    }
+  Future<String> Get_ESIGN_DOC_ID() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String docId= prefs.getString(DOC_ID_ESIGN_KEY);
+    print("DOC ID STORED INSIDE SHARED PREFERENCES :" + docId);
+    return docId;
   }
 
-
+  Future<void> Set_ESIGN_DOC_ID(String docID) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(DOC_ID_ESIGN_KEY,docID);
+    print("Your DOC ID is :"+prefs.getString(DOC_ID_ESIGN_KEY));
+  }
 
   Future<String> GetLeadId() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -147,6 +123,47 @@ class ApiRepository {
     }
     else {
       print(response.reasonPhrase);
+    }
+  }
+
+
+
+  ///API METHODS
+
+
+  Future<bool> IPV_Video_Upload(List<int> byteFormatOfFile) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling IPV_Video_Upload Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("IPV_Video_Upload for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request;
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      print("IPV VIDEO UPLOADED SUCCESSFULLY");
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      print("IPV VIDEO NOT UPLOADED");
+      return false;
     }
   }
 
@@ -240,8 +257,6 @@ class ApiRepository {
       return "Not Found";
     }
   }
-
-
 
   Future<String> isValidIFSC(String ifscCode) async{
     var request = http.Request('GET', Uri.parse('https://ifsc.razorpay.com/$ifscCode'));
@@ -472,12 +487,14 @@ class ApiRepository {
       print(result);
       //print("Your OTP IS VERIFIED OR NOT DEPENDS ON "+result_Id.toString());
       String docId = valueMap["res_Output"][0]["result_Description"];
+      Set_ESIGN_DOC_ID(docId);
       return docId;
     }
     else {
       print(response.reasonPhrase);
       //return "";
-      return "DID211025165331749CNICTCZNSK7Z1M";
+      Set_ESIGN_DOC_ID("DID211026152742428GVA27ENECZJJWT");
+      return "DID211026152742428GVA27ENECZJJWT";
     }
   }
 
@@ -524,7 +541,6 @@ class ApiRepository {
       return file;
     }
   }
-
 
   Future<void> InsertUpdateKYCRecordLocal() async{}
 
@@ -834,7 +850,6 @@ class ApiRepository {
       print(response.reasonPhrase);
     }
   }
-
 
   Future<void> VIPV_Selfie_Upload(List<int> byteFormatOfFile) async{
     String jwt_token= await GetCurrentJWTToken();

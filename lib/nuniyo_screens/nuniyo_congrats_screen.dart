@@ -51,6 +51,7 @@ class _CongratsScreenState extends State<CongratsScreen> {
 
     //pdfFile = await ApiRepository().Digio_eSign_Document_Download();
     await ApiRepository().Get_eSign_Document_Details();
+    await ApiRepository().Digio_eSign_Document_Download();
     setState(() {
     });
   }
