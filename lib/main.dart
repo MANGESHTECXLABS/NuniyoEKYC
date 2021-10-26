@@ -1,6 +1,10 @@
 //Entry Point of this App
 //This File also consist of Routes to different different screens
 import 'dart:io';
+
+///https://docs.google.com/document/d/1zLHKue-6v35XB9y5-TxvnDy0u4qvkkn6O3e2Fn_Ex1U/edit#
+///USE THE ABOVE LINK TO INTEGRATE DIGIO ESIGN ON IOS
+
 import 'package:flutter/material.dart';
 import 'package:nuniyoekyc/extra_demo_screens/auto_fill_otp.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
@@ -70,7 +74,7 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xff6A4EEE),
       ),
-      home:EsignScreen(),
+      home:UploadDocumentScreen(),
       //initialRoute: '/',
       //onGenerateRoute: ScreenRouter.generateRoute,
     );

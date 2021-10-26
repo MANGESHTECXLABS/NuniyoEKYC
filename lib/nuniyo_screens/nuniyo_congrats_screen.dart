@@ -1,12 +1,16 @@
 ///Congrats Screen
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../globals.dart';
 import '../nuniyo_custom_icons.dart';
@@ -22,15 +26,19 @@ class CongratsScreen extends StatefulWidget {
 class _CongratsScreenState extends State<CongratsScreen> {
 
   Color primaryColorOfApp = Color(0xff6A4EEE);
-  String emailAddress = "youremailid@somedomain.com";
+  String emailAddress = "youremailid@do.com";
   String phoneNumber = "8779559898";
 
+  Image? congratsImage;
+
+  File? pdfFile = new File("/assets/images/congratulations.png");
 
   @override
   void initState() {
     super.initState();
+    congratsImage = Image.asset("assets/images/congratulations.png");
     //manageSteps();
-    firstThingsFirst();
+    //firstThingsFirst();
     fetchInitialData();
   }
 
@@ -39,8 +47,18 @@ class _CongratsScreenState extends State<CongratsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     emailAddress = await prefs.getString('EMAIL_ID');
     phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
+    await ApiRepository().Generate_Lead_Pdf();
+
+    //pdfFile = await ApiRepository().Digio_eSign_Document_Download();
+    await ApiRepository().Get_eSign_Document_Details();
     setState(() {
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(congratsImage!.image, context);
   }
 
 
@@ -62,7 +80,8 @@ class _CongratsScreenState extends State<CongratsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Congratulations !'),
-                Center(child: Image.asset("assets/images/congratulations.png")),
+                SfPdfViewer.file(pdfFile!),
+                Center(child: congratsImage),
                 SizedBox(height: 20,),
                 Text("Your application is complete . After verification , you will recieve your login credentials on your e-mail.",textAlign:TextAlign.center,style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
@@ -299,15 +318,6 @@ class _CongratsScreenState extends State<CongratsScreen> {
     ), onWillPop: _onWillPop);
   }
 
-  Future<void> manageSteps() async {
-    ///REFERENCE
-
-    ///SET STEP ID HERE
-    String currentRouteName = 'UCC';
-    await StoreLocal().StoreRouteNameToLocalStorage(currentRouteName);
-    String routeName = await StoreLocal().getRouteNameFromLocalStorage();
-    print("YOU ARE ON THIS STEP : "+routeName);
-  }
 
 
   Future<bool> _onWillPop() {

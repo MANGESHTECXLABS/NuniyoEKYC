@@ -72,6 +72,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   bool showOTPError = false;
 
+  Image? glassesImage;
+  Image? lightBulbImage ;
+  Image? faceMaskImage;
+  Image? hatImage;
+
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
       FocusScope.of(context).requestFocus(_IPVOTPTextFieldFocusNode);
@@ -81,10 +86,16 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   @override
   void initState() {
     super.initState();
+
+    glassesImage = Image.asset('assets/images/reading-eyeglasses.png');
+    lightBulbImage = Image.asset('assets/images/bright-lightbulb.png');
+    faceMaskImage = Image.asset('assets/images/face-mask.png');
+    hatImage = Image.asset('assets/images/hat.png');
+
     fetchOTP();
     initializeCamera();
-    setState(() {
-    });
+    setState(() {});
+
     _ambiguate(WidgetsBinding.instance)?.addObserver(this);
     if(cameras.isNotEmpty){
       controller = CameraController(cameras[1], ResolutionPreset.max);
@@ -100,6 +111,18 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     }
     _IPVOTPTextFieldFocusNode = FocusNode();
   }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(glassesImage!.image, context);
+    precacheImage(lightBulbImage!.image, context);
+    precacheImage(faceMaskImage!.image, context);
+    precacheImage(hatImage!.image, context);
+  }
+
+
 
   @override
   void dispose() {
@@ -315,12 +338,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
 
                       List<int> byteFormatOfVideoFile = await thumbnailFile.readAsBytes();
-                      await ApiRepository().IPV_Video_Upload(byteFormatOfVideoFile);
-                      //await ApiRepository().UpdateStage_Id();
-
                       List<int> byteFormatOfImageFile = await imageFile!.readAsBytes();
-                      await ApiRepository().Video_Upload(byteFormatOfImageFile);
-                      //await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfImageFile);
+                      await ApiRepository().Video_Upload(byteFormatOfVideoFile);
+                      await ApiRepository().VIPV_Selfie_Upload(byteFormatOfImageFile);
                       await ApiRepository().UpdateStage_Id();
 
                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -416,7 +436,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Image(image: AssetImage('assets/images/bright-lightbulb.png')),
+                                  Center(child: lightBulbImage),
                                   SizedBox(height: 10,),
                                   Stack(
                                     children: [
@@ -438,7 +458,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Image(image: AssetImage('assets/images/reading-eyeglasses.png')),
+                                  Center(child: glassesImage),
                                   SizedBox(height: 10,),
                                   Stack(
                                     children: [
@@ -465,7 +485,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Image(image: AssetImage('assets/images/hat.png')),
+                                  Center(child: hatImage),
                                   SizedBox(height: 10,),
                                   Stack(
                                     children: [
@@ -488,7 +508,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Image(image: AssetImage('assets/images/face-mask.png')),
+                                  Center(child: faceMaskImage),
                                   SizedBox(height: 10,),
                                   Stack(
                                     children: [

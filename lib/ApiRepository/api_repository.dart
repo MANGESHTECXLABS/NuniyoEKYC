@@ -1,5 +1,6 @@
 /*This class file consists of calls to API Endpoints*/
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +8,7 @@ import 'dart:convert';
 import 'package:nuniyoekyc/globals.dart' as globals;
 import 'package:http_parser/http_parser.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../globals.dart';
@@ -239,6 +241,8 @@ class ApiRepository {
     }
   }
 
+
+
   Future<String> isValidIFSC(String ifscCode) async{
     var request = http.Request('GET', Uri.parse('https://ifsc.razorpay.com/$ifscCode'));
     //var request = http.Request('GET', Uri.parse('https://ifsc.razorpay.com/BARB0DBGHTW'));
@@ -335,6 +339,49 @@ class ApiRepository {
     }
   }
 
+  Future<bool> Get_eSign_Document_Details() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Get_eSign_Document_Details Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Get_eSign_Document_Details for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Get_eSign_Document_Details'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id",
+      "document_id": "DID2110111731000178XNKQMDIEKANUN"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      print(result);
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      print(result);
+      int result_Id = valueMap["res_Output"][0]["result_Id"];
+
+      print("STATUS : "+result_Id.toString());
+      if(result_Id==1){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
+
   Future<void> SolicitPANDetailsFetchALLKRALocal(String panCard,String dOB) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling Solicit Pan Using API"+jwt_token);
@@ -419,17 +466,23 @@ class ApiRepository {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      return "docID";
+      String result = await response.stream.bytesToString();
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      print(result);
+      //print("Your OTP IS VERIFIED OR NOT DEPENDS ON "+result_Id.toString());
+      String docId = valueMap["res_Output"][0]["result_Description"];
+      return docId;
     }
     else {
       print(response.reasonPhrase);
-      return "";
+      //return "";
+      return "DID211025165331749CNICTCZNSK7Z1M";
     }
   }
 
 
-  Future<void> Digio_eSign_Document_Download() async{
+  Future<File> Digio_eSign_Document_Download() async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling Digio_eSign_Document_Upload Using API"+jwt_token);
 
@@ -454,10 +507,21 @@ class ApiRepository {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      var result = await response.stream.bytesToString();
+      String fileName = "pdfsasas";
+      final dir = await getExternalStorageDirectory();
+      final file = File("${dir!.path}/$fileName.pdf");
+      await file.writeAsBytes(result as Uint8List);
+      return file;
     }
     else {
       print(response.reasonPhrase);
+      var result = "";
+      String fileName = "pdfsasas";
+      final dir = await getExternalStorageDirectory();
+      final file = File("${dir!.path}/$fileName.pdf");
+      await file.writeAsBytes(result as Uint8List);
+      return file;
     }
   }
 
@@ -753,6 +817,39 @@ class ApiRepository {
 
     var request;
     request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
+    request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
+        contentType: new MediaType('application', 'octet-stream'),
+        filename: "file_up"));
+    request.fields.addAll({
+      'Lead_Id': '$lead_id'
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+
+  Future<void> VIPV_Selfie_Upload(List<int> byteFormatOfFile) async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling SaveIPVVideo Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("VIPV_Selfie_Upload for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request;
+    request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/VIPV_Selfie_Upload'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
         filename: "file_up"));

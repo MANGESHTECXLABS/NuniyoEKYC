@@ -436,7 +436,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                         }
                         if(drawnDigitalSignatureImage!=null){
                           print("Uploading Drawn Digital Signature");
-                          await ApiRepository().DocumentUploadDigitalSignature(drawnDigitalSignatureImage);
+                          List<int> byteFormatOfFile = drawnDigitalSignatureImage!.buffer.asUint8List();
+                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
                         }
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -448,6 +449,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           ));
                           return;
                         }
+
                         ///Update Stage ID Here
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         await ApiRepository().UpdateStage_Id();
@@ -580,6 +582,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   void _handleSaveButtonPressed() async {
     final data = await signatureGlobalKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await data.toByteData(format: ui.ImageByteFormat.png);
+
     drawnDigitalSignatureImage = bytes;
     showDrawnDigitalSignatureImage = true;
     print(data);
