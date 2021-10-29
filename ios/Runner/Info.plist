@@ -61,11 +61,11 @@
 
         <!-- Permission options for the `camera` group -->
         <key>NSCameraUsageDescription</key>
-            <string>camera</string>
+            <string>Can I use the camera please?</string>
 
         <!-- Permission options for the `microphone` group -->
         <key>NSMicrophoneUsageDescription</key>
-            <string>Microphone Usage</string>
+            <string>Can I use the mic please?</string>
 
         <!-- Permission options for the `Payment` group -->
         <key>LSApplicationQueriesSchemes</key>
