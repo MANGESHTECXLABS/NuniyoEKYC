@@ -440,7 +440,7 @@ class ApiRepository {
       'Content-Type': 'application/json'
     };
 
-    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/generatepdf/Generate_Lead_Pdf'));
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Generate_Lead_Pdf_new'));
     request.body = json.encode({
       "lead_Id": "$lead_id"
     });
@@ -501,7 +501,7 @@ class ApiRepository {
 
   Future<File> Digio_eSign_Document_Download() async{
     String jwt_token= await GetCurrentJWTToken();
-    print("Calling Digio_eSign_Document_Upload Using API"+jwt_token);
+    print("Calling Digio_eSign_Document_Download Using API"+jwt_token);
 
     String lead_id = await GetLeadId();
     print("Digio_eSign_Document_Download for Lead ID : "+lead_id);
@@ -550,7 +550,7 @@ class ApiRepository {
 
   Future<void> DocumentUploadLocal() async{}
 
-  Future<bool> DocumentUploadPAN(List<int> byteFormatOfFile) async{
+  Future<bool> DocumentUploadPAN(List<int> byteFormatOfFile,String fileExtension) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadPANLocal Using API"+jwt_token);
@@ -567,7 +567,7 @@ class ApiRepository {
     request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_PAN'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
-        filename: "file_up"));
+        filename: "$fileExtension"));
     request.fields.addAll({
       'Lead_Id': '$lead_id'
     });
@@ -585,7 +585,7 @@ class ApiRepository {
     }
   }
 
-  Future<bool> DocumentUploadDigitalSignature(List<int> byteFormatOfFile) async{
+  Future<bool> DocumentUploadDigitalSignature(List<int> byteFormatOfFile,String fileExtension) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadDigitalSignature Using API"+jwt_token);
@@ -602,7 +602,7 @@ class ApiRepository {
     request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_Signature'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
-        filename: "file_up"));
+        filename: "$fileExtension"));
     request.fields.addAll({
       'Lead_Id': '$lead_id'
     });
@@ -819,7 +819,7 @@ class ApiRepository {
     }
   }
 
-  Future<void> Video_Upload(List<int> byteFormatOfFile) async{
+  Future<void> Video_Upload(List<int> byteFormatOfFile,String fileExtension) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling SaveIPVVideo Using API"+jwt_token);
 
@@ -835,7 +835,7 @@ class ApiRepository {
     request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/Video_Upload'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
-        filename: "file_up"));
+        filename: "$fileExtension"));
     request.fields.addAll({
       'Lead_Id': '$lead_id'
     });
@@ -851,7 +851,7 @@ class ApiRepository {
     }
   }
 
-  Future<void> VIPV_Selfie_Upload(List<int> byteFormatOfFile) async{
+  Future<void> VIPV_Selfie_Upload(List<int> byteFormatOfFile,String fileExtension) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling SaveIPVVideo Using API"+jwt_token);
 
@@ -867,7 +867,7 @@ class ApiRepository {
     request = http.MultipartRequest('POST', Uri.parse('$BASE_API_LINK_URL/api/in_person_verification/VIPV_Selfie_Upload'));
     request.files.add(await http.MultipartFile.fromBytes('File', byteFormatOfFile,
         contentType: new MediaType('application', 'octet-stream'),
-        filename: "file_up"));
+        filename: "$fileExtension"));
     request.fields.addAll({
       'Lead_Id': '$lead_id'
     });

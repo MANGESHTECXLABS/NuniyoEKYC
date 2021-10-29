@@ -426,7 +426,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
     Navigator.pushNamed(context,ThisStepId);
   }
 
-
   Future<bool> _onWillPop() {
     return Future.value(false);
   }

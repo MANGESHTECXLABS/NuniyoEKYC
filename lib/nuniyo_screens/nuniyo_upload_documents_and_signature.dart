@@ -412,20 +412,25 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print("Uploading Image Format of Pan to API");
                           ///Upload APi
                           List<int> byteFormatOfFile = await imageFilePan!.readAsBytes();
-                          await ApiRepository().DocumentUploadPAN(byteFormatOfFile);
+                          String fileExtension = imageFilePan!.path.split('/').last;
+                          print(fileExtension);
+                          await ApiRepository().DocumentUploadPAN(byteFormatOfFile,fileExtension);
                           ///Upload APi
                         }
                         if(imageFileDigitalSignature.toString()!='File: \'/assets/images/congratulations.png\'' && imageFileDigitalSignature!=null){
                           print("Uploading Image Format of Digital Signature");
+
                           List<int> byteFormatOfFile = await imageFileDigitalSignature!.readAsBytes();
-                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                          String fileExtension = imageFileDigitalSignature!.path.split('/').last;
+                          print(fileExtension);
+                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,fileExtension);
                         }
                         if(pdfPanImagefile.name!="/assets/images/congratulations.png"){
                           print("Uploading PDF Format of PAN IMAGE FILE");
                           Uint8List? byteList = pdfPanImagefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
-                            await ApiRepository().DocumentUploadPAN(byteFormatOfFile);
+                            await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString());
                           }
                           //List<int>? byteFormatOfFile =await pdfPanImagefile.bytes!.toList(growable: true);
 
@@ -436,23 +441,24 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           Uint8List? byteList = pdfPanDigitalSignaturefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
-                            await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                            await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,pdfPanDigitalSignaturefile.extension.toString());
                           }
                         }
                         if(drawnDigitalSignatureImage!=null){
                           print("Uploading Drawn Digital Signature");
                           List<int> byteFormatOfFile = drawnDigitalSignatureImage!.buffer.asUint8List();
-                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile);
+                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
                         }
                         else{
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.black,
-                            content: Text(
-                              "Please Upload Proper Documents!",
-                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-                            ),
-                          ));
-                          return;
+                          //await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
+                          //ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            //backgroundColor: Colors.black,
+                            //content: Text(
+                              //"Please Upload Proper Documents!",
+                              //style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            //),
+                          //));
+                          //return;
                         }
 
                         ///Update Stage ID Here

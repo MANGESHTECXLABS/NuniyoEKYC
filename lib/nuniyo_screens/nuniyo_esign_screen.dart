@@ -47,8 +47,7 @@ class _EsignScreenState extends State<EsignScreen> {
   void initState() {
     super.initState();
     //manageSteps();
-    GeneratePDF();
-    GetDocumentIDForEsign();
+    GeneratePDFAndGetEsignDocID();
     fetchDetails();
   }
 
@@ -216,15 +215,12 @@ class _EsignScreenState extends State<EsignScreen> {
     print("YOU ARE ON THIS STEP : "+routeName);
   }
 
-  Future<void> GetDocumentIDForEsign() async{
+  Future<void> GeneratePDFAndGetEsignDocID() async{
+    await ApiRepository().Generate_Lead_Pdf();
     docID = await ApiRepository().Digio_eSign_Document_Upload();
     if(docID==""){
       ///Do Something here to handle Error
     }
-  }
-
-  Future<void> GeneratePDF() async{
-    await ApiRepository().Generate_Lead_Pdf();
   }
 
   Future<void> fetchDetails() async {

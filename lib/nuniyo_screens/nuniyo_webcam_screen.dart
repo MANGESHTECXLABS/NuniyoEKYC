@@ -356,9 +356,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
                       List<int> byteFormatOfVideoFile = await thumbnailFile.readAsBytes();
                       print(imageFile);
+                      String fileExtension = imageFile!.path.split('/').last;
+                      print("Image From IPV Video"+fileExtension);
                       List<int> byteFormatOfImageFile = await imageFile!.readAsBytes();
-                      await ApiRepository().Video_Upload(byteFormatOfVideoFile);
-                      await ApiRepository().VIPV_Selfie_Upload(byteFormatOfImageFile);
+                      await ApiRepository().Video_Upload(byteFormatOfVideoFile,"mp4");
+                      await ApiRepository().VIPV_Selfie_Upload(byteFormatOfImageFile,fileExtension);
                       await ApiRepository().UpdateStage_Id();
                       //Once Tap Disable this button.
                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -435,8 +437,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       viewOTPContainer=true;
       print("Naya Screen load kar chuka");
     }
-
-
 
     // App state changed before we got the chance to initialize.
     if (controller == null || !controller!.value.isInitialized) {
@@ -889,7 +889,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       return null;
     }
   }
-
 }
 
 List<CameraDescription> cameras = [];
