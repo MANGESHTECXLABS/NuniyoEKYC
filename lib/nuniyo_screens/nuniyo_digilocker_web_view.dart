@@ -27,6 +27,8 @@ class _BrowserViewXState extends State<BrowserViewX> {
   String code = "";
   String state = "";
 
+  bool executeOnce = false;
+
   @override
   void initState() {
     super.initState();
@@ -92,11 +94,14 @@ class _BrowserViewXState extends State<BrowserViewX> {
         }
         if(src.contains("&hmac")){
           print("Contains HMAC");
-          getCodeStateHMAC(src);
+          if(!executeOnce){
+            executeOnce = true;
+            getCodeStateHMAC(src);
+          }
         }
         else{
           print("Don't know if contains HMAC");
-          getCodeStateHMAC(src);
+          //getCodeStateHMAC(src);
         }
         },
         jsContent: const {

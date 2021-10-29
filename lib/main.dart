@@ -6,6 +6,7 @@ import 'dart:io';
 ///USE THE ABOVE LINK TO INTEGRATE DIGIO ESIGN ON IOS
 
 import 'package:flutter/material.dart';
+import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/extra_demo_screens/auto_fill_otp.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_bank_email_pan_validation_screen.dart';
@@ -14,6 +15,7 @@ import 'package:nuniyoekyc/nuniyo_screens/nuniyo_esign_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_mobile_validation_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_options_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_personal_details_screen.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_splash_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_webcam_screen.dart';
 import 'package:nuniyoekyc/utils/Router.dart';
 import 'nuniyo_screens/nuniyo_options_screen_two.dart';
@@ -25,7 +27,6 @@ void main() {
   ErrorWidget.builder = (FlutterErrorDetails details) => Container(
     color : Colors.white,
   );
-
   ///To Override SSL Certificate when used with HTTPS Apis
   HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xff6A4EEE),
       ),
-      //home:UploadDocumentScreen(),
+      //home:WebCamScreen(),
       initialRoute: '/',
       onGenerateRoute: ScreenRouter.generateRoute,
     );

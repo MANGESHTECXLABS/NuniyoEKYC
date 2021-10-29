@@ -61,6 +61,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   bool isPANImageFromCamera = false;
   bool isDigitalSignatureFromCamera = false;
 
+  bool onceProceedClicked = false;
+
   Future<Null> _pickImageForPan(ImageSource source) async {
     if(source == ImageSource.gallery){
       print("Lets PIck Image From Gallery");
@@ -102,6 +104,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           if (imageFilePan != null) {
             setState(() {
               isPANImageFromCamera  = false;
+              print("SOME ISSUES HERE??????GALLL");
               Navigator.pop(context);
               _cropImageForPan();
             });
@@ -128,6 +131,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       if (imageFilePan != null) {
         setState(() {
           isPANImageFromCamera = true;
+          print("SOME ISSUES HERE??????");
           Navigator.pop(context);
           _cropImageForPan();
         });
@@ -298,7 +302,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                       }, icon: Icon(Icons.check_circle,size: 36.0,color: Colors.green,)),
                       SizedBox(width: 30,),
                       IconButton(onPressed:(){ showPanCardImageBox = !showPanCardImageBox;setState(() {
-
                       });}, icon: Icon(Icons.remove_red_eye_outlined,size: 36.0,color: primaryColorOfApp,)),
                       SizedBox(width: 30,),
                       IconButton(onPressed:(){
@@ -401,7 +404,9 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:(tempPanUploaded&&tempDigitalPadUploaded)?() async {
+                    onPressed:(!onceProceedClicked&&(tempPanUploaded&&tempDigitalPadUploaded))?() async {
+                        onceProceedClicked = true;
+                        setState(() {});
                         if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null){
                           //CALL APIS TO UPLOAD
                           print("Uploading Image Format of Pan to API");
@@ -526,6 +531,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           setState(() {
 
                           });
+                          ///
                           Navigator.pop(context);
                         },
                         color: primaryColorOfApp,
@@ -844,6 +850,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   }
 
 
+
   Future<Null> _cropImageForPan() async {
     File? croppedFile = await ImageCropper.cropImage(
         sourcePath: imageFilePan!.path,
@@ -879,6 +886,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       }
       imageFilePan = croppedFile;
       tempPanUploaded = true;
+      //Navigator.pop(context);
       setState(() {
 
       });

@@ -63,6 +63,10 @@
         <key>NSCameraUsageDescription</key>
             <string>camera</string>
 
+        <!-- Permission options for the `microphone` group -->
+        <key>NSMicrophoneUsageDescription</key>
+            <string>Microphone Usage</string>
+
         <!-- Permission options for the `Payment` group -->
         <key>LSApplicationQueriesSchemes</key>
             <array>

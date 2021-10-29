@@ -83,8 +83,12 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
       FocusScope.of(context).requestFocus(_IPVOTPTextFieldFocusNode);
+      _scrollToTop();
     });
   }
+
+  AppLifecycleState? _notification;
+
 
   @override
   void initState() {
@@ -96,7 +100,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     hatImage = Image.asset('assets/images/hat.png');
 
     fetchOTP();
+    print("HOla");
     initializeCamera();
+
     setState(() {});
 
     _ambiguate(WidgetsBinding.instance)?.addObserver(this);
@@ -114,7 +120,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     }
     _IPVOTPTextFieldFocusNode = FocusNode();
   }
-
 
   @override
   void didChangeDependencies() {
@@ -136,6 +141,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   Future<bool> _onWillPop() {
     initializeCamera();
+    viewOTPContainer = true;
     setState(() {});
     return Future.value(false);
   }
@@ -193,7 +199,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   child:Align(
                     alignment: Alignment.center,
                     child: Container(
-                      height: 60.0,
+                      height: 55.0,
                       width: MediaQuery.of(context).size.width/2,
                       decoration: new BoxDecoration(
                         boxShadow: [ //background color of box
@@ -221,26 +227,29 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                 SizedBox(height: 20,),
                 ///Video Camera
                 Expanded(
-                  child: Center(child:Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Center(
-                        child: _cameraPreviewWidget(),
+                  child: Center(child:
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Center(
+                          child: _cameraPreviewWidget(),
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(
-                        color:
-                        controller != null && controller!.value.isRecordingVideo
-                            ? Colors.green
-                            : Colors.grey,
-                        width: 3.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        //shape: BoxShape.circle,
+                        border: Border.all(
+                          color:
+                          controller != null && controller!.value.isRecordingVideo
+                              ? Colors.green
+                              : Colors.grey,
+                          width: 3.0,
+                        ),
                       ),
                     ),
                   ),
-                )),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(
@@ -345,8 +354,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       double sizeInMb2 = sizeInBytes / (1024 * 1024);
                       print("AAPKA FILE SIZE HAI :"+sizeInMb2.toString());
 
-
                       List<int> byteFormatOfVideoFile = await thumbnailFile.readAsBytes();
+                      print(imageFile);
                       List<int> byteFormatOfImageFile = await imageFile!.readAsBytes();
                       await ApiRepository().Video_Upload(byteFormatOfVideoFile);
                       await ApiRepository().VIPV_Selfie_Upload(byteFormatOfImageFile);
@@ -356,7 +365,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       String stage_id = prefs.getString(STAGE_KEY);
                       print("Let\'s go To");
                       print(stage_id);
-                      Navigator.pushNamed(context, "Document");
+                      Navigator.pushReplacementNamed(context, stage_id);
                     }:null,
                     color: primaryColorOfApp,
                     child: Text(
@@ -401,14 +410,44 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+
+    setState(() { _notification = state;});
+    print("APP KA STAGE HAI :"+_notification.toString());
+
+    if (Platform.isIOS) {
+      exit(0);
+    } else {
+      SystemNavigator.pop();
+    }
+
+
+    if(state == AppLifecycleState.paused){
+      controller?.dispose();
+    }
+
+    if(state == AppLifecycleState.resumed||state == AppLifecycleState.detached){
+      print("aapka app resumed ya detached  hogaya hai!");
+      //Reload the whole page
+      print("Naya Screen Load Krta hu");
+      controller?.dispose();
+      Navigator.pushReplacementNamed(context, "IPV");
+      controller?.dispose();
+      viewOTPContainer=true;
+      print("Naya Screen load kar chuka");
+    }
+
+
+
     // App state changed before we got the chance to initialize.
     if (controller == null || !controller!.value.isInitialized) {
       return;
     }
     if (state == AppLifecycleState.inactive) {
       controller?.dispose();
+      print("aapka app inactive hogaya hai!");
     } else if (state == AppLifecycleState.resumed) {
       if (controller != null) {
+        viewOTPContainer = true;
         controller = CameraController(cameras[1], ResolutionPreset.max);
       }
     }
@@ -575,11 +614,9 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       return Listener(
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
-        child: RotatedBox(
-            quarterTurns: 1,
         child: Container(
-          height: 200,
-          width: MediaQuery.of(context).size.width,
+          height: 290,
+          width: 200,
           child:CameraPreview(
             controller!,
             child: LayoutBuilder(
@@ -591,7 +628,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     onTapDown: (details) => onViewFinderTap(details, constraints),
                   );
                 }),
-          ),),),
+          ),),
       );
     }
   }
@@ -800,7 +837,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   Future<void> initializeCamera() async {
     // Fetch the available cameras before initializing the app.
     try {
-
       WidgetsFlutterBinding.ensureInitialized();
       cameras = await availableCameras();
     } on CameraException catch (e) {
@@ -817,7 +853,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       }
       else{
         //If you want to change the orientation of webcam
-        controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
+        //controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
         _onWillPop();
       }
     });

@@ -81,7 +81,7 @@ class _CongratsScreenState extends State<CongratsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Congratulations !'),
-                SfPdfViewer.file(pdfFile!),
+                //SfPdfViewer.file(pdfFile!),
                 Center(child: congratsImage),
                 SizedBox(height: 20,),
                 Text("Your application is complete . After verification , you will recieve your login credentials on your e-mail.",textAlign:TextAlign.center,style: GoogleFonts.openSans(
@@ -278,6 +278,20 @@ class _CongratsScreenState extends State<CongratsScreen> {
                               textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
                         ),
                       ),
+                    ),
+                    SizedBox(height: 20,),
+                    Container(
+                      height: MediaQuery.of(context).size.height/6,
+                      width: MediaQuery.of(context).size.width/3,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(0))
+                      ),
+                      child:SfPdfViewer.network(
+                        'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
+                      ) ,
                     ),
                     SizedBox(height: 20,),
                     Container(
