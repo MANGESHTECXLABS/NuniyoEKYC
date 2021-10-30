@@ -1,7 +1,9 @@
 ///Congrats Screen
 
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,7 +33,9 @@ class _CongratsScreenState extends State<CongratsScreen> {
 
   Image? congratsImage;
 
-  File? pdfFile = new File("/assets/images/congratulations.png");
+  File? pdfFile;
+
+  bool viewForm = false;
 
   @override
   void initState() {
@@ -47,11 +51,26 @@ class _CongratsScreenState extends State<CongratsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     emailAddress = await prefs.getString('EMAIL_ID');
     phoneNumber = await prefs.getString(MOBILE_NUMBER_KEY);
-    await ApiRepository().Generate_Lead_Pdf();
+    //await ApiRepository().Generate_Lead_Pdf();
 
     //pdfFile = await ApiRepository().Digio_eSign_Document_Download();
     await ApiRepository().Get_eSign_Document_Details();
     await ApiRepository().Digio_eSign_Document_Download();
+    Uint8List? doc = await ApiRepository().Download_Application_Pdf();
+
+    //Lets make a file and show it inside it
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/example.pdf';
+    final File file = File(path);
+
+    if(doc!=null){
+       pdfFile = await file.writeAsBytes(doc);
+       setState(() {
+       });
+    }
+
+
+
     setState(() {
     });
   }
@@ -71,9 +90,18 @@ class _CongratsScreenState extends State<CongratsScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(child: Scaffold(
+      floatingActionButton: viewForm?new FloatingActionButton(
+          elevation: 0.0,
+          child: new Icon(Icons.arrow_back_sharp),
+          backgroundColor: primaryColorOfApp,
+          onPressed: (){
+            viewForm=false;
+            setState(() {});
+          }
+      ):null,
       resizeToAvoidBottomInset: true,
       appBar: WidgetHelper().NuniyoAppBar(),
-      body: SingleChildScrollView(
+      body: !viewForm?SingleChildScrollView(
         child: IntrinsicHeight(
           child: Padding(
             padding: const EdgeInsets.all(30.0),
@@ -81,7 +109,6 @@ class _CongratsScreenState extends State<CongratsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Congratulations !'),
-                //SfPdfViewer.file(pdfFile!),
                 Center(child: congratsImage),
                 SizedBox(height: 20,),
                 Text("Your application is complete . After verification , you will recieve your login credentials on your e-mail.",textAlign:TextAlign.center,style: GoogleFonts.openSans(
@@ -270,7 +297,11 @@ class _CongratsScreenState extends State<CongratsScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          viewForm = !viewForm;
+                          setState(() {
+                          });
+                        },
                         color: primaryColorOfApp,
                         child: Text(
                             "View Form",textAlign:TextAlign.center,
@@ -281,6 +312,26 @@ class _CongratsScreenState extends State<CongratsScreen> {
                     ),
                     SizedBox(height: 20,),
                     Container(
+                      color: Colors.transparent,
+                      height: 60,
+                      width: MediaQuery.of(context).size.width,
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        onPressed: () {
+
+                        },
+                        color: primaryColorOfApp,
+                        child: Text(
+                            "Download Form",textAlign:TextAlign.center,
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    Visibility(visible: viewForm,child:Container(
                       height: MediaQuery.of(context).size.height/6,
                       width: MediaQuery.of(context).size.width/3,
                       decoration: BoxDecoration(
@@ -289,10 +340,8 @@ class _CongratsScreenState extends State<CongratsScreen> {
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(0))
                       ),
-                      child:SfPdfViewer.network(
-                        'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
-                      ) ,
-                    ),
+                      child:SfPdfViewer.file(pdfFile!),
+                    )),
                     SizedBox(height: 20,),
                     Container(
                       height: 80,
@@ -329,11 +378,9 @@ class _CongratsScreenState extends State<CongratsScreen> {
             ),
           ),
         ),
-      ),
+      ):SfPdfViewer.file(pdfFile!),
     ), onWillPop: _onWillPop);
   }
-
-
 
   Future<bool> _onWillPop() {
     return Future.value(false);

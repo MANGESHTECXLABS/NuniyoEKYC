@@ -1,4 +1,5 @@
 /*This class file consists of calls to API Endpoints*/
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
@@ -76,6 +77,7 @@ class ApiRepository {
   Future<String> GetLeadId() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String lead_id= prefs.getString(LEAD_ID_KEY);
+    print(lead_id);
     print("LEAD ID STORED INSIDE SHARED PREFERENCES :" + lead_id);
     return lead_id;
   }
@@ -493,21 +495,66 @@ class ApiRepository {
     else {
       print(response.reasonPhrase);
       //return "";
+      print("DUMMY DOC ID");
       Set_ESIGN_DOC_ID("DID211026152742428GVA27ENECZJJWT");
       return "DID211026152742428GVA27ENECZJJWT";
     }
   }
 
 
-  Future<File> Digio_eSign_Document_Download() async{
+
+  Future<Uint8List?> Download_Application_Pdf() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Download_Application_Pdf Using API"+jwt_token);
+
+    String lead_id = await GetLeadId();
+    print("Download_Application_Pdf for Lead ID : "+lead_id);
+
+    String doc_id = await Get_ESIGN_DOC_ID();
+    print("Download_Application_Pdf for Doc Id : "+doc_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Download_Application_Pdf'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      Uint8List byteFormatOfPdf = await response.stream.toBytes();
+      return byteFormatOfPdf;
+      //String body = utf8.decode(await response.stream.toBytes());
+      //jsonDecode(utf8.decode(response.stream.toBytes()))
+      //print(some.runtimeType);
+      //return some;
+      //String fileName = "pdfsasas";
+      //final dir = await getExternalStorageDirectory();
+      //final file = File("${dir!.path}/$fileName.pdf");
+      //await file.writeAsBytes(result as Uint8List);
+      //return file;
+    }
+    else {
+      print(response.reasonPhrase);
+      return null;
+    }
+  }
+
+
+  Future<File?> Digio_eSign_Document_Download() async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling Digio_eSign_Document_Download Using API"+jwt_token);
 
     String lead_id = await GetLeadId();
     print("Digio_eSign_Document_Download for Lead ID : "+lead_id);
 
-    String mobile_no = await GetMobileNumber();
-    print("Digio_eSign_Document_Download for Mobile Number : "+mobile_no);
+    String doc_id = await Get_ESIGN_DOC_ID();
+    print("Digio_eSign_Document_Download for Doc Id : "+doc_id);
 
     var headers = {
       'Authorization': 'Bearer $jwt_token',
@@ -516,7 +563,7 @@ class ApiRepository {
 
     var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/eSign/Digio_eSign_Document_Download'));
     request.body = json.encode({
-      "mobile_No": "$mobile_no",
+      "document_id": "$doc_id",
       "lead_Id": "$lead_id"
     });
     request.headers.addAll(headers);
@@ -525,11 +572,12 @@ class ApiRepository {
 
     if (response.statusCode == 200) {
       var result = await response.stream.bytesToString();
+      print(result);
       String fileName = "pdfsasas";
-      final dir = await getExternalStorageDirectory();
-      final file = File("${dir!.path}/$fileName.pdf");
-      await file.writeAsBytes(result as Uint8List);
-      return file;
+      //final dir = await getExternalStorageDirectory();
+      //final file = File("${dir!.path}/$fileName.pdf");
+      //await file.writeAsBytes(result as Uint8List);
+      return null;
     }
     else {
       print(response.reasonPhrase);
@@ -538,7 +586,7 @@ class ApiRepository {
       final dir = await getExternalStorageDirectory();
       final file = File("${dir!.path}/$fileName.pdf");
       await file.writeAsBytes(result as Uint8List);
-      return file;
+      return null;
     }
   }
 

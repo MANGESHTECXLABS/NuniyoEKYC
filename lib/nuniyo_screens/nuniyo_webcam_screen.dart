@@ -266,8 +266,20 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       child: TextField(
                         onChanged: (value) async {
                           if(value.length==6){
-                            enableProceedBtnOTPMatched = await ApiRepository().VerifyIPVOTP(value);
-                            showOTPError = !enableProceedBtnOTPMatched;
+                            bool isOtpCorrect = await ApiRepository().VerifyIPVOTP(value);
+                            if(isOtpCorrect){
+                              showOTPError = false;
+                              showRecordingButton = true;
+                              enableProceedBtnOTPMatched = true;
+                              setState(() {
+                              });
+                            }
+                            else{
+                              showOTPError = true;
+                              showRecordingButton = false;
+                              enableProceedBtnOTPMatched = false;
+                              setState(() {});
+                            }
                           }
                         },
                         maxLength: 6,
@@ -278,7 +290,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                         controller: IPVOTPTextEditingController,
                         onTap: _requestIPVOTPTextFieldFocusNode,
                         decoration: InputDecoration(
-                            enabled: showRecordingButton,
                             contentPadding: EdgeInsets.fromLTRB(25.0,40.0,0.0,40.0),
                             counter: Offstage(),
                             errorText: showOTPError?"Enter a valid OTP":null,
@@ -313,7 +324,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                           textStyle: TextStyle(color:showRecordingButton? primaryColorOfApp:Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
                     ),
                   ),
-                )),
+                ),),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(
@@ -590,7 +601,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                             ),
                             onPressed: (){
                               initializeRecorder();
-                              showRecordingButton = true;
+                              //showRecordingButton = true;
                               viewOTPContainer = true;
                               _scrollToTop();
                               setState(() {});
