@@ -68,6 +68,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       print("Lets PIck Image From Gallery");
       result = await FilePicker.platform.pickFiles(type: FileType.custom,
         allowedExtensions: ['pdf','png','jpg','jpeg'],);
+        //allowedExtensions: ['jpg'],);
       if(result != null) {
         ///FILE SIZE
         File theNewPickedFile = File(result!.files.first.path.toString());
@@ -144,6 +145,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       print("Lets PIck Image From Gallery");
       result = await FilePicker.platform.pickFiles(type: FileType.custom,
         allowedExtensions: ['pdf','png','jpg','jpeg'],);
+      //allowedExtensions: ['jpg'],);
       if(result != null) {
         ///FILE SIZE
         File theNewPickedFile = File(result!.files.first.path.toString());
@@ -191,8 +193,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
           setState(() {
           });
         }
-
-
       } else {
         // User canceled the picker
       }
@@ -407,6 +407,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                     onPressed:(!onceProceedClicked&&(tempPanUploaded&&tempDigitalPadUploaded))?() async {
                         onceProceedClicked = true;
                         setState(() {});
+                        bool isAPanImage = false;
                         if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null){
                           //CALL APIS TO UPLOAD
                           print("Uploading Image Format of Pan to API");
@@ -414,7 +415,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           List<int> byteFormatOfFile = await imageFilePan!.readAsBytes();
                           String fileExtension = imageFilePan!.path.split('/').last;
                           print(fileExtension);
-                          await ApiRepository().DocumentUploadPAN(byteFormatOfFile,fileExtension);
+                          isAPanImage = await ApiRepository().DocumentUploadPAN(byteFormatOfFile,fileExtension);
                           ///Upload APi
                         }
                         if(imageFileDigitalSignature.toString()!='File: \'/assets/images/congratulations.png\'' && imageFileDigitalSignature!=null){
@@ -430,7 +431,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           Uint8List? byteList = pdfPanImagefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
-                            await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString());
+                            isAPanImage = await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString());
                           }
                           //List<int>? byteFormatOfFile =await pdfPanImagefile.bytes!.toList(growable: true);
 
@@ -448,6 +449,20 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print("Uploading Drawn Digital Signature");
                           List<int> byteFormatOfFile = drawnDigitalSignatureImage!.buffer.asUint8List();
                           await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
+                        }
+                        if(!isAPanImage){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.black,
+                          content: Text(
+                          "Please Upload A Valid PAN!",
+                          style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                          ),
+                          ));
+                          onceProceedClicked = false;
+                          setState(() {
+
+                          });
+                          return;
                         }
                         else{
                           //await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");

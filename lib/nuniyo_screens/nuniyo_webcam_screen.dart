@@ -188,7 +188,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   ],
                 ),
                 //Container(
-                //  child: imageFile==null?null:Image.file(File(imageFile!.path)),
+                  //child: imageFile==null?null:Image.file(File(imageFile!.path)),
                 //),
                 Visibility(visible:makeStepsVisible,child: Text("1.Click on Capture button to get the OTP on screen.\n\n2.Once you see the OTP the recording will start.\n\n3.Enter the OTP in the textbox below capture button.\n\n4.Once you enter the OTP recording will stop and it will get verified.\n",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),

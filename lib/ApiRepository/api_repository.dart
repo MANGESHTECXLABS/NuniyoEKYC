@@ -624,8 +624,23 @@ class ApiRepository {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      return true;
+      String result = await response.stream.bytesToString();
+      print("Yeh Pan Upload Ka Response Aayaa hai");
+      print(result);
+      if(result==""){
+        return true;
+      }
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      print(result);
+      int result_Id = valueMap["res_Output"][0]["result_Id"];
+      print(result_Id);
+      if(result_Id==1){
+        return true;
+      }
+      else{
+        return false;
+      }
     }
     else {
       print(response.reasonPhrase);
