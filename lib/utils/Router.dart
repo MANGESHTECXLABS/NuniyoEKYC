@@ -11,6 +11,7 @@ import 'package:nuniyoekyc/nuniyo_screens/nuniyo_options_screen_two.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_personal_details_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_splash_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_upload_documents_and_signature.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_waiting_for_esign_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_webcam_screen.dart';
 
 /*
@@ -63,6 +64,8 @@ class ScreenRouter {
       //EXTRA
       case '/webview':
         return MaterialPageRoute(builder: (_) => BrowserViewX());
+      case 'WAITSCREEN':
+        return MaterialPageRoute(builder: (_) => WaitingScreenForESign());
     default:
       return MaterialPageRoute(builder: (_) => MobileValidationLoginScreen());
     }

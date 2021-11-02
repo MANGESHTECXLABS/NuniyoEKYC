@@ -348,6 +348,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ),
                     onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() async {
                       print("Uploading Video");
+                      enableProceedBtnRecordingDone = false;
+                      setState(() {});
                       //List<int> byteFormatOfVideoFile = await videoFile!.readAsBytes();
                       final file = File(videoFile!.path);
                       print("Aapka File :"+videoFile!.path);

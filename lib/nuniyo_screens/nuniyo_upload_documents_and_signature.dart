@@ -8,6 +8,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -406,16 +407,29 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                     ),
                     onPressed:(!onceProceedClicked&&(tempPanUploaded&&tempDigitalPadUploaded))?() async {
                         onceProceedClicked = true;
+                        bool panUploaded = false;
                         setState(() {});
                         bool isAPanImage = false;
                         if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null){
                           //CALL APIS TO UPLOAD
                           print("Uploading Image Format of Pan to API");
                           ///Upload APi
-                          List<int> byteFormatOfFile = await imageFilePan!.readAsBytes();
+                          ///
+                          Uint8List byteFormatOfFile = await imageFilePan!.readAsBytes();
                           String fileExtension = imageFilePan!.path.split('/').last;
                           print(fileExtension);
-                          isAPanImage = await ApiRepository().DocumentUploadPAN(byteFormatOfFile,fileExtension);
+
+                          //Compress and send
+                          var result = await FlutterImageCompress.compressWithList(
+                            byteFormatOfFile,
+                            quality: 50,
+                          );
+                          print(byteFormatOfFile.length);
+                          print(result.length);
+                          ////////
+
+                          isAPanImage = await ApiRepository().DocumentUploadPAN(result,fileExtension);
+                          panUploaded = true;
                           ///Upload APi
                         }
                         if(imageFileDigitalSignature.toString()!='File: \'/assets/images/congratulations.png\'' && imageFileDigitalSignature!=null){
@@ -426,13 +440,14 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print(fileExtension);
                           await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,fileExtension);
                         }
-                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"){
+                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"&&!panUploaded){
                           print("Uploading PDF Format of PAN IMAGE FILE");
                           Uint8List? byteList = pdfPanImagefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
                             isAPanImage = await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString());
                           }
+                          panUploaded = true;
                           //List<int>? byteFormatOfFile =await pdfPanImagefile.bytes!.toList(growable: true);
 
                         }

@@ -4,12 +4,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -37,6 +39,8 @@ class _CongratsScreenState extends State<CongratsScreen> {
 
   bool viewForm = false;
 
+  Uint8List? pdfInBytesFormat;
+
   @override
   void initState() {
     super.initState();
@@ -54,20 +58,18 @@ class _CongratsScreenState extends State<CongratsScreen> {
     //await ApiRepository().Generate_Lead_Pdf();
 
     //pdfFile = await ApiRepository().Digio_eSign_Document_Download();
-    await ApiRepository().Get_eSign_Document_Details();
+    //await ApiRepository().Get_eSign_Document_Details();
     await ApiRepository().Digio_eSign_Document_Download();
-    Uint8List? doc = await ApiRepository().Download_Application_Pdf();
+    pdfInBytesFormat = await ApiRepository().Download_Application_Pdf();
 
     //Lets make a file and show it inside it
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/example.pdf';
     final File file = File(path);
 
-    if(doc!=null){
-       pdfFile = await file.writeAsBytes(doc);
-       setState(() {
-       });
-    }
+    pdfFile = await file.writeAsBytes(pdfInBytesFormat!);
+    setState(() {
+    });
 
 
 
@@ -319,8 +321,35 @@ class _CongratsScreenState extends State<CongratsScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          //First Save Mangal Keshav Document Here...In a Local Storage!
 
+                          // the downloads folder path
+                          Directory tempDir = await DownloadsPathProvider.downloadsDirectory;
+                          String tempPath = tempDir.path;
+                          var filePath = tempPath + '/nuniyo';
+
+                          //Lets make a file and show it inside it
+                          final File file = File(filePath);
+
+                          pdfFile = await file.writeAsBytes(pdfInBytesFormat!);
+                          setState(() {
+                          });
+
+                          ///Now to Open this File
+                          final _result = await OpenFile.open(filePath);
+                          print(_result.message);
+
+
+                          //Then Show SnackBar
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.black,
+                          content: TextButton(child:Text("Download Completed : Tap to Open",style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),) ,onPressed: (){
+                            ///Open Downloaded Mangal Keshav PDF Here
+                            ///
+                          },),
+                          ),
+                          );
                         },
                         color: primaryColorOfApp,
                         child: Text(

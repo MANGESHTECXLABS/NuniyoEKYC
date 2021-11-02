@@ -69,10 +69,10 @@ public class DigioActivity extends AppCompatActivity implements com.digio.in.esi
     public void onSigningSuccess(String documentId, String message){
         Toast.makeText(this, documentId+" signed successfully", Toast.LENGTH_SHORT).show();
         Log.d(TAG, documentId+"Signed Successfully");
-        Log.d(TAG, "Started UCC As we have successfully signed in");
+        Log.d(TAG, "Starting Waiting Screen to check if Aadhars are same As we have successfully signed in");
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_RUN);
-        intent.putExtra("route", "UCC");
+        intent.putExtra("route", "WAITSCREEN");
 
         ///Request code is to IDentity what Results we want from another activity if the
         //Activity gives back multiple results.

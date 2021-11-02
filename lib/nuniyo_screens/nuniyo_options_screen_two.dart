@@ -119,7 +119,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Platinum",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("1250₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹1250",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(child: Padding(
@@ -130,7 +130,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("1) Deliveries/Debit transaction", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                    Text("11₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -138,7 +138,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("2) Charges for Pledge creation/closure/invocation and Re-Pledge(per ISIN)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("25₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -146,7 +146,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("3) Margin Pledge Creation , Closure , Invocation (per ISIN per instance)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("12₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                               ],
@@ -191,7 +191,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Gold",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("550₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹550",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(visible: _groupValue=="gold",child: Padding(
@@ -202,7 +202,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("1) Deliveries/Debit transaction", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("25₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -210,7 +210,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("2) Charges for Pledge creation/closure/invocation and Re-Pledge(per ISIN)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("50₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹50", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -218,7 +218,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Margin Pledge Creation , Closure , Invocation (per ISIN per instance)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("12₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                             ],
@@ -263,7 +263,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Silver",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("300₹",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹300",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(visible: _groupValue=="silver",child: Padding(
@@ -274,7 +274,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("1) Deliveries/Debit transaction", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("11₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -282,7 +282,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("2) Charges for Pledge creation/closure/invocation and Re-Pledge(per ISIN)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("25₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -290,7 +290,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Margin Pledge Creation , Closure , Invocation (per ISIN per instance)", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("12₹", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                             ],
