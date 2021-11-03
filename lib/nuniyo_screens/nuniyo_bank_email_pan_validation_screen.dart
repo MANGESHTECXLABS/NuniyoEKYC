@@ -366,16 +366,12 @@ class _BankPanEmailValidationScreenState
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           //isValidInputForPan = await ApiRepo().VerifyPAN(phoneNumber, _panNumber);
                           //isPanValidatedSuccessfully = await LocalApiRepo().NSDLeKYCPanAuthenticationLocal(_panNumber);
-                          isPanValidatedSuccessfully = await ApiRepository().GetPanStatusLocal(_panNumber);
 
-                          if (isPanValidatedSuccessfully) {
-                            //Hide KeyBoard Here
-                            FocusScope.of(context).unfocus();
-                            prefs.setString(PAN_NO_KEY, _panNumber);
-                            enableDatePicker = true;
-                            _requestDateTextFieldFocus();
-                          }
-                          showPANErrorText = !isPanValidatedSuccessfully;
+                          FocusScope.of(context).unfocus();
+                          prefs.setString(PAN_NO_KEY, _panNumber);
+                          enableDatePicker = true;
+                          _requestDateTextFieldFocus();
+
                           setState(() {});
                         }
                       },
@@ -1355,20 +1351,28 @@ class _BankPanEmailValidationScreenState
     String phoneNumber = prefs.getString("PhoneNumber");
     print("We fetched phone Number");
     print(phoneNumber);
-    if(isPanValidatedSuccessfully){
-      ///If only 18
-      //enableDatePicker = false;
-      enableBankAccountTextField = true;
-      await ApiRepository().Digio_PanAuthentication(_panTextEditingController.text, _dateController.text);
-      String panOwnerName = prefs.getString("PAN_OWNER_NAME");
-      Fluttertoast.showToast(msg: "PAN OWNER NAME :"+panOwnerName, toastLength: Toast.LENGTH_SHORT);
-      await ApiRepository().SolicitPANDetailsFetchALLKRALocal(_panTextEditingController.text, _dateController.text);
-      enableDatePicker = false;
-      enableBankAccountTextField = true;
-      setState(() {
+    ///If only 18
+    //enableDatePicker = false;
+    enableBankAccountTextField = true;
+    await ApiRepository().Digio_PanAuthentication(_panTextEditingController.text, _dateController.text);
+    String panOwnerName = prefs.getString("PAN_OWNER_NAME");
+    Fluttertoast.showToast(msg: "PAN OWNER NAME :"+panOwnerName, toastLength: Toast.LENGTH_SHORT);
 
-      });
+    isPanValidatedSuccessfully = await ApiRepository().GetPanStatus(_panTextEditingController.text, _dateController.text);
+
+    if (!isPanValidatedSuccessfully) {
+      prefs.setString(PAN_NO_KEY, _panTextEditingController.text);
+      showPANErrorText = !isPanValidatedSuccessfully;
+      setState(() {});
     }
+
+
+    //await ApiRepository().SolicitPANDetailsFetchALLKRALocal(_panTextEditingController.text, _dateController.text);
+    enableDatePicker = false;
+    enableBankAccountTextField = true;
+    setState(() {
+
+    });
   }
 
   Future<void> validateIFSC(String value) async {

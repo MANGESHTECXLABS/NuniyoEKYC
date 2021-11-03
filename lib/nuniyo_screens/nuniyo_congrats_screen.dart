@@ -327,27 +327,34 @@ class _CongratsScreenState extends State<CongratsScreen> {
                           // the downloads folder path
                           Directory tempDir = await DownloadsPathProvider.downloadsDirectory;
                           String tempPath = tempDir.path;
-                          var filePath = tempPath + '/nuniyo';
+                          var filePath = tempPath + '/nuniyo.pdf';
 
                           //Lets make a file and show it inside it
                           final File file = File(filePath);
 
                           pdfFile = await file.writeAsBytes(pdfInBytesFormat!);
+
+
                           setState(() {
                           });
 
-                          ///Now to Open this File
-                          final _result = await OpenFile.open(filePath);
-                          print(_result.message);
+
 
 
                           //Then Show SnackBar
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: Colors.black,
-                          content: TextButton(child:Text("Download Completed : Tap to Open",style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),) ,onPressed: (){
-                            ///Open Downloaded Mangal Keshav PDF Here
-                            ///
-                          },),
+                          content: Row(
+                            children: [
+                              Icon(Icons.check_circle,color: Colors.green,),
+                              TextButton(child:Text("Download Completed : Tap to Open",style: TextStyle(color: Colors.white, letterSpacing: 0.5),) ,onPressed: () async {
+                                ///Open Downloaded Mangal Keshav PDF Here
+                                ///Now to Open this File
+                                final _result = await OpenFile.open(filePath);
+                                print(_result.message);
+                              },),
+                            ],
+                          )
                           ),
                           );
                         },

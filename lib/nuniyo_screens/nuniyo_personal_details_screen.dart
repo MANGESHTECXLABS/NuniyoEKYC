@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
+import 'package:nuniyoekyc/utils/encode_decode.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -196,6 +197,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                     child: Container(
                       height: 80,
                       child: TextField(
+                        inputFormatters: [
+                          UpperCaseTextFormatter(),
+                        ],
                         enabled: enableMotherNameTextField,
                         onChanged: (_value){
                           if(_value.isNotEmpty){
@@ -549,7 +553,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     }
     else if(fatherNameTextEditingController.text.isNotEmpty){
       showFatherNameErrorText  = false;
-      enableFatherNameTextField = false;
+      enableFatherNameTextField = true;
     }
 
     if(motherNameTextEditingController.text=="" || motherNameTextEditingController.text.isEmpty){
@@ -557,7 +561,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       enableMotherNameTextField = true;
     }
     else if(motherNameTextEditingController.text.isNotEmpty){
-      showMotherNameErrorText  = true;
+      showMotherNameErrorText  = false;
       enableMotherNameTextField = true;
     }
     setState(() {});

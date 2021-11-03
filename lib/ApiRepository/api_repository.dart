@@ -306,7 +306,7 @@ class ApiRepository {
     }
   }
 
-  Future<bool> GetPanStatusLocal(String panCardNumber) async{
+  Future<bool> GetPanStatus(String panCardNumber,String dateOfBirth) async{
     String jwt_token= await GetCurrentJWTToken();
     print("Calling Get Pan Status Using API"+jwt_token);
 
@@ -321,7 +321,8 @@ class ApiRepository {
     request.body = json.encode({
       "pan_No": "$panCardNumber",
       "lead_Id": "$lead_id",
-      "org_Id": ORG_ID
+      "org_Id": ORG_ID,
+      "dob": "$dateOfBirth"
     });
     request.headers.addAll(headers);
 

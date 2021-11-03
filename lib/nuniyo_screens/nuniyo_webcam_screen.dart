@@ -398,6 +398,8 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     onPressed: enableRetryBtn?() {
                       enableRetryBtn = false;
                       ipvOtp = "";
+                      showRecordingButton = false;
+                      setState(() {});
                       fetchOTP();
                       enableProceedBtnRecordingDone = false;
                       enableProceedBtnOTPMatched = false;
@@ -406,7 +408,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
                       });
                       RecordingStatus = "Start Recording";
-                      showRecordingButton = true;
+                      //showRecordingButton = true;
                       //onVideoRecordButtonPressed();
                       _onWillPop();
                     }:null),
