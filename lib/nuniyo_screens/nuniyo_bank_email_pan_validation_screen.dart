@@ -654,6 +654,10 @@ class _BankPanEmailValidationScreenState
                                     icon: Icon(Icons.close),
                                     onPressed: () {
                                       _ifscCodeTextEditingController.text = "";
+                                      _ifscCodeDialogTextEditingController.text = "";
+                                      _branchLocationTextEditingController.text = "";
+                                      IFSCMapList.clear();
+                                      showIFSCSearchResults = false;
                                       isIFSCValidatedSuccessfully = false;
                                       isValidIFSCCode = false;
                                       isValidInputForIFSC = false;
@@ -856,7 +860,7 @@ class _BankPanEmailValidationScreenState
         barrierColor: Colors.black.withOpacity(0.5),
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(builder: (context, setState) {
+          return WillPopScope(child: StatefulBuilder(builder: (context, setState) {
             return Align(
               alignment: Alignment.center,
               child: Container(
@@ -864,260 +868,273 @@ class _BankPanEmailValidationScreenState
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(40),
                   ), height: 550,child:Material(
-                borderRadius: BorderRadius.circular(40),
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                height: 550,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                    child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(22.0, 0.0, 0.0, 10.0),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("$headerTitle",
+                  borderRadius: BorderRadius.circular(40),
+                  color: Colors.transparent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    height: 550,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                        child: Column(
+                            children: [
+                              Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(22.0, 0.0, 0.0, 10.0),
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("$headerTitle",
+                                              style: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    letterSpacing: .5,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold),
+                                              )),
+                                          Visibility(visible:false,child:Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0.0, 0.0, 10.0, 0.0),
+                                            child: IconButton(
+                                              icon: Icon(Icons.close),
+                                              onPressed: () {
+                                                _ifscCodeDialogTextEditingController.text = "";
+
+                                                _branchLocationTextEditingController.text = "";
+                                                IFSCMapList.clear();
+                                                showIFSCSearchResults = false;
+                                                _ifscCodeTextEditingController.text = "";
+
+                                                isIFSCValidatedSuccessfully = false;
+                                                isValidIFSCCode = false;
+                                                isValidInputForIFSC = false;
+                                                enableIFSCCodeTextField = true;
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),)
+                                        ],
+                                      ))),
+
+                              SizedBox(height: 10),
+                              Visibility(visible:IFSCMapList.isEmpty,
+                                child:Column(children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Container(
+                                      height: 80,
+                                      child: TextField(
+                                        inputFormatters: [UpperCaseTextFormatter(),],
+                                        //onChanged: (value) {
+                                        //if(!isIFSCValidatedSuccessfully){
+                                        //validateIFSC(value);
+                                        //}
+                                        //},
+                                        maxLength: 11,
+                                        textCapitalization: TextCapitalization.characters,
+                                        cursorColor: primaryColorOfApp,
                                         style: GoogleFonts.openSans(
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
-                                              letterSpacing: .5,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Visibility(visible:false,child:Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0.0, 0.0, 10.0, 0.0),
-                                      child: IconButton(
-                                        icon: Icon(Icons.close),
-                                        onPressed: () {
-                                          _ifscCodeTextEditingController.text = "";
-                                          isIFSCValidatedSuccessfully = false;
-                                          isValidIFSCCode = false;
-                                          isValidInputForIFSC = false;
-                                          enableIFSCCodeTextField = true;
-                                          Navigator.pop(context);
-                                          setState(() {});
-                                        },
+                                            textStyle: TextStyle(
+                                                color: Colors.black,
+                                                letterSpacing: 0.5,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold)),
+                                        focusNode: _IFSCCode2TextFieldFocusNode,
+                                        onTap: _requestIFSCCode2TextFieldFocusNode,
+                                        decoration: InputDecoration(
+                                            errorText: showIFSCErrorText ? "Enter a valid IFSC" : null,
+                                            suffixIcon: !showIFSCErrorText
+                                                ? Icon(Icons.check_circle,
+                                                color: isIFSCValidatedSuccessfully
+                                                    ? Colors.green
+                                                    : Colors.transparent)
+                                                : Icon(Icons.error, color: Colors.red),
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                25.0, 40.0, 0.0, 40.0),
+                                            counter: Offstage(),
+                                            labelText: _IFSCCode2TextFieldFocusNode
+                                                .hasFocus
+                                                ? 'Enter IFSC Code'
+                                                : 'Enter IFSC Code',
+                                            labelStyle: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.5,
+                                                  color: _IFSCCode2TextFieldFocusNode
+                                                      .hasFocus
+                                                      ? primaryColorOfApp
+                                                      : Colors.grey,
+                                                ))),
                                       ),
-                                    ),)
-                                  ],
-                                ))),
-
-                          SizedBox(height: 10),
-                          Visibility(visible:IFSCMapList.isEmpty,
-                            child:Column(children: <Widget>[
-                            Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Container(
-                              height: 80,
-                              child: TextField(
-                                inputFormatters: [UpperCaseTextFormatter(),],
-                                  //onChanged: (value) {
-                                    //if(!isIFSCValidatedSuccessfully){
-                                      //validateIFSC(value);
-                                    //}
-                                  //},
-                                maxLength: 11,
-                                textCapitalization: TextCapitalization.characters,
-                                cursorColor: primaryColorOfApp,
-                                style: GoogleFonts.openSans(
-                                    textStyle: TextStyle(
-                                        color: Colors.black,
-                                        letterSpacing: 0.5,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold)),
-                                focusNode: _IFSCCode2TextFieldFocusNode,
-                                onTap: _requestIFSCCode2TextFieldFocusNode,
-                                decoration: InputDecoration(
-                                    errorText: showIFSCErrorText ? "Enter a valid IFSC" : null,
-                                    suffixIcon: !showIFSCErrorText
-                                        ? Icon(Icons.check_circle,
-                                        color: isIFSCValidatedSuccessfully
-                                            ? Colors.green
-                                            : Colors.transparent)
-                                        : Icon(Icons.error, color: Colors.red),
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        25.0, 40.0, 0.0, 40.0),
-                                    counter: Offstage(),
-                                    labelText: _IFSCCode2TextFieldFocusNode
-                                        .hasFocus
-                                        ? 'Enter IFSC Code'
-                                        : 'Enter IFSC Code',
-                                    labelStyle: GoogleFonts.openSans(
+                                    ),
+                                  ),
+                                  Text("Or",
+                                      style: GoogleFonts.openSans(
                                         textStyle: TextStyle(
-                                          fontSize: 14,
-                                          letterSpacing: 0.5,
-                                          color: _IFSCCode2TextFieldFocusNode
-                                              .hasFocus
-                                              ? primaryColorOfApp
-                                              : Colors.grey,
-                                        ))),
-                              ),
-                            ),
-                          ),
-                    Text("Or",
-                          style: GoogleFonts.openSans(
-                            textStyle: TextStyle(
-                                color: Colors.black,
-                                letterSpacing: .5,
-                                fontSize: 20),
-                          )),
-                    Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Container(
-                          height: 80,
-                          child: TextField(
-                            cursorColor: primaryColorOfApp,
-                            controller:
-                            _branchNameTextEditingController,
-                            style: GoogleFonts.openSans(
-                                textStyle: TextStyle(
-                                    color: Colors.black,
-                                    letterSpacing: 0.5,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold)),
-                            focusNode: _branchNameTextFieldFocusNode,
-                            onTap: _requestBankNameTextFieldFocusNode,
-                            decoration: InputDecoration(
-                                errorText: showBranchNameErrorText
-                                    ? branchNameErrorText
-                                    : null,
-                                contentPadding: EdgeInsets.fromLTRB(
-                                    25.0, 40.0, 0.0, 40.0),
-                                counter: Offstage(),
-                                labelText: _branchNameTextFieldFocusNode
-                                    .hasFocus
-                                    ? 'Enter Bank Name'
-                                    : 'Enter Bank Name',
-                                labelStyle: GoogleFonts.openSans(
-                                    textStyle: TextStyle(
-                                      fontSize: 14,
-                                      letterSpacing: 0.5,
-                                      color: _branchNameTextFieldFocusNode
-                                          .hasFocus
-                                          ? primaryColorOfApp
-                                          : Colors.grey,
-                                    ))),
-                          ),
-                        ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Container(
-                          height: 80,
-                          child: TextField(
-                            cursorColor: primaryColorOfApp,
-                            controller:
-                            _branchLocationTextEditingController,
-                            style: GoogleFonts.openSans(
-                                textStyle: TextStyle(
-                                    color: Colors.black,
-                                    letterSpacing: 0.5,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold)),
-                            focusNode:
-                            _branchLocationTextFieldFocusNode,
-                            onTap: () {
-                              _requestBranchNameFocusNode;
-                            },
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.fromLTRB(
-                                    25.0, 40.0, 0.0, 40.0),
-                                counter: Offstage(),
-                                errorText: showBranchLocationErrorText
-                                    ? branchLocationErrorText
-                                    : null,
-                                labelText:
-                                _branchLocationTextFieldFocusNode
-                                    .hasFocus
-                                    ? 'Enter Branch Location'
-                                    : 'Enter Branch Location',
-                                labelStyle: GoogleFonts.openSans(
-                                    textStyle: TextStyle(
-                                      fontSize: 14,
-                                      letterSpacing: 0.5,
-                                      color:
-                                      _branchLocationTextFieldFocusNode
-                                          .hasFocus
-                                          ? primaryColorOfApp
-                                          : Colors.grey,
-                                    ))),
-                          ),
-                        ),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        color: Colors.transparent,
-                        height: 60,
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          onPressed: () async {
-                            if (_branchNameTextEditingController.text !=
-                                "" &&
-                                _branchLocationTextEditingController.text !=
-                                    "") {
-                              showBranchNameErrorText = false;
-                              showBranchLocationErrorText = false;
-                              //IFSCMapList = await ApiRepo().searchIFSCCodes(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
-                              IFSCMapList = await ApiRepository().IFSCMasterSearchLocal(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
-                              if (IFSCMapList["res_Output"].length > 0) {
-                                showIFSCSearchResults = true;
-                                headerTitle = "Tap On Your IFSC Code";
-                                setState(() {});
-                              }
-                            } else {
-                              showBranchNameErrorText = true;
-                              showBranchLocationErrorText = true;
-                              setState(() {});
-                            }
-                          },
-                          color: primaryColorOfApp,
-                          child: Text("Search",
-                              style: GoogleFonts.openSans(
-                                textStyle: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: .5,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        ),
-                      ),
-                    ),
+                                            color: Colors.black,
+                                            letterSpacing: .5,
+                                            fontSize: 20),
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Container(
+                                      height: 80,
+                                      child: TextField(
+                                        cursorColor: primaryColorOfApp,
+                                        controller:
+                                        _branchNameTextEditingController,
+                                        style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(
+                                                color: Colors.black,
+                                                letterSpacing: 0.5,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold)),
+                                        focusNode: _branchNameTextFieldFocusNode,
+                                        onTap: _requestBankNameTextFieldFocusNode,
+                                        decoration: InputDecoration(
+                                            errorText: showBranchNameErrorText
+                                                ? branchNameErrorText
+                                                : null,
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                25.0, 40.0, 0.0, 40.0),
+                                            counter: Offstage(),
+                                            labelText: _branchNameTextFieldFocusNode
+                                                .hasFocus
+                                                ? 'Enter Bank Name'
+                                                : 'Enter Bank Name',
+                                            labelStyle: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.5,
+                                                  color: _branchNameTextFieldFocusNode
+                                                      .hasFocus
+                                                      ? primaryColorOfApp
+                                                      : Colors.grey,
+                                                ))),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Container(
+                                      height: 80,
+                                      child: TextField(
+                                        cursorColor: primaryColorOfApp,
+                                        controller:
+                                        _branchLocationTextEditingController,
+                                        style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(
+                                                color: Colors.black,
+                                                letterSpacing: 0.5,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold)),
+                                        focusNode:
+                                        _branchLocationTextFieldFocusNode,
+                                        onTap: () {
+                                          _requestBranchNameFocusNode;
+                                        },
+                                        decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                25.0, 40.0, 0.0, 40.0),
+                                            counter: Offstage(),
+                                            errorText: showBranchLocationErrorText
+                                                ? branchLocationErrorText
+                                                : null,
+                                            labelText:
+                                            _branchLocationTextFieldFocusNode
+                                                .hasFocus
+                                                ? 'Enter Branch Location'
+                                                : 'Enter Branch Location',
+                                            labelStyle: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.5,
+                                                  color:
+                                                  _branchLocationTextFieldFocusNode
+                                                      .hasFocus
+                                                      ? primaryColorOfApp
+                                                      : Colors.grey,
+                                                ))),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 1.5,
+                                      color: Colors.transparent,
+                                      height: 60,
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                        onPressed: () async {
+                                          if (_branchNameTextEditingController.text !=
+                                              "" &&
+                                              _branchLocationTextEditingController.text !=
+                                                  "") {
+                                            showBranchNameErrorText = false;
+                                            showBranchLocationErrorText = false;
+                                            //IFSCMapList = await ApiRepo().searchIFSCCodes(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
+                                            IFSCMapList = await ApiRepository().IFSCMasterSearchLocal(_branchNameTextEditingController.text.trim(), _branchLocationTextEditingController.text.trim());
+                                            if (IFSCMapList["res_Output"].length > 0) {
+                                              showIFSCSearchResults = true;
+                                              headerTitle = "Tap On Your IFSC Code";
+                                              setState(() {});
+                                            }
+                                          } else {
+                                            showBranchNameErrorText = true;
+                                            showBranchLocationErrorText = true;
+                                            setState(() {});
+                                          }
+                                        },
+                                        color: primaryColorOfApp,
+                                        child: Text("Search",
+                                            style: GoogleFonts.openSans(
+                                              textStyle: TextStyle(
+                                                  color: Colors.white,
+                                                  letterSpacing: .5,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            )),
+                                      ),
+                                    ),
+                                  ),
 
-                  ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),),
-                          ListViewOfIFSCCode()
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center),
-                  ),
-                ),
-                margin: EdgeInsets.only(bottom: 20, left: 12, right: 12,top: 40),
-              )
+                                ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),),
+                              ListViewOfIFSCCode()
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center),
+                      ),
+                    ),
+                    margin: EdgeInsets.only(bottom: 20, left: 12, right: 12,top: 40),
+                  )
               )),
             );
+          }), onWillPop:() {
+            _ifscCodeTextEditingController.text = "";
+            _ifscCodeDialogTextEditingController.text = "";
+            _branchLocationTextEditingController.text = "";
+            IFSCMapList.clear();
+            showIFSCSearchResults = false;
+            isIFSCValidatedSuccessfully = false;
+            isValidIFSCCode = false;
+            isValidInputForIFSC = false;
+            enableIFSCCodeTextField = true;
+            Navigator.pop(context);
+            setState(() {});
+            return Future.value(true);
           });
         });
   }
 
-  Future<void> manageSteps() async {
-    String currentRouteName = 'Email';
-    await StoreLocal().StoreRouteNameToLocalStorage(currentRouteName);
-    String routeName = await StoreLocal().getRouteNameFromLocalStorage();
-    print("YOU ARE ON THIS STEP : "+routeName);
-  }
 
   Widget ListViewOfIFSCCode() {
     if (IFSCMapList.isEmpty) {

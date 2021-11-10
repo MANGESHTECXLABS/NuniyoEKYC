@@ -52,7 +52,7 @@ android {
 
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // TODO: Specify your own munique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.we3.nuniyoekyc"
         minSdkVersion 21
         targetSdkVersion 30
@@ -72,5 +72,3 @@ android {
 flutter {
     source '../..'
 }
-
-

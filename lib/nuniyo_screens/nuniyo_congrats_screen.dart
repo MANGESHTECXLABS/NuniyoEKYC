@@ -1,6 +1,7 @@
 ///Congrats Screen
 
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -46,7 +47,7 @@ class _CongratsScreenState extends State<CongratsScreen> {
     super.initState();
     congratsImage = Image.asset("assets/images/congratulations.png");
     //manageSteps();
-    //firstThingsFirst();
+    firstThingsFirst();
     fetchInitialData();
   }
 
@@ -327,7 +328,14 @@ class _CongratsScreenState extends State<CongratsScreen> {
                           // the downloads folder path
                           Directory tempDir = await DownloadsPathProvider.downloadsDirectory;
                           String tempPath = tempDir.path;
-                          var filePath = tempPath + '/nuniyo.pdf';
+                          var rng = new Random();
+                          String newFileName="/mangalkeshav";
+                          for (var i = 0; i < 10; i++) {
+                            print(rng.nextInt(100));
+                            newFileName+=rng.nextInt(100).toString();
+                          }
+                          newFileName = newFileName+".pdf";
+                          var filePath = tempPath + newFileName;
 
                           //Lets make a file and show it inside it
                           final File file = File(filePath);

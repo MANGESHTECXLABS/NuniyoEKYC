@@ -30,6 +30,8 @@ class ApiRepository {
 
   final String BASE_API_LINK_URL = 'https://api.nuniyo.tech';
 
+  final String BASE_MKC_API_LINK_URL = 'https://api.nuniyo.tech';
+
   final String BASE_ANDROID_EMULATOR_URL = "https://10.0.2.2:44330";
 
   //Shared Preference Methods

@@ -23,12 +23,12 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
   late FocusNode _fatherNameTextFieldFocusNode,_annualIncomeDropDownFocusNode,_motherNameTextFieldFocusNode,_occupationDropDownFocusNode,_maritialStatusDropDownFocusNode,_genderDropDownFocusNode,_tradingExperienceDropDownFocusNode,_politicallyExposedDropDownFocusNode,_educationDropDownFocusNode,_incomeDropDownFocusNode;
 
-  String annualIncome = '1-5 Lac';
-  String gender = 'Male';
-  String maritialStatus = 'Single';
-  String tradingExperience = 'Beginner';
+  String annualIncome = '1-5 LAC';
+  String gender = 'MALE';
+  String maritialStatus = 'SINGLE';
+  String tradingExperience = 'BEGINNER';
   String politicallyExposed = 'No';
-  String occupation = 'PRIVATE SECTOR';
+  String occupation = 'PRIVATE SECTOR SERVICE';
   //String education = 'Graduate';
 
   TextEditingController fatherNameTextEditingController = TextEditingController();
@@ -50,6 +50,10 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
   bool declaration = true;
   bool showDeclarationError = false;
+
+  bool proceedBtnPressedOnce = false;
+
+  ScrollController _scrollController = ScrollController();
 
 
   @override
@@ -151,6 +155,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       resizeToAvoidBottomInset: true,
       appBar: WidgetHelper().NuniyoAppBar(),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: IntrinsicHeight(
           child: Padding(
             padding: const EdgeInsets.all(30.0),
@@ -174,6 +179,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             });
                           }
                         },
+                        inputFormatters: [
+                          UpperCaseTextFormatter(),
+                        ],
                         enabled: enableFatherNameTextField,
                         cursorColor: primaryColorOfApp,
                         style: GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 14,fontWeight: FontWeight.bold)),
@@ -253,7 +261,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                           });
                         },
                         onTap: _requestMaritialStatusDropDownFocusNode,
-                        items: <String>['Single','Married','Divorced']
+                        items: <String>['SINGLE','MARRIED','DIVORCED']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -290,7 +298,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             gender = newValue!;
                           });
                         },
-                        items: <String>['Male','Female','Others']
+                        items: <String>['MALE','FEMALE','OTHERS']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -328,7 +336,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             annualIncome = newValue!;
                           });
                         },
-                        items: <String>['1-5 Lac','5-10 Lac','10-25 Lac','>25 Lac' ,'25 Lac-1 Cr','> 1 Cr']
+                        items: <String>['1-5 LAC','5-10 LAC','10-25 LAC','GREATER THAN 25 LAC' ,'25 LAC-1 CR','GREATER THAN 1 CR']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -365,7 +373,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             occupation = newValue!;
                           });
                         },
-                        items: <String>['PRIVATE SECTOR','PUBLIC SECTOR','GOVERNMENT SECTOR']
+                        items: <String>['PRIVATE SECTOR SERVICE','PUBLIC SECTOR','GOVERNMENT SERVICE','BUSINESS','PROFESSIONAL','AGRICULTURALIST','RETIRED','HOUSEWIFE','STUDENT','FOREX DEALER','OTHERS']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -402,7 +410,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                             tradingExperience = newValue!;
                           });
                         },
-                        items: <String>['Beginner','Intermediate','Professional']
+                        items: <String>['BEGINNER','INTERMEDIATE','PROFESSIONAL']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -476,7 +484,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed: (declaration&&nationality)&&(motherNameTextEditingController.text!=""&&fatherNameTextEditingController.text!="")?() async {
+                    onPressed: (declaration&&nationality)&&(motherNameTextEditingController.text!=""&&fatherNameTextEditingController.text!="")&&!proceedBtnPressedOnce?() async {
+                      proceedBtnPressedOnce = true;
+                      setState(() {});
                       await ApiRepository().PersonalDetailsLocal(fatherNameTextEditingController.text.trim(),motherNameTextEditingController.text.trim(),annualIncome,gender,maritialStatus,politicallyExposed,occupation,tradingExperience);
                       await ApiRepository().UpdateStage_Id();
                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -485,11 +495,44 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       print("Let\'s go To");
                       print(stage_id);
                       Navigator.pushNamed(context, stage_id);
-                    }:null,
+                    }:(){
+                      if(fatherNameTextEditingController.text.isEmpty || fatherNameTextEditingController.text ==""){
+                        showFatherNameErrorText  = true;
+                        print("Some Erorr");
+                        print(showFatherNameErrorText);
+                        enableFatherNameTextField = true;
+                      }
+                      else if(fatherNameTextEditingController.text.isNotEmpty){
+                        showFatherNameErrorText  = false;
+                        enableFatherNameTextField = true;
+                      }
+                      if(motherNameTextEditingController.text=="" || motherNameTextEditingController.text.isEmpty){
+                        showMotherNameErrorText  = true;
+                        enableMotherNameTextField = true;
+                      }
+                      else if(motherNameTextEditingController.text.isNotEmpty){
+                        showMotherNameErrorText  = false;
+                        enableMotherNameTextField = true;
+                      }
+                      _scrollToTop();
+                      print("lsassaska");
+                      setState(() {});
+                    },
                     disabledTextColor: Colors.blue,
                     disabledColor: Color(0xffD2D0E1),
                     color: primaryColorOfApp,
-                    child: Text(
+                    child: proceedBtnPressedOnce?Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "Please Wait",
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                        ),
+                        SizedBox(width:20,),
+                        CircularProgressIndicator(color: Colors.white,),
+                      ],
+                    ):Text(
                         "Proceed",
                         style: GoogleFonts.openSans(
                           textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
@@ -527,12 +570,12 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       motherNameTextEditingController.text = mother_Name;
 
       print(gender);
-      if(gender=="M"||gender=="Male"){
+      if(gender=="M"||gender=="MALE"){
         //Do Nothing
-        this.gender = "Male";
+        this.gender = "MALE";
       }
       else{
-        this.gender = "Female";
+        this.gender = "FEMALE";
       }
 
 
@@ -545,7 +588,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
       setState(() {});
     }
-    if(fatherNameTextEditingController.text.isEmpty || fatherNameTextEditingController.text ==""){
+    /*if(fatherNameTextEditingController.text.isEmpty || fatherNameTextEditingController.text ==""){
       showFatherNameErrorText  = true;
       print("Some Erorr");
       print(showFatherNameErrorText);
@@ -564,6 +607,10 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       showMotherNameErrorText  = false;
       enableMotherNameTextField = true;
     }
-    setState(() {});
+    setState(() {});*/
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.linear);
   }
 }

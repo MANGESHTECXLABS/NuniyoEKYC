@@ -39,7 +39,7 @@ class _EsignScreenState extends State<EsignScreen> {
 
   String username="";
 
-  String docID = "DID2110111731000178XNKQMDIEKANUN";
+  String docID = "";
 
   ///
 
@@ -62,6 +62,7 @@ class _EsignScreenState extends State<EsignScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(onWillPop: _onWillPop, child:Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: WidgetHelper().NuniyoAppBar(),
@@ -92,10 +93,12 @@ class _EsignScreenState extends State<EsignScreen> {
                   width: MediaQuery.of(context).size.width,
                   height: 60,
                   child: FlatButton(
+                    disabledTextColor: Colors.blue,
+                    disabledColor: Color(0xffD2D0E1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed: () async {
+                    onPressed: docID==""?null:() async {
                       if (Platform. isAndroid) {
                         bool es = await startEsigning(docID);
                         print("Esign :KAAAA"+es.toString());
@@ -105,7 +108,7 @@ class _EsignScreenState extends State<EsignScreen> {
                       //Navigator.pushNamed(context, 'UCC');
                       },
                     color: primaryColorOfApp,
-                    child: Text(
+                    child: Text(docID==""?"Please Wait...Creating PDF":
                         "eSign",
                         style: GoogleFonts.openSans(
                           textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
@@ -217,9 +220,18 @@ class _EsignScreenState extends State<EsignScreen> {
 
   Future<void> GeneratePDFAndGetEsignDocID() async{
     await ApiRepository().Generate_Lead_Pdf();
+    print("GETting Esign Doc ID");
     docID = await ApiRepository().Digio_eSign_Document_Upload();
+    print("Got Esign Doc ID");
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+      });
+    });
+    print("After 1 second of Delay");
+
     if(docID==""){
       ///Do Something here to handle Error
+
     }
   }
 
