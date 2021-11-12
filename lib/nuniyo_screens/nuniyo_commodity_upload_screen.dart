@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 
+import '../globals.dart';
 import '../nuniyo_custom_icons.dart';
 
 class CommodityDocumentUploadScreen extends StatefulWidget {
@@ -24,13 +25,24 @@ class _CommodityDocumentUploadScreenState extends State<CommodityDocumentUploadS
 
   TextEditingController documentNameTextEditingController = TextEditingController();
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   FilePickerResult? result;
 
   PlatformFile pdfPanImagefile = PlatformFile(name: "/assets/images/congratulations.png", size: 20);
 
   File? imageFilePan = new File("/assets/images/congratulations.png");
+
+  bool declaration = false;
+
+  bool showDeclarationError = false;
+
+  bool nationality = false;
+
+  bool showNationalityError=false;
+
+  String headerTitle = "Select Account Type";
+
+  bool onAccountSelected = false;
 
   @override
   void initState() {
@@ -107,7 +119,96 @@ class _CommodityDocumentUploadScreenState extends State<CommodityDocumentUploadS
           child: IntrinsicHeight(
             child: Padding(
               padding: const EdgeInsets.all(30.0),
-              child: Column(
+              child: !onAccountSelected?Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20.0,),
+                  WidgetHelper().DetailsTitle('Select Account Type'),
+                  SizedBox(height: 20.0,),
+                  Row(
+                    children: [
+                      SizedBox(
+                          height: 24.0,
+                          width: 24.0,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom:0,right: 10),
+                            child:Checkbox(
+                              value: this.nationality,
+                              checkColor: Colors.white,
+                              activeColor: primaryColorOfApp,
+                              fillColor: showNationalityError?MaterialStateProperty.all(Colors.red):null,
+                              onChanged: (value) {
+                                setState(() {
+                                  this.nationality = value!;
+                                  if(nationality==true){
+                                    showNationalityError = false;
+                                  }
+                                  print(nationality);
+                                });
+                              },
+                            ),)
+                      ),
+                      Expanded(child:Text("F & O",textAlign:TextAlign.left,style: GoogleFonts.openSans(textStyle: TextStyle(fontSize: 26,color:Colors.black, letterSpacing: .5),),),)
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      SizedBox(
+                          height: 24.0,
+                          width: 24.0,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom:0,right: 10),
+                            child:Checkbox(
+                              value: this.declaration,
+                              checkColor: Colors.white,
+                              activeColor: primaryColorOfApp,
+                              fillColor: showDeclarationError?MaterialStateProperty.all(Colors.red):null,
+                              onChanged: (value) {
+                                setState(() {
+                                  this.declaration = value!;
+                                  if(declaration==true){
+                                    showDeclarationError = false;
+                                  }
+                                  print(declaration);
+                                });
+                              },
+                            ),)
+                      ),
+                      Expanded(child:Text("Currency",textAlign:TextAlign.left,style: GoogleFonts.openSans(textStyle: TextStyle(fontSize: 26,color:Colors.black, letterSpacing: .5),),),)
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Container(
+                    color: Colors.transparent,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 65,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      onPressed: () {
+                        onAccountSelected = true;
+                        setState(() {
+
+                        });
+                      },
+                      color: primaryColorOfApp,
+                      child: Text(
+                          "Done",
+                          style: GoogleFonts.openSans(
+                            textStyle: TextStyle(color: Colors.white,
+                                letterSpacing: .5,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),)
+                      ),
+                    ),
+                  ),
+                ],
+              ):Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.0,),

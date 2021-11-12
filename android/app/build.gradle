@@ -47,6 +47,12 @@ dependencies{
     implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.7'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     compileSdkVersion 30
 
@@ -54,19 +60,32 @@ android {
     defaultConfig {
         // TODO: Specify your own munique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.we3.nuniyoekyc"
-        minSdkVersion 21
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
+
+
+
 }
 
 flutter {

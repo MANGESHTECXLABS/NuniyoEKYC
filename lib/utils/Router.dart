@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_bank_email_pan_validation_screen.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_commodity_upload_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_congrats_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_digilocker_web_view.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_esign_screen.dart';
@@ -66,6 +67,8 @@ class ScreenRouter {
         return MaterialPageRoute(builder: (_) => BrowserViewX());
       case 'WAITSCREEN':
         return MaterialPageRoute(builder: (_) => WaitingScreenForESign());
+      case 'OPEN':
+        return MaterialPageRoute(builder: (_) => CommodityDocumentUploadScreen());
     default:
       return MaterialPageRoute(builder: (_) => MobileValidationLoginScreen());
     }

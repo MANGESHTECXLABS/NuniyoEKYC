@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nuniyoekyc/globals.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,6 @@ class AadharKYCScreen extends StatefulWidget {
 
 class _AadharKYCScreenState extends State<AadharKYCScreen> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   @override
   void initState() {

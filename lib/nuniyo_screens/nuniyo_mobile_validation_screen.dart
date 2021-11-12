@@ -66,7 +66,6 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
   String get resendOTPButtonText =>
       'Wait for :${((_resendOTPIntervalTime - currentSeconds) ~/ 60).toString().padLeft(2, '0')}: ${((_resendOTPIntervalTime - currentSeconds) % 60).toString().padLeft(2, '0')}';
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   late FocusNode _phoneNumberFocusNode,_otpFocusNode,_referralCodeNode;
 
@@ -378,7 +377,7 @@ class _MobileValidationLoginScreenState extends State<MobileValidationLoginScree
                   height: 60,
                   child: FlatButton(
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

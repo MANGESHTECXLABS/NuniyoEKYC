@@ -19,8 +19,6 @@ class PersonalDetailsScreen extends StatefulWidget {
 
 class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   late FocusNode _fatherNameTextFieldFocusNode,_annualIncomeDropDownFocusNode,_motherNameTextFieldFocusNode,_occupationDropDownFocusNode,_maritialStatusDropDownFocusNode,_genderDropDownFocusNode,_tradingExperienceDropDownFocusNode,_politicallyExposedDropDownFocusNode,_educationDropDownFocusNode,_incomeDropDownFocusNode;
 
   String annualIncome = '1-5 LAC';
@@ -519,7 +517,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       setState(() {});
                     },
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     color: primaryColorOfApp,
                     child: proceedBtnPressedOnce?Row(
                       mainAxisAlignment: MainAxisAlignment.center,

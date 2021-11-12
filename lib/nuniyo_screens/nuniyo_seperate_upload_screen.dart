@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../globals.dart';
+
 class SeperateUploadDocumentScreen extends StatefulWidget {
   const SeperateUploadDocumentScreen({Key? key}) : super(key: key);
 
@@ -61,7 +63,6 @@ class _SeperateUploadDocumentScreenState extends State<SeperateUploadDocumentScr
     super.deactivate();
   }
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   final GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
 

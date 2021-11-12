@@ -339,10 +339,10 @@ class ApiRepository {
       int result_Id = valueMap["res_Output"][0]["result_Id"];
 
       ///Save Pan Owner Name
-      String result_description = valueMap["res_Output"][0]["result_Description"];
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      print("PAN OWNER NAME :"+result_description);
-      prefs.setString("PAN_OWNER_NAME",result_description);
+      //String result_description = valueMap["res_Output"][0]["result_Description"];
+      //SharedPreferences prefs = await SharedPreferences.getInstance();
+      //print("PAN OWNER NAME :"+result_description);
+      //prefs.setString("PAN_OWNER_NAME",result_description);
 
 
       print("STATUS : "+result_Id.toString());
@@ -975,7 +975,7 @@ class ApiRepository {
       Map valueMap = jsonDecode(result);
       print(valueMap);
       print(result);
-      String panOwnerName = valueMap["res_Output"][0]["result_Extra_Key"];
+      String panOwnerName = valueMap["res_Output"][0]["stage_Id"];
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print("PAN OWNER NAME :"+panOwnerName);
       prefs.setString("PAN_OWNER_NAME",panOwnerName);
@@ -992,6 +992,7 @@ class ApiRepository {
   }
 
   Future<bool> ReadLead(String mobileNo) async{
+    print("Starts Boley");
     var headers = {
       "Access-Control-Allow-Origin": "*", // Required for CORS support to work
         // Required for cookies, authorization headers with HTTPS

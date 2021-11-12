@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
@@ -30,7 +31,6 @@ class CongratsScreen extends StatefulWidget {
 
 class _CongratsScreenState extends State<CongratsScreen> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
   String emailAddress = "youremailid@do.com";
   String phoneNumber = "8779559898";
 
@@ -112,7 +112,10 @@ class _CongratsScreenState extends State<CongratsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Congratulations !'),
-                Center(child: congratsImage),
+                Center(child: SvgPicture.asset(
+                    "assets/images/congrats.svg",
+                    semanticsLabel: 'Acme Logo'
+                )),
                 SizedBox(height: 20,),
                 Text("Your application is complete . After verification , you will recieve your login credentials on your e-mail.",textAlign:TextAlign.center,style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
@@ -245,29 +248,11 @@ class _CongratsScreenState extends State<CongratsScreen> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         onPressed: () {
-
+                          Navigator.pushNamed(context, 'OPEN');
                         },
                         color: primaryColorOfApp,
                         child: Text(
-                            "Open F&O Account",textAlign: TextAlign.center,
-                            style: GoogleFonts.openSans(
-                              textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Container(
-                      color: Colors.transparent,
-                      height: 60,
-                      width: MediaQuery.of(context).size.width,
-                      child: FlatButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        onPressed: () {},
-                        color: primaryColorOfApp,
-                        child: Text(
-                            "Open Commodity",textAlign:TextAlign.center,
+                            "Open F&O & Currency Account",textAlign: TextAlign.center,
                             style: GoogleFonts.openSans(
                               textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
                         ),

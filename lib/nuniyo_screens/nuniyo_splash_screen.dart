@@ -28,6 +28,9 @@ class SplashScreenState extends State<SplashScreen> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
 
+  ImageProvider splashScreenLogo = AssetImage("assets/images/mklogoicon.png");
+
+
   //"mobile_No": "8268405887",
   //"ip": "1232232",
   //"city": "mumbai",
@@ -118,6 +121,7 @@ class SplashScreenState extends State<SplashScreen> {
   _getDeviceInfo(){}
 
   _getCurrentLocation() async {
+    //await Future.delayed(Duration(seconds: 100));
     Position _currentPosition = await _determinePosition();
     print("CURRENT POSITION :LATITUDE "+_currentPosition.latitude.toString() + "LONGITUDE : "+_currentPosition.longitude.toString());
     // this will get the coordinates from the lat-long using Geocoder Coordinates
@@ -145,6 +149,8 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState(){
     super.initState();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => loadMobileScreen());
     if(!kIsWeb){
       _askForPermissions();
       _getSimDeviceInfo();
@@ -153,23 +159,19 @@ class SplashScreenState extends State<SplashScreen> {
       print("Upar Dekh Device Info");
       _getIPAddress();
       _getCurrentLocation();
+
       //EMULATOR
       //_getBioMetricsAuthentication();
-      WidgetsBinding.instance!.addPostFrameCallback((_){
-        Navigator.pushNamed(context,'Mobile');
-      });
     }
     else{
       _askForPermissions();
       _getCurrentLocation();
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        Navigator.pushNamed(context,'Mobile');
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(splashScreenLogo, context);
     return Material(child:Container(
       decoration: BoxDecoration(
           color: Colors.white
@@ -179,14 +181,19 @@ class SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SvgPicture.asset(
-                'assets/images/logo.svg',
-                height: 70,
-                width: 70,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                height: 80.0,
+                width: 80.0,
+                decoration: new BoxDecoration(
+                  image: DecorationImage(
+                    image: splashScreenLogo,
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
             ),
-            Text('Nuniyo',style: GoogleFonts.openSans(fontSize: 32,textStyle: TextStyle(color: Color(0xff6A4EEE), letterSpacing: .5,fontWeight: FontWeight.bold))),
+            Text('Mangal Keshav',style: GoogleFonts.openSans(fontSize: 32,textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontWeight: FontWeight.bold))),
           ],
         ))
     ));
@@ -247,11 +254,15 @@ class SplashScreenState extends State<SplashScreen> {
     else{
       print("Don't Deny Microphone");
     }
-    
     /*if (await Permission.location.isDenied) {
       showToastNotification("Please Give Location Access to the App");
       Geolocator.openLocationSettings();
     }*/
 
+  }
+
+  Future<void> loadMobileScreen() async {
+    await Future.delayed(Duration(seconds: 1));
+    Navigator.pushNamed(context,'Mobile');
   }
 }

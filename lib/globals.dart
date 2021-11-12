@@ -1,11 +1,17 @@
 //TODO Implement this library.
 library my_prj.globals;
+
+import 'dart:ui';
 //IMPORT THIS WHEREVER YOU USE GLOBAL VARIABLES : import 'globals.dart' as globals;
 //EXAMPLE : globals.myVariable
 
 String FLOW_ID = "M001001";
 String CURRENT_STAGE_ID = "C002001";
 String ORG_ID = "S001";
+
+final Color primaryColorOfApp = Color(0xffc41e1c);
+final Color secondaryColorOfApp = Color(0xffFFD3CF);
+final Color customBlackColorOfApp = Color(0xff222222);
 
 final String MOBILE_NUMBER_KEY = "MOBILE_NUMBER";
 final String EMAIL_ID_KEY = "EMAIL_ID";

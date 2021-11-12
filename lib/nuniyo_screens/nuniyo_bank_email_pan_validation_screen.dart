@@ -40,8 +40,6 @@ class BankPanEmailValidationScreen extends StatefulWidget {
 class _BankPanEmailValidationScreenState
     extends State<BankPanEmailValidationScreen> {
 
-  ///Color
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   //Current Screen Text Field
   TextEditingController _ifscCodeTextEditingController = TextEditingController();
@@ -565,7 +563,7 @@ class _BankPanEmailValidationScreenState
                         children: [
                           Icon(
                             Icons.search,
-                            color: enableIFSCCodeTextField?primaryColorOfApp:Color(0xffD2D0E1),
+                            color: enableIFSCCodeTextField?primaryColorOfApp:secondaryColorOfApp,
                             size: 26,
                           ),
                           SizedBox(
@@ -582,7 +580,7 @@ class _BankPanEmailValidationScreenState
                                       decoration: TextDecoration.underline,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: enableIFSCCodeTextField?primaryColorOfApp:Color(0xffD2D0E1),
+                                      color: enableIFSCCodeTextField?primaryColorOfApp:secondaryColorOfApp,
                                       letterSpacing: .5),
                                 ),
                               )),

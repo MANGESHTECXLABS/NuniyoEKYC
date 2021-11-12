@@ -10,9 +10,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_ml_vision/google_ml_vision.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
-import 'package:nuniyoekyc/extra_demo_screens/FlutCam.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
+import 'package:nuniyoekyc/utils/scanner_utils.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,8 +48,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   int _pointers = 0;
   /// Camera
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   bool viewOTPContainer = false;
 
   bool makeStepsVisible = false;
@@ -79,6 +78,20 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
 
   ScrollController _scrollController = ScrollController();
+
+  bool proceedBtnOnceClicked=false;
+
+
+  ///Face Detector Variables
+  dynamic _scanResults;
+
+  final FaceDetector _faceDetector = GoogleVision.instance
+      .faceDetector(FaceDetectorOptions(enableContours: true));
+
+  bool faceDetectedOnce=false;
+
+  bool showNoFaceDetectedError = false;
+  ///
 
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
@@ -135,6 +148,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   @override
   void dispose() {
     super.dispose();
+    _faceDetector.close();
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -179,7 +193,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       padding: const EdgeInsets.fromLTRB(8.0,10,0,0),
                       child: Container(height: 5, width: 35,
                         decoration: BoxDecoration(
-                            color: Color(0xff6A4EEE),
+                            color: primaryColorOfApp,
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
                       ),
@@ -312,11 +326,33 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                   height: 60,
                   child: FlatButton(
                     disabledTextColor: Colors.grey,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:!showRecordingButton?null: () {_onWillPop();onVideoRecordButtonPressed();},
+                    onPressed:!showRecordingButton?null: () async {
+                      if(faceDetectedOnce){
+                        RecordingStatus = "Kya lag ra re mere hero";
+                        setState(() {});
+                        _onWillPop();
+                        onVideoRecordButtonPressed();
+                      }
+                      else{
+                        bool faceDetected = await detectFace();
+                        if(!faceDetected){
+                          RecordingStatus = "Chutiye Shakal Dikha";
+                          setState(() {});
+                          await Future.delayed(Duration(seconds: 2));
+                          RecordingStatus = "Start Recording";
+                          setState(() {});
+                        }
+                        faceDetectedOnce = faceDetected;
+                        setState(() {
+
+                        });
+                      }
+
+                      },
                     color: Colors.transparent,
                     child: Text(
                         "$RecordingStatus",
@@ -336,19 +372,21 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ],
                   ),
                 ),
+                Visibility(child: Padding(padding: EdgeInsets.all(8.0),child:Text("Align Your Face in front of the camera and Press Recording Button Again")) ,visible: showNoFaceDetectedError,),
                 Container(
                   color: Colors.transparent,
                   width: MediaQuery.of(context).size.width,
                   height: 60,
                   child: FlatButton(
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     onPressed:enableProceedBtnRecordingDone&&enableProceedBtnOTPMatched?() async {
                       print("Uploading Video");
                       enableProceedBtnRecordingDone = false;
+                      proceedBtnOnceClicked = true;
                       setState(() {});
                       //List<int> byteFormatOfVideoFile = await videoFile!.readAsBytes();
                       final file = File(videoFile!.path);
@@ -383,7 +421,18 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       Navigator.pushReplacementNamed(context, stage_id);
                     }:null,
                     color: primaryColorOfApp,
-                    child: Text(
+                    child: proceedBtnOnceClicked?Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "Please Wait",
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                        ),
+                        SizedBox(width:20,),
+                        CircularProgressIndicator(color: Colors.white,),
+                      ],
+                    ):Text(
                         "Proceed",
                         style: GoogleFonts.openSans(
                           textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
@@ -399,6 +448,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                       enableRetryBtn = false;
                       ipvOtp = "";
                       showRecordingButton = false;
+                      proceedBtnOnceClicked = false;
                       setState(() {});
                       fetchOTP();
                       enableProceedBtnRecordingDone = false;
@@ -599,7 +649,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                           height: 60,
                           child: FlatButton(
                             disabledTextColor: Colors.blue,
-                            disabledColor: Color(0xffD2D0E1),
+                            disabledColor: secondaryColorOfApp,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -724,6 +774,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   void onVideoRecordButtonPressed() {
     startVideoRecording().then((_) async {
       if (mounted) {
+        //await controller!.stopImageStream();
         setState(() {});
         print("Recording Started");
         RecordingStatus = "Recording Started";
@@ -832,7 +883,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   }
 
   void _showCameraException(CameraException e) {
-    logError(e.code, e.description);
+    //logError(e.code, e.description);
     showInSnackBar('Error: ${e.code}\n${e.description}');
   }
 
@@ -848,6 +899,26 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     print("YOU ARE ON THIS STEP : "+routeName);
   }
 
+  Future<dynamic> Function(GoogleVisionImage image) _getDetectionMethod() {
+    return _faceDetector.processImage;
+  }
+
+  Future<bool> detectFace() async{
+    if (_scanResults is! List<Face>){print("NO FACE DETECTED");print("No Of Detected Faces"+_scanResults.toString());return false;}
+    print("No Of Detecccted Faces"+_scanResults.toString());
+    if(_scanResults.toString() == "[]"){
+      print("CHUTIYE SHAKAL DIKHA");
+      showNoFaceDetectedError = true;
+      return false;
+    }
+    else{
+      //painter = FaceDetectorPainter(imageSize, _scanResults);
+      print("Kya Solid Dikhra rey");
+      showNoFaceDetectedError = false;
+      return true;
+    }
+  }
+
 
   Future<void> initializeCamera() async {
     // Fetch the available cameras before initializing the app.
@@ -855,7 +926,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       WidgetsFlutterBinding.ensureInitialized();
       cameras = await availableCameras();
     } on CameraException catch (e) {
-      logError(e.code, e.description);
+      //logError(e.code, e.description);
     }
   }
 
@@ -867,11 +938,15 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         return;
       }
       else{
+        StartDetectingFace();
         //If you want to change the orientation of webcam
         //controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
         _onWillPop();
       }
     });
+
+
+
   }
 
   void fetchOTP() async {
@@ -903,6 +978,33 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       _showCameraException(e);
       return null;
     }
+  }
+
+  Future<void> StartDetectingFace() async {
+    if(faceDetectedOnce){
+      return;
+    }
+    await controller!.startImageStream((CameraImage image) async {
+      ScannerUtils.detect(
+      image: image,
+      detectInImage: _getDetectionMethod(),
+      imageRotation: (await ScannerUtils.getCamera(CameraLensDirection.front)).sensorOrientation,
+      ).then((dynamic results) {
+        setState(() {
+        _scanResults = results;
+      });
+      },
+    ).whenComplete(() => Future.delayed(Duration(seconds: 1,), () async {
+    print("Scannninng Stopped");
+    print("faceDetectedOnce");
+    print(faceDetectedOnce);
+    if(faceDetectedOnce){
+      await controller!.stopImageStream();
+      print("Stopping the Face Detection");
+      return;
+    }
+    }));
+    });
   }
 }
 

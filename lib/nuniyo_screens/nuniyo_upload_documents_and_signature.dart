@@ -44,6 +44,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
 
   bool showDigitalPadBox = false;
 
+  bool shouldUploadPan = true;
+
   File? imageFilePan = new File("/assets/images/congratulations.png");
 
   bool tempPanUploaded = false;
@@ -219,7 +221,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     super.deactivate();
   }
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   final GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
 
@@ -251,70 +252,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Upload Documents'),
-                Text("Copy of PAN",style: GoogleFonts.openSans(
-                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 22,fontWeight: FontWeight.bold),
-                ),),
-                SizedBox(height: 20,),
-                Text("Upload a signed copy of your PAN Card.",style: GoogleFonts.openSans(
-                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
-                ),),
-                Text("Format PNG,JPG,PDF",style: GoogleFonts.openSans(
-                  textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
-                ),),
-                SizedBox(height: 20,),
-                Container(
-                  color: Colors.transparent,
-                  width: MediaQuery.of(context).size.width,
-                  height: 65,
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    onPressed: () {
-                      showPanCardImageUploadOptionsDialog();
-                    },
-                    color: primaryColorOfApp,
-                    child: Text(
-                        "Upload",
-                        style: GoogleFonts.openSans(
-                          textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
-                    ),
-                  ),
-                ),
-                ///Small View Container
-                Visibility(visible: showPanCardImageBox,child: SizedBox(height: 20,)),
-                Visibility(
-                  visible: showPanCardImageBox,
-                  child: Center(
-                    child:populatePanCardImageBox(),
-                  ),
-                ),
-                SizedBox(height: 30.0,),
-                Visibility(
-                  visible: tempPanUploaded,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(onPressed:() async {
-                        if (imageFilePan != null) {
-                          //Uploading File to Database
-                          //isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
-                        }
-                      }, icon: Icon(Icons.check_circle,size: 36.0,color: Colors.green,)),
-                      SizedBox(width: 30,),
-                      IconButton(onPressed:(){ showPanCardImageBox = !showPanCardImageBox;setState(() {
-                      });}, icon: Icon(Icons.remove_red_eye_outlined,size: 36.0,color: primaryColorOfApp,)),
-                      SizedBox(width: 30,),
-                      IconButton(onPressed:(){
-                        imageFilePan = null;
-                        tempPanUploaded = false;
-                        setState(() {});
-                        showPanCardImageBox = false;
-                      }, icon: Icon(Icons.delete,size: 36.0,color: Colors.red,)),
-                    ],
-                  ),),
-                SizedBox(height: 30.0,),
-                Divider(thickness: 2.0,),
+                Visibility(child: PanBox(),visible: shouldUploadPan,),
                 Text("Signature",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 22,fontWeight: FontWeight.bold),
                 ),),
@@ -401,7 +339,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                   height: 75,
                   child: FlatButton(
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -499,10 +437,21 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                         Navigator.pushNamed(context,ThisStepId);
                     }:null,
                     color: primaryColorOfApp,
-                    child: Text(
+                    child: !onceProceedClicked?Text(
                         "Proceed",
                         style: GoogleFonts.openSans(
                           textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                    ):Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "Please Wait",
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+                        ),
+                        SizedBox(width:20,),
+                        CircularProgressIndicator(color: Colors.white,),
+                      ],
                     ),
                   ),
                 ),
@@ -970,6 +919,78 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       setState(() {
       });
     }
+  }
+
+  PanBox() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Copy of PAN",style: GoogleFonts.openSans(
+          textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 22,fontWeight: FontWeight.bold),
+        ),),
+        SizedBox(height: 20,),
+        Text("Upload a signed copy of your PAN Card.",style: GoogleFonts.openSans(
+          textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 16),
+        ),),
+        Text("Format PNG,JPG,PDF",style: GoogleFonts.openSans(
+          textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 12),
+        ),),
+        SizedBox(height: 20,),
+        Container(
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          height: 65,
+          child: FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            onPressed: () {
+              showPanCardImageUploadOptionsDialog();
+            },
+            color: primaryColorOfApp,
+            child: Text(
+                "Upload",
+                style: GoogleFonts.openSans(
+                  textStyle: TextStyle(color: Colors.white, letterSpacing: .5,fontSize: 16,fontWeight: FontWeight.bold),)
+            ),
+          ),
+        ),
+        ///Small View Container
+        Visibility(visible: showPanCardImageBox,child: SizedBox(height: 20,)),
+        Visibility(
+          visible: showPanCardImageBox,
+          child: Center(
+            child:populatePanCardImageBox(),
+          ),
+        ),
+        SizedBox(height: 30.0,),
+        Visibility(
+          visible: tempPanUploaded,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(onPressed:() async {
+                if (imageFilePan != null) {
+                  //Uploading File to Database
+                  //isPanOCRVerified = await ApiRepo().PanOCRValidation(imageFilePan!.path,imageFilePan);
+                }
+              }, icon: Icon(Icons.check_circle,size: 36.0,color: Colors.green,)),
+              SizedBox(width: 30,),
+              IconButton(onPressed:(){ showPanCardImageBox = !showPanCardImageBox;setState(() {
+              });}, icon: Icon(Icons.remove_red_eye_outlined,size: 36.0,color: primaryColorOfApp,)),
+              SizedBox(width: 30,),
+              IconButton(onPressed:(){
+                imageFilePan = null;
+                tempPanUploaded = false;
+                setState(() {});
+                showPanCardImageBox = false;
+              }, icon: Icon(Icons.delete,size: 36.0,color: Colors.red,)),
+            ],
+          ),),
+        SizedBox(height: 30.0,),
+        Divider(thickness: 2.0,),
+      ],
+    );
   }
 
 }

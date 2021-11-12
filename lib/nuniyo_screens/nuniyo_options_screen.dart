@@ -20,8 +20,6 @@ class OptionsScreen extends StatefulWidget {
 
 class _OptionsScreenState extends State<OptionsScreen> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   bool checkedValue  = false;
 
   static const platform = const MethodChannel("razorpay_flutter");

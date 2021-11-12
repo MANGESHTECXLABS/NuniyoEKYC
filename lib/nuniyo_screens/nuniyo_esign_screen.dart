@@ -23,8 +23,6 @@ class EsignScreen extends StatefulWidget {
 
 class _EsignScreenState extends State<EsignScreen> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   String PAN_NO = "";
   String GENDER = "";
   String DOB = "";

@@ -20,8 +20,6 @@ class OptionsScreenTwo extends StatefulWidget {
 
 class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   String total= "0";
 
   bool checkedValue  = false;
@@ -109,7 +107,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                               onChanged: (String? value) {
                                 setState(() {
                                   _groupValue = value;
-                                  total = "100000";
+                                  total = "1250";
                                   print(_groupValue);
                                 });
                               },
@@ -121,7 +119,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Platinum",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("₹100,000",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹1,250",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(child: Padding(
@@ -132,7 +130,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("1) Upfront Margin", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                    Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹100,000", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -140,7 +138,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("2) Intraday", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("0.01%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -148,7 +146,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("3) Delivery", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("0.10%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -156,7 +154,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("4) Options/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹10", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                                 SizedBox(height: 5,),
@@ -164,7 +162,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child:Text("5) Currency/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                    Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                    Text("₹5", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                   ],
                                 ),
                               ],
@@ -197,7 +195,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 onChanged: (String? value) {
                                   setState(() {
                                     _groupValue = value;
-                                    total = "50000";
+                                    total = "550";
                                     print(_groupValue);
                                   });
                                 },
@@ -209,7 +207,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Gold",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("₹50,000",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹550",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(visible: _groupValue=="gold",child: Padding(
@@ -220,7 +218,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("1) Upfront Margin", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹25,000", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -228,7 +226,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("2) Intraday", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹50", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("0.03%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -236,7 +234,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Delivery", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("0.30%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -244,7 +242,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("4) Options/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹30", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -252,7 +250,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Currency/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹10", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                             ],
@@ -285,7 +283,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 onChanged: (String? value) {
                                   setState(() {
                                     _groupValue = value;
-                                    total = "25000";
+                                    total = "300";
                                     print(_groupValue);
                                   });
                                 },
@@ -297,7 +295,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 child: Text("Silver",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
                               ),
                             ),
-                            Text("₹25,000",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
+                            Text("₹300",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
                           ],
                         ),
                         Visibility(visible: _groupValue=="silver",child: Padding(
@@ -308,7 +306,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("1) Upfront Margin", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹5,000", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -316,7 +314,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("2) Intraday", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("0.05%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -324,7 +322,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Delivery", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("0.50%", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -332,7 +330,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("4) Options/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹50", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                               SizedBox(height: 5,),
@@ -340,183 +338,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(child:Text("3) Currency/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),)
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.0,),
-                Container(
-                  height: _groupValue=="bronze"?210:100,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: primaryColorOfApp,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(15))
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex:1,
-                              child: Radio(
-                                value: "bronze",
-                                groupValue: _groupValue,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _groupValue = value;
-                                    total = "10000";
-                                    print(_groupValue);
-                                  });
-                                },
-                              ),),
-                            Expanded(
-                              flex:5,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Bronze",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
-                              ),
-                            ),
-                            Text("₹10000",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
-                          ],
-                        ),
-                        Visibility(visible: _groupValue=="bronze",child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("1) Upfront Margin", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("2) Intraday", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("3) Delivery", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("4) Options/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("3) Currency/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),)
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.0,),
-                Container(
-                  height: _groupValue=="tin"?210:100,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: primaryColorOfApp,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(15))
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex:1,
-                              child: Radio(
-                                value: "tin",
-                                groupValue: _groupValue,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _groupValue = value;
-                                    total = "5000";
-                                    print(_groupValue);
-                                  });
-                                },
-                              ),),
-                            Expanded(
-                              flex:5,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Tin",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),),
-                              ),
-                            ),
-                            Text("₹5,000",textAlign:TextAlign.left, style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 22.0,letterSpacing: .5,fontWeight: FontWeight.bold)),)
-                          ],
-                        ),
-                        Visibility(visible: _groupValue=="tin",child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0,0.0,0.0,0.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("1) Upfront Margin", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                  Text("₹11", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("2) Intraday", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹25", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("3) Delivery", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("4) Options/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
-                                ],
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(child:Text("3) Currency/Lot", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5)))),
-                                  Text("₹12", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
+                                  Text("₹20", style:GoogleFonts.openSans(textStyle: TextStyle(color: Colors.black,fontSize: 12.0,letterSpacing: .5))),
                                 ],
                               ),
                             ],
@@ -643,12 +465,6 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
         break;
       case "silver":
         depositoryCharge = "3";
-        break;
-      case "bronze":
-        depositoryCharge = "4";
-        break;
-      case "tin":
-        depositoryCharge = "5";
         break;
     }
     //In Place of Signature I'm Sending Payment Plan Id

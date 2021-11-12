@@ -21,8 +21,6 @@ class _BrowserViewXState extends State<BrowserViewX> {
   late WebViewXController webviewController;
   String webURL = "";
 
-  Color primaryColorOfApp = Color(0xff6A4EEE);
-
   String hmac = "";
   String code = "";
   String state = "";

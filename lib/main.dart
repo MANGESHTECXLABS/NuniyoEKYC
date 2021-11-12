@@ -6,22 +6,12 @@ import 'dart:io';
 ///USE THE ABOVE LINK TO INTEGRATE DIGIO ESIGN ON IOS
 
 import 'package:flutter/material.dart';
-import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
-import 'package:nuniyoekyc/extra_demo_screens/auto_fill_otp.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_aadhar_kyc_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_bank_email_pan_validation_screen.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_commodity_upload_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_congrats_screen.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_esign_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_mobile_validation_screen.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_options_screen.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_personal_details_screen.dart';
-import 'package:nuniyoekyc/nuniyo_screens/nuniyo_splash_screen.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_upload_documents_and_signature.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_webcam_screen.dart';
 import 'package:nuniyoekyc/utils/Router.dart';
-import 'nuniyo_screens/nuniyo_options_screen_two.dart';
-import 'nuniyo_screens/nuniyo_upload_documents_and_signature.dart';
-
 
 void main() {
   ///TO hide Red Screen of Death!
@@ -52,10 +42,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         inputDecorationTheme: InputDecorationTheme(
-          focusColor: Color(0xff6A4EEE),
+          focusColor: Color(0xffc41e1c),
           focusedBorder:OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(color: Color(0xff6A4EEE), width: 2.0),
+            borderSide: const BorderSide(color: Color(0xffc41e1c), width: 2.0),
           ),
           border: OutlineInputBorder(
               borderSide: new BorderSide(width: 2.0),
@@ -74,11 +64,11 @@ class MyApp extends StatelessWidget {
         //Notice that the counter didn't reset back to zero; the application
         //is not restarted.
         //#6A4EEE
-        primaryColor: Color(0xff6A4EEE),
+        primaryColor: Color(0xffc41e1c),
       ),
-      home:OptionsScreenTwo(),
-      //initialRoute: '/',
-      //onGenerateRoute: ScreenRouter.generateRoute,
+      //home:MobileValidationLoginScreen(),
+      initialRoute: '/',
+      onGenerateRoute: ScreenRouter.generateRoute,
     );
   }
 }

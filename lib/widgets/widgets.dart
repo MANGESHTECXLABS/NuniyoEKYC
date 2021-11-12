@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nuniyoekyc/globals.dart';
 
 class WidgetHelper extends StatefulWidget {
   const WidgetHelper({Key? key}) : super(key: key);
@@ -39,11 +40,9 @@ class WidgetHelper extends StatefulWidget {
 
   AppBar NuniyoAppBar(){
     return AppBar(
-      leading: Padding(child:SvgPicture.asset(
-        'assets/images/logo.svg',
-      ),padding: EdgeInsets.only(left: 25),),
-      title: Text('Nuniyo',style: GoogleFonts.openSans(fontSize: 24,textStyle: TextStyle(color: Color(0xff6A4EEE), letterSpacing: .5,fontWeight: FontWeight.bold))),
-      backgroundColor: Color(0xffF0ECFF),
+      leading: Padding(child:Image.asset('assets/images/appiconfinal.png'),padding: EdgeInsets.only(left: 10),),
+      title: Text('Mangal Keshav',style: GoogleFonts.openSans(fontSize: 18,textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontWeight: FontWeight.bold))),
+      backgroundColor: secondaryColorOfApp,
       elevation: 0,
     );
   }
@@ -87,7 +86,7 @@ class WidgetHelper extends StatefulWidget {
           padding: const EdgeInsets.fromLTRB(8.0,10,0,0),
           child: Container(height: 5, width: 35,
             decoration: BoxDecoration(
-                color: Color(0xff6A4EEE),
+                color: Color(0xffc41e1c),
                 borderRadius: BorderRadius.all(Radius.circular(20))
             ),
           ),
@@ -96,13 +95,9 @@ class WidgetHelper extends StatefulWidget {
       ],
     );
   }
-
-
 }
 
 class _WidgetHelperState extends State<WidgetHelper> {
-
-  Color primaryColorOfApp = Color(0xff6A4EEE);
 
   @override
   Widget build(BuildContext context) {
