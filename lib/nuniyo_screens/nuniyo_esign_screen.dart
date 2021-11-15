@@ -92,7 +92,7 @@ class _EsignScreenState extends State<EsignScreen> {
                   height: 60,
                   child: FlatButton(
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

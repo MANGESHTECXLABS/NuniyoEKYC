@@ -44,8 +44,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
 
   bool showDigitalPadBox = false;
 
-  bool shouldUploadPan = true;
-
   File? imageFilePan = new File("/assets/images/congratulations.png");
 
   bool tempPanUploaded = false;
@@ -65,6 +63,11 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   bool isDigitalSignatureFromCamera = false;
 
   bool onceProceedClicked = false;
+
+  bool isKRAVerified = true;
+
+  String digitalSignatureUploadApiMessage = "false";
+  String panUploadApiMessage = "false";
 
   Future<Null> _pickImageForPan(ImageSource source) async {
     if(source == ImageSource.gallery){
@@ -227,6 +230,14 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   @override
   void initState() {
     super.initState();
+    if(isKRAVerified){
+      tempPanUploaded = true;
+      print("bdk6tssl,6ysx6l");
+      //tempDigitalPadUploaded = true;
+    }
+    setState(() {
+
+    });
     //manageSteps();
   }
 
@@ -252,7 +263,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WidgetHelper().DetailsTitle('Upload Documents'),
-                Visibility(child: PanBox(),visible: shouldUploadPan,),
+                Visibility(child: PanBox(),visible: !isKRAVerified,),
                 Text("Signature",style: GoogleFonts.openSans(
                   textStyle: TextStyle(color: Colors.black, letterSpacing: .5,fontSize: 22,fontWeight: FontWeight.bold),
                 ),),
@@ -346,9 +357,12 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                     onPressed:(!onceProceedClicked&&(tempPanUploaded&&tempDigitalPadUploaded))?() async {
                         onceProceedClicked = true;
                         bool panUploaded = false;
+                        if(isKRAVerified){
+                          panUploaded = true;
+                        }
                         setState(() {});
                         bool isAPanImage = false;
-                        if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null){
+                        if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null&&isKRAVerified){
                           //CALL APIS TO UPLOAD
                           print("Uploading Image Format of Pan to API");
                           ///Upload APi
@@ -365,8 +379,14 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print(byteFormatOfFile.length);
                           print(result.length);
                           ////////
+                          panUploadApiMessage = await ApiRepository().DocumentUploadPAN(result,fileExtension);
+                          if(panUploadApiMessage=="true"){
+                            isAPanImage = true;
+                          }
+                          else{
+                            isAPanImage = false;
+                          }
 
-                          isAPanImage = await ApiRepository().DocumentUploadPAN(result,fileExtension);
                           panUploaded = true;
                           ///Upload APi
                         }
@@ -378,12 +398,17 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print(fileExtension);
                           await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,fileExtension);
                         }
-                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"&&!panUploaded){
+                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"&&!panUploaded&&isKRAVerified){
                           print("Uploading PDF Format of PAN IMAGE FILE");
                           Uint8List? byteList = pdfPanImagefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
-                            isAPanImage = await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString());
+                            if(await ApiRepository().DocumentUploadPAN(byteFormatOfFile,pdfPanImagefile.extension.toString()) =="true"){
+                              isAPanImage = true ;
+                            }
+                            else{
+                              isAPanImage = false;
+                            }
                           }
                           panUploaded = true;
                           //List<int>? byteFormatOfFile =await pdfPanImagefile.bytes!.toList(growable: true);
@@ -395,21 +420,21 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           Uint8List? byteList = pdfPanDigitalSignaturefile.bytes;
                           if(byteList!=null){
                             List<int> byteFormatOfFile = byteList;
-                            await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,pdfPanDigitalSignaturefile.extension.toString());
+                            digitalSignatureUploadApiMessage = await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,pdfPanDigitalSignaturefile.extension.toString());
                           }
                         }
                         if(drawnDigitalSignatureImage!=null){
                           print("Uploading Drawn Digital Signature");
                           List<int> byteFormatOfFile = drawnDigitalSignatureImage!.buffer.asUint8List();
-                          await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
+                          digitalSignatureUploadApiMessage = await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
                         }
-                        if(!isAPanImage){
+                        if(!panUploaded){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Colors.black,
-                          content: Text(
-                          "Please Upload A Valid PAN!",
-                          style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-                          ),
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "PAN Not Uploaded",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
                           ));
                           onceProceedClicked = false;
                           setState(() {
@@ -417,16 +442,33 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           });
                           return;
                         }
-                        else{
-                          //await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
-                          //ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            //backgroundColor: Colors.black,
-                            //content: Text(
-                              //"Please Upload Proper Documents!",
-                              //style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-                            //),
-                          //));
-                          //return;
+                        else if(digitalSignatureUploadApiMessage!="true"){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "$digitalSignatureUploadApiMessage",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
+                          ));
+                          onceProceedClicked = false;
+                          setState(() {
+
+                          });
+                          return;
+                        }
+                        else if(!isAPanImage){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "Please Upload A Valid PAN!",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
+                          ));
+                          onceProceedClicked = false;
+                          setState(() {
+
+                          });
+                          return;
                         }
 
                         ///Update Stage ID Here

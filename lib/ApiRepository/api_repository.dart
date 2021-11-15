@@ -76,6 +76,19 @@ class ApiRepository {
     print("Your DOC ID is :"+prefs.getString(DOC_ID_ESIGN_KEY));
   }
 
+  Future<String> Get_Bank_IFSC_CODE() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String ifscCode= prefs.getString(BANK_IFSC_CODE_KEY);
+    print("BANK_IFSC_CODE_KEY STORED INSIDE SHARED PREFERENCES :" + BANK_IFSC_CODE_KEY);
+    return ifscCode;
+  }
+
+  Future<void> SET_BANK_IFSC_CODE(String ifscCode) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(BANK_IFSC_CODE_KEY,ifscCode);
+    print("Your DOC ID is :"+prefs.getString(BANK_IFSC_CODE_KEY));
+  }
+
   Future<String> GetLeadId() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String lead_id= prefs.getString(LEAD_ID_KEY);
@@ -186,6 +199,7 @@ class ApiRepository {
     };
 
     print("IFSC CODE"+ifscNo);
+    SET_BANK_IFSC_CODE(ifscNo);
     print("Account No"+accountNo);
     print("Calling Penny Drop Using");
 
@@ -214,7 +228,6 @@ class ApiRepository {
       else{
         return false;
       }
-
     }
     else {
       print(response.reasonPhrase);
@@ -599,9 +612,53 @@ class ApiRepository {
 
   Future<void> VerifyDigiLockerAccountLocal() async{}
 
-  Future<void> DocumentUploadLocal() async{}
+  Future<String> DocumentUploadCheck() async{
+    String jwt_token= await GetCurrentJWTToken();
+    print("Calling Document Upload Check Using API"+jwt_token);
 
-  Future<bool> DocumentUploadPAN(List<int> byteFormatOfFile,String fileExtension) async{
+    String lead_id = await GetLeadId();
+    print("Document Upload Check for Lead ID : "+lead_id);
+
+    var headers = {
+      'Authorization': 'Bearer $jwt_token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$BASE_API_LINK_URL/api/documentupload/Document_Upload_Check'));
+    request.body = json.encode({
+      "lead_Id": "$lead_id"
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String result = await response.stream.bytesToString();
+      print("Document Upload Check ka Response");
+      print(result);
+      if(result==""){
+        return "true";
+      }
+      Map valueMap = jsonDecode(result);
+      print(valueMap);
+      print(result);
+      int result_Id = valueMap["res_Output"][0]["result_Id"];
+      print(result_Id);
+      if(result_Id==1){
+        return "true";
+      }
+      else{
+        return "false";
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+      return response.reasonPhrase.toString();
+    }
+  }
+
+  Future<String> DocumentUploadPAN(List<int> byteFormatOfFile,String fileExtension) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadPANLocal Using API"+jwt_token);
@@ -631,7 +688,7 @@ class ApiRepository {
       print("Yeh Pan Upload Ka Response Aayaa hai");
       print(result);
       if(result==""){
-        return true;
+        return "true";
       }
       Map valueMap = jsonDecode(result);
       print(valueMap);
@@ -639,19 +696,19 @@ class ApiRepository {
       int result_Id = valueMap["res_Output"][0]["result_Id"];
       print(result_Id);
       if(result_Id==1){
-        return true;
+        return "true";
       }
       else{
-        return false;
+        return "false";
       }
     }
     else {
       print(response.reasonPhrase);
-      return false;
+      return response.reasonPhrase.toString();
     }
   }
 
-  Future<bool> DocumentUploadDigitalSignature(List<int> byteFormatOfFile,String fileExtension) async{
+  Future<String> DocumentUploadDigitalSignature(List<int> byteFormatOfFile,String fileExtension) async{
 
     String jwt_token= await GetCurrentJWTToken();
     print("Calling DocumentUploadDigitalSignature Using API"+jwt_token);
@@ -677,11 +734,11 @@ class ApiRepository {
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-      return true;
+      return "true";
     }
     else {
       print(response.reasonPhrase);
-      return false;
+      return response.reasonPhrase.toString();
     }
   }
 
@@ -1037,6 +1094,8 @@ class ApiRepository {
       return false;
     }
   }
+
+
 
   Future<bool> VerifyOTP(String mobileNumber,String userEnteredOTP) async{
     var headers = {

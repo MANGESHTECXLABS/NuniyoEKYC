@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_bank_email_pan_validation_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_congrats_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_mobile_validation_screen.dart';
+import 'package:nuniyoekyc/nuniyo_screens/nuniyo_penny_drop_screen.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_upload_documents_and_signature.dart';
 import 'package:nuniyoekyc/nuniyo_screens/nuniyo_webcam_screen.dart';
 import 'package:nuniyoekyc/utils/Router.dart';
@@ -66,7 +67,7 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xffc41e1c),
       ),
-      //home:MobileValidationLoginScreen(),
+      //home:UploadDocumentScreen(),
       initialRoute: '/',
       onGenerateRoute: ScreenRouter.generateRoute,
     );

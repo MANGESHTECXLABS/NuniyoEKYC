@@ -10,10 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_ml_vision/google_ml_vision.dart';
 import 'package:nuniyoekyc/ApiRepository/api_repository.dart';
 import 'package:nuniyoekyc/utils/localstorage.dart';
-import 'package:nuniyoekyc/utils/scanner_utils.dart';
 import 'package:nuniyoekyc/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,18 +79,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
 
   bool proceedBtnOnceClicked=false;
 
-
-  ///Face Detector Variables
-  dynamic _scanResults;
-
-  final FaceDetector _faceDetector = GoogleVision.instance
-      .faceDetector(FaceDetectorOptions(enableContours: true));
-
-  bool faceDetectedOnce=false;
-
-  bool showNoFaceDetectedError = false;
-  ///
-
   void _requestIPVOTPTextFieldFocusNode(){
     setState(() {
       FocusScope.of(context).requestFocus(_IPVOTPTextFieldFocusNode);
@@ -148,7 +134,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   @override
   void dispose() {
     super.dispose();
-    _faceDetector.close();
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -330,29 +315,7 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    onPressed:!showRecordingButton?null: () async {
-                      if(faceDetectedOnce){
-                        RecordingStatus = "Kya lag ra re mere hero";
-                        setState(() {});
-                        _onWillPop();
-                        onVideoRecordButtonPressed();
-                      }
-                      else{
-                        bool faceDetected = await detectFace();
-                        if(!faceDetected){
-                          RecordingStatus = "Chutiye Shakal Dikha";
-                          setState(() {});
-                          await Future.delayed(Duration(seconds: 2));
-                          RecordingStatus = "Start Recording";
-                          setState(() {});
-                        }
-                        faceDetectedOnce = faceDetected;
-                        setState(() {
-
-                        });
-                      }
-
-                      },
+                    onPressed:!showRecordingButton?null: () {_onWillPop();onVideoRecordButtonPressed();},
                     color: Colors.transparent,
                     child: Text(
                         "$RecordingStatus",
@@ -372,7 +335,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
                     ],
                   ),
                 ),
-                Visibility(child: Padding(padding: EdgeInsets.all(8.0),child:Text("Align Your Face in front of the camera and Press Recording Button Again")) ,visible: showNoFaceDetectedError,),
                 Container(
                   color: Colors.transparent,
                   width: MediaQuery.of(context).size.width,
@@ -774,7 +736,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
   void onVideoRecordButtonPressed() {
     startVideoRecording().then((_) async {
       if (mounted) {
-        //await controller!.stopImageStream();
         setState(() {});
         print("Recording Started");
         RecordingStatus = "Recording Started";
@@ -899,26 +860,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
     print("YOU ARE ON THIS STEP : "+routeName);
   }
 
-  Future<dynamic> Function(GoogleVisionImage image) _getDetectionMethod() {
-    return _faceDetector.processImage;
-  }
-
-  Future<bool> detectFace() async{
-    if (_scanResults is! List<Face>){print("NO FACE DETECTED");print("No Of Detected Faces"+_scanResults.toString());return false;}
-    print("No Of Detecccted Faces"+_scanResults.toString());
-    if(_scanResults.toString() == "[]"){
-      print("CHUTIYE SHAKAL DIKHA");
-      showNoFaceDetectedError = true;
-      return false;
-    }
-    else{
-      //painter = FaceDetectorPainter(imageSize, _scanResults);
-      print("Kya Solid Dikhra rey");
-      showNoFaceDetectedError = false;
-      return true;
-    }
-  }
-
 
   Future<void> initializeCamera() async {
     // Fetch the available cameras before initializing the app.
@@ -926,7 +867,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       WidgetsFlutterBinding.ensureInitialized();
       cameras = await availableCameras();
     } on CameraException catch (e) {
-      //logError(e.code, e.description);
     }
   }
 
@@ -938,15 +878,11 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
         return;
       }
       else{
-        StartDetectingFace();
         //If you want to change the orientation of webcam
         //controller!.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
         _onWillPop();
       }
     });
-
-
-
   }
 
   void fetchOTP() async {
@@ -978,33 +914,6 @@ class _WebCamScreenState extends State<WebCamScreen> with WidgetsBindingObserver
       _showCameraException(e);
       return null;
     }
-  }
-
-  Future<void> StartDetectingFace() async {
-    if(faceDetectedOnce){
-      return;
-    }
-    await controller!.startImageStream((CameraImage image) async {
-      ScannerUtils.detect(
-      image: image,
-      detectInImage: _getDetectionMethod(),
-      imageRotation: (await ScannerUtils.getCamera(CameraLensDirection.front)).sensorOrientation,
-      ).then((dynamic results) {
-        setState(() {
-        _scanResults = results;
-      });
-      },
-    ).whenComplete(() => Future.delayed(Duration(seconds: 1,), () async {
-    print("Scannninng Stopped");
-    print("faceDetectedOnce");
-    print(faceDetectedOnce);
-    if(faceDetectedOnce){
-      await controller!.stopImageStream();
-      print("Stopping the Face Detection");
-      return;
-    }
-    }));
-    });
   }
 }
 

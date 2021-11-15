@@ -415,7 +415,8 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
     var options = {
       'key': 'rzp_live_q8gUCOxfHIbCkb',
       //'key': 'rzp_test_dojmbldJSpz91g',
-      'amount': amount,
+      //'amount': amount,
+      'amount': "100",
       'name': 'TecXLabs',
       'description': 'Stock Trading',
       'prefill': {'contact': '$phoneNumber', 'email': '$emailID'},
