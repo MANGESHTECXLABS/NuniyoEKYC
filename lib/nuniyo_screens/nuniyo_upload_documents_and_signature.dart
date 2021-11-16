@@ -69,6 +69,9 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   String digitalSignatureUploadApiMessage = "false";
   String panUploadApiMessage = "false";
 
+
+  bool nameMatched = false;
+
   Future<Null> _pickImageForPan(ImageSource source) async {
     if(source == ImageSource.gallery){
       print("Lets PIck Image From Gallery");
@@ -230,14 +233,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
   @override
   void initState() {
     super.initState();
-    if(isKRAVerified){
-      tempPanUploaded = true;
-      print("bdk6tssl,6ysx6l");
-      //tempDigitalPadUploaded = true;
-    }
-    setState(() {
-
-    });
+    CheckIsKraVerified();
     //manageSteps();
   }
 
@@ -428,21 +424,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           List<int> byteFormatOfFile = drawnDigitalSignatureImage!.buffer.asUint8List();
                           digitalSignatureUploadApiMessage = await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,"jpg");
                         }
-                        if(!panUploaded){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.black,
-                            content: Text(
-                              "PAN Not Uploaded",
-                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-                            ),
-                          ));
-                          onceProceedClicked = false;
-                          setState(() {
-
-                          });
-                          return;
-                        }
-                        else if(digitalSignatureUploadApiMessage!="true"){
+                        if(digitalSignatureUploadApiMessage!="true"){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.black,
                             content: Text(
@@ -456,6 +438,19 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           });
                           return;
                         }
+                        else if(!panUploaded){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.black,
+                            content: Text(
+                              "PAN Not Uploaded",
+                              style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+                            ),
+                          ));
+                          onceProceedClicked = false;
+                          setState(() {
+                          });
+                          return;
+                        }
                         else if(!isAPanImage){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.black,
@@ -465,9 +460,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                             ),
                           ));
                           onceProceedClicked = false;
-                          setState(() {
-
-                          });
+                          setState(() {});
                           return;
                         }
 
@@ -641,6 +634,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
             height: 250,
             child: Column(
                 children: [
+                  Visibility(visible: nameMatched,child:IFSCFields()),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(22.0,10.0,0.0,10.0),
                     child: Align(
@@ -1033,6 +1027,23 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
         Divider(thickness: 2.0,),
       ],
     );
+  }
+
+  Future<void> CheckIsKraVerified() async {
+    Map valueMap = await ApiRepository().DocumentUploadCheck();
+    if(valueMap["res_Output"][0]["is_Kra_Verified"]==0){
+      isKRAVerified = false;
+    }
+    if(isKRAVerified){
+      tempPanUploaded = true;
+      print("bdk6tssl6ysx6l");
+      //tempDigitalPadUploaded = true;
+    }
+    setState(() {});
+  }
+
+  IFSCFields() {
+    return Container();
   }
 
 }

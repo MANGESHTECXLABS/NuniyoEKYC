@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         //#6A4EEE
         primaryColor: Color(0xffc41e1c),
       ),
-      //home:UploadDocumentScreen(),
+      //home:MobileValidationLoginScreen(),
       initialRoute: '/',
       onGenerateRoute: ScreenRouter.generateRoute,
     );

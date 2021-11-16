@@ -60,7 +60,6 @@ class _EsignScreenState extends State<EsignScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(onWillPop: _onWillPop, child:Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: WidgetHelper().NuniyoAppBar(),

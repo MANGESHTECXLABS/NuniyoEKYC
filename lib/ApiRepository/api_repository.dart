@@ -612,7 +612,8 @@ class ApiRepository {
 
   Future<void> VerifyDigiLockerAccountLocal() async{}
 
-  Future<String> DocumentUploadCheck() async{
+  Future<Map> DocumentUploadCheck() async{
+    Map valueMap = {};
     String jwt_token= await GetCurrentJWTToken();
     print("Calling Document Upload Check Using API"+jwt_token);
 
@@ -637,24 +638,13 @@ class ApiRepository {
       String result = await response.stream.bytesToString();
       print("Document Upload Check ka Response");
       print(result);
-      if(result==""){
-        return "true";
-      }
       Map valueMap = jsonDecode(result);
       print(valueMap);
-      print(result);
-      int result_Id = valueMap["res_Output"][0]["result_Id"];
-      print(result_Id);
-      if(result_Id==1){
-        return "true";
-      }
-      else{
-        return "false";
-      }
+      return valueMap;
     }
     else {
       print(response.reasonPhrase);
-      return response.reasonPhrase.toString();
+      return valueMap;
     }
   }
 
