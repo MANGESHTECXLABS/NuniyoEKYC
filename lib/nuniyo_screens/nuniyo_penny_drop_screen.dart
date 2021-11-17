@@ -21,11 +21,13 @@ Future<bool> _onWillPop() {
 }
 
 class _PennyDropScreenState extends State<PennyDropScreen> {
+
+  //IFSC VARIABLE
   ScrollController _scrollController = ScrollController();
 
-  bool enableBankAccountTextField = false;
+  bool enableBankAccountTextField = true;
 
-  bool enableIFSCCodeTextField = false;
+  bool enableIFSCCodeTextField = true;
 
   Map IFSCMapList = {};
 
@@ -70,6 +72,8 @@ class _PennyDropScreenState extends State<PennyDropScreen> {
   String branchLocationErrorText = "";
 
   TextEditingController _dateController = TextEditingController();
+  //IFSC Variable
+
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +230,7 @@ class _PennyDropScreenState extends State<PennyDropScreen> {
     _ifscTextFieldFocusNode = FocusNode();
     _IFSCCode2TextFieldFocusNode = FocusNode();
     _branchNameTextFieldFocusNode = FocusNode();
+    _branchLocationTextFieldFocusNode=FocusNode();
   }
 
   void _requestBankTextFieldFocus() {

@@ -174,7 +174,6 @@ class _BankPanEmailValidationScreenState
   bool isValidInputForEmail = false;
 
 
-
   ///Current Screen Focus Node
   late FocusNode _emailTextFieldFocusNode, _dateTextFieldFocusNode,
       _panTextFieldFocusNode,
@@ -312,9 +311,9 @@ class _BankPanEmailValidationScreenState
                           isValidInputForEmail = false;
                           showEmailErrorText = true;
                           isEmailValidatedSuccessfully = false;
-                          setState(() {
+                          //setState(() {
 
-                          });
+                          //});
                         } else {
                           print("Noice Email");
                           SharedPreferences prefs = await SharedPreferences.getInstance();

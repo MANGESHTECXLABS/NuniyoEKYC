@@ -76,7 +76,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                       padding: const EdgeInsets.fromLTRB(8.0,10,0,0),
                       child: Container(height: 5, width: 35,
                         decoration: BoxDecoration(
-                            color: Color(0xff6A4EEE),
+                            color: primaryColorOfApp,
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
                       ),
@@ -375,7 +375,7 @@ class _OptionsScreenTwoState extends State<OptionsScreenTwo> {
                   height: 75,
                   child: FlatButton(
                     disabledTextColor: Colors.blue,
-                    disabledColor: Color(0xffD2D0E1),
+                    disabledColor: secondaryColorOfApp,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
