@@ -25,7 +25,6 @@ class _CommodityDocumentUploadScreenState extends State<CommodityDocumentUploadS
 
   TextEditingController documentNameTextEditingController = TextEditingController();
 
-
   FilePickerResult? result;
 
   PlatformFile pdfPanImagefile = PlatformFile(name: "/assets/images/congratulations.png", size: 20);

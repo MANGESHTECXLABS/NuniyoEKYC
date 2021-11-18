@@ -418,7 +418,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           isAPanImage = true;
                         }
                         setState(() {});
-                        if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null&&isKRAVerified){
+                        if(imageFilePan.toString()!='File: \'/assets/images/congratulations.png\''&&imageFilePan!=null&&!isKRAVerified){
                           //CALL APIS TO UPLOAD
                           print("Uploading Image Format of Pan to API");
                           ///Upload APi
@@ -454,7 +454,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
                           print(fileExtension);
                           await ApiRepository().DocumentUploadDigitalSignature(byteFormatOfFile,fileExtension);
                         }
-                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"&&!panUploaded&&isKRAVerified){
+                        if(pdfPanImagefile.name!="/assets/images/congratulations.png"&&!panUploaded&&!isKRAVerified){
                           print("Uploading PDF Format of PAN IMAGE FILE");
                           Uint8List? byteList = pdfPanImagefile.bytes;
                           if(byteList!=null){
@@ -678,7 +678,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
     });
   }
 
-
   ///PAN CARD METHODS
   void showPanCardImageUploadOptionsDialog() {
     showGeneralDialog(
@@ -694,7 +693,6 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
             height: 250,
             child: Column(
                 children: [
-                  Visibility(visible: nameMatched,child:IFSCFields()),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(22.0,10.0,0.0,10.0),
                     child: Align(
@@ -963,6 +961,9 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
             style: TextStyle(color: Colors.red, letterSpacing: 0.5),
           ),
         )..show(context);
+        ///Delete the files from picker as well
+        imageFilePan = null;
+        croppedFile = null;
         return;
       }
       imageFilePan = croppedFile;
@@ -1006,6 +1007,8 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
             style: TextStyle(color: Colors.red, letterSpacing: 0.5),
           ),
         )..show(context);
+        imageFileDigitalSignature = null;
+        croppedFile = null;
         return;
       }
       /////
@@ -1104,6 +1107,7 @@ class _UploadDocumentScreenState extends State<UploadDocumentScreen> {
       print("bdk6tssl6ysx6l");
       //tempDigitalPadUploaded = true;
     }
+
     setState(() {});
   }
 
