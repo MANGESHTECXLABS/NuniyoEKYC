@@ -264,7 +264,11 @@ class _EsignScreenState extends State<EsignScreen> {
   Future<void> startEsigningForIOS(String docID) async{
     try {
       //Fluttertoast.showToast(msg: "Chalo IOS MIEN", toastLength: Toast.LENGTH_SHORT);
-      await platform.invokeMethod('doEsign' ,{"docId": docID,"phoneNumber":PHONE_NUMBER});
+
+      await platform.invokeMethod('doEsign' ,{"docId": docID,"phoneNumber":PHONE_NUMBER}).whenComplete(() { Navigator.pushNamed(context, "EsignResponse");print("OUT OF IOS");});
+
+      //Navigator.pushNamed(context, "EsignResponse");
+
     } on PlatformException catch (e) {
       Fluttertoast.showToast(msg: "NahI HO PAAYA :"+e.message.toString(), toastLength: Toast.LENGTH_SHORT);
       print("Failed: '${e.message}'.");
